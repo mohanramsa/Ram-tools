@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Electrical Wiring Game - Ram Tools</title>
+
+<style>
+body{
+font-family:Arial;
+text-align:center;
+background:#2c3e50;
+color:white;
+}
+
+.container{
+background:white;
+color:black;
+padding:20px;
+margin:30px auto;
+width:600px;
+border-radius:10px;
+}
+
+.node{
+display:inline-block;
+width:100px;
+height:100px;
+margin:15px;
+border:2px solid black;
+cursor:pointer;
+border-radius:10px;
+line-height:100px;
+font-weight:bold;
+}
+
+#bulb{
+background:lightgray;
+}
+
+.glow{
+background:yellow !important;
+}
+
+button{
+padding:10px 20px;
+background:green;
+color:white;
+border:none;
+margin-top:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>⚡ Wire the Circuit to Glow Bulb</h2>
+
+<p>
+Connect the electrical components in the correct order to complete the circuit and glow the bulb.
+This game helps you understand basic single-phase wiring used in home electrical installations.
+</p>
+
+<p>
+Correct Wiring Path:
+<b>Phase → Switch → Resistor → Bulb → Neutral</b>
+</p>
+
+<div class="container">
+
+<div class="node" onclick="addWire('phase')" style="background:red;">Phase</div>
+
+<div class="node" onclick="addWire('switch')" style="background:lightblue;">Switch</div>
+
+<div class="node" onclick="addWire('resistor')" style="background:orange;">Resistor</div>
+
+<div id="bulb" class="node" onclick="addWire('bulb')">Bulb</div>
+
+<div class="node" onclick="addWire('neutral')" style="background:green;">Neutral</div>
+
+<br><br>
+
+<button onclick="checkWiring()">Check Wiring</button>
+<button onclick="resetGame()">Reset</button>
+
+<h3 id="result"></h3>
+
+<p style="color:red;">
+⚠️ Note: This is a simulation for educational purposes only.
+Always follow safety procedures while working with real electrical circuits.
+</p>
+
+</div>
+
+<script>
+
+let wire=[];
+
+function addWire(x){
+wire.push(x);
+}
+
+function checkWiring(){
+
+let correct=["phase","switch","resistor","bulb","neutral"];
+
+if(JSON.stringify(wire)==JSON.stringify(correct)){
+document.getElementById("result").innerHTML=
+"✔ Correct Wiring! Circuit Completed Successfully. Bulb is Glowing 💡";
+document.getElementById("bulb").classList.add("glow");
+}
+else{
+document.getElementById("result").innerHTML=
+"❌ Incorrect Wiring! Please connect Phase → Switch → Resistor → Bulb → Neutral";
+}
+
+}
+
+function resetGame(){
+wire=[];
+document.getElementById("result").innerHTML="";
+document.getElementById("bulb").classList.remove("glow");
+}
+
+</script>
+
+</body>
+</html>
