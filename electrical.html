@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Electrical Calculator - RamTools</title>
+
+<style>
+body{font-family:Arial;background:#f2f4f8;}
+.container{
+width:550px;margin:auto;background:white;
+padding:20px;margin-top:20px;
+border-radius:10px;
+box-shadow:0 0 10px #ccc;
+}
+h2{text-align:center;color:#2c7be5;}
+input,select{width:100%;padding:8px;margin-top:5px;}
+button{
+margin-top:10px;padding:8px 15px;
+background:#2c7be5;color:white;
+border:none;border-radius:5px;
+cursor:pointer;
+}
+.result{
+background:#eef3ff;
+padding:10px;margin-top:10px;
+border-left:5px solid #2c7be5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Motor Current Calculator</h2>
+
+<label>Phase</label>
+<select id="phase">
+<option value="1">Single Phase</option>
+<option value="3">Three Phase</option>
+</select>
+
+<label>Motor Rating (HP)</label>
+<input type="number" id="hp">
+
+<label>Voltage (V)</label>
+<input type="number" id="volt">
+
+<label>Power Factor (cosφ)</label>
+<input type="number" id="pf" value="0.8">
+
+<label>Efficiency</label>
+<input type="number" id="eff" value="0.9">
+
+<button onclick="calcMotor()">Calculate Current</button>
+
+<div class="result" id="out1"></div>
+
+<hr>
+
+<h2>Transformer Calculator</h2>
+
+<label>Phase</label>
+<select id="tphase">
+<option value="1">Single Phase</option>
+<option value="3">Three Phase</option>
+</select>
+
+<label>Select Input Type</label>
+<select id="ptype">
+<option value="kw">kW</option>
+<option value="kva">kVA</option>
+</select>
+
+<label>Load Value</label>
+<input type="number" id="pload">
+
+<label>Voltage (V)</label>
+<input type="number" id="tv">
+
+<label>Power Factor (cosφ)</label>
+<input type="number" id="tpf" value="0.8">
+
+<button onclick="calcTrans()">Calculate Current</button>
+
+<div class="result" id="out2"></div>
+
+<hr>
+
+<h2>Battery Backup Time</h2>
+
+<label>Battery Ah</label>
+<input type="number" id="ah">
+
+<label>Battery Voltage</label>
+<input type="number" id="bv">
+
+<label>Load (Watts)</label>
+<input type="number" id="load">
+
+<button onclick="calcBackup()">Calculate Backup</button>
+
+<div class="result" id="out3"></div>
+
+<hr>
+
+<h2>Copper Cable Size Calculator</h2>
+
+<label>Load Current (Amps)</label>
+<input type="number" id="ci">
+
+<label>Cable Length (Meters)</label>
+<input type="number" id="cl">
+
+<button onclick="calcCable()">Calculate Cable Size</button>
+
+<div class="result" id="out4"></div>
+
+<hr>
+
+<h2>Busbar Size Calculator (Panel Use)</h2>
+
+<label>Material</label>
+<select id="mat">
+<option value="cu">Copper</option>
+<option value="al">Aluminium</option>
+</select>
+
+<label>Load Current (Amps)</label>
+<input type="number" id="bi">
+
+<button onclick="calcBus()">Calculate Busbar Size</button>
+
+<div class="result" id="out5"></div>
+
+</div>
+
+<script>
+
+function calcMotor(){
+let ph=document.getElementById("phase").value;
+let hp=Number(document.getElementById("hp").value);
+let v=Number(document.getElementById("volt").value);
+let pf=Number(document.getElementById("pf").value);
+let eff=Number(document.getElementById("eff").value);
+
+let I;
+
+if(ph=="1"){
+I=(hp*746)/(v*pf*eff);
+}
+else{
+I=(hp*746)/(1.732*v*pf*eff);
+}
+
+document.getElementById("out1").innerHTML=
+"Motor Current = "+I.toFixed(2)+" Amps";
+}
+
+function calcTrans(){
+
+let ph=document.getElementById("tphase").value;
+let type=document.getElementById("ptype").value;
+let p=Number(document.getElementById("pload").value);
+let v=Number(document.getElementById("tv").value);
+let pf=Number(document.getElementById("tpf").value);
+
+let kva;
+
+if(type=="kw"){
+kva=p/pf;
+}
+else{
+kva=p;
+}
+
+let I;
+
+if(ph=="1"){
+I=(kva*1000)/v;
+}
+else{
+I=(kva*1000)/(1.732*v);
+}
+
+document.getElementById("out2").innerHTML=
+"Load Current = "+I.toFixed(2)+" Amps";
+}
+
+function calcBackup(){
+let ah=Number(document.getElementById("ah").value);
+let bv=Number(document.getElementById("bv").value);
+let load=Number(document.getElementById("load").value);
+
+let time=(ah*bv*0.8)/load;
+
+document.getElementById("out3").innerHTML=
+"Backup Time = "+time.toFixed(2)+" Hours";
+}
+
+function calcCable(){
+let I=Number(document.getElementById("ci").value);
+let L=Number(document.getElementById("cl").value);
+
+let vd=2;
+let k=56;
+
+let area=(2*L*I)/(k*vd);
+
+document.getElementById("out4").innerHTML=
+"Required Copper Cable Size = "+area.toFixed(2)+" sq.mm";
+}
+
+function calcBus(){
+
+let I=Number(document.getElementById("bi").value);
+let mat=document.getElementById("mat").value;
+
+let area;
+
+if(mat=="cu"){
+area=I/1.2;
+}
+else{
+area=I/0.8;
+}
+
+document.getElementById("out5").innerHTML=
+"Required Busbar Area = "+area.toFixed(2)+" sq.mm";
+}
+
+</script>
+
+</body>
+</html>
+<footer style="text-align:center;margin-top:20px;">
+© 2026 RamTools. All Rights Reserved.
+<br>
+<a href="//www.dmca.com/Protection/Status.aspx?ID=f2802132-cf89-47ad-a9d9-43c36d5ed3b1" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca_protected_sml_120l.png?ID=f2802132-cf89-47ad-a9d9-43c36d5ed3b1"  alt="DMCA.com Protection Status" /></a>  <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script>

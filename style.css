@@ -1,0 +1,53 @@
+
+body{
+font-family: Arial;
+background:#f4f6f9;
+text-align:center;
+}
+
+h1,h2{
+color:#2c3e50;
+}
+
+input{
+padding:10px;
+margin:5px;
+width:200px;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+button{
+background:#27ae60;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#219150;
+}
+
+.container{
+background:white;
+width:350px;
+margin:auto;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px grey;
+margin-top:30px;
+}
+
+.navbar{
+background:#34495e;
+padding:10px;
+}
+
+.navbar a{
+color:white;
+margin:10px;
+text-decoration:none;
+font-weight:bold;
+}
