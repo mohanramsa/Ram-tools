@@ -1,302 +1,784 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>SalaryPro Professional</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SalaryPro – Salary Slip Generator | RamTools</title>
+  <style>
+    :root {
+      --primary: #3949ab;
+      --accent: #5c6bc0;
+      --danger: #e53935;
+      --success: #2e7d32;
+      --border: #e0e0e0;
+      --muted: #888;
+      --shadow: 0 4px 24px rgba(57,73,171,0.08);
+      --bg: #f5f6fa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: #222; min-height: 100vh; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    nav {
+      background: #fff;
+      padding: 0.8rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--primary); font-weight: 800; font-size: 1.1rem; }
+    .nav-logo-icon { width: 32px; height: 32px; background: var(--primary); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: #555; font-size: 0.85rem; font-weight: 600; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--primary); }
 
-<style>
-body{font-family:Arial;background:#f2f4f8;}
-.container{
-width:650px;margin:auto;background:white;padding:20px;
-border-radius:10px;box-shadow:0 0 10px #ccc;margin-top:20px;
-}
-.form-row{display:flex;justify-content:space-between;margin-top:8px;}
-.form-group{width:48%;}
-.form-group label{display:block;font-weight:bold;}
-.form-group input,.form-group select{width:100%;padding:5px;}
-button{
-margin-top:10px;padding:8px 15px;background:#2c7be5;
-color:white;border:none;border-radius:5px;cursor:pointer;
-}
-table{margin-top:20px;width:100%;border-collapse:collapse;}
-th,td{border:1px solid #ccc;padding:5px;font-size:12px;}
-h2{text-align:center;}
-</style>
+    .hero { background: linear-gradient(135deg, var(--primary) 0%, #7986cb 100%); color: #fff; text-align: center; padding: 2.5rem 1.5rem; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); border-radius: 20px; padding: 0.2rem 0.8rem; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.8rem; letter-spacing: 1px; }
+    .hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .hero h1 span { color: #ffd54f; }
+    .hero p { font-size: 0.95rem; opacity: 0.88; }
 
+    .section { max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    .salary-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+    @media (max-width: 900px) { .salary-layout { grid-template-columns: 1fr; } }
+
+    .card { background: #fff; border-radius: 14px; padding: 1.8rem; box-shadow: var(--shadow); }
+    .card-title { font-size: 1.3rem; color: var(--primary); margin-bottom: 1.5rem; font-weight: 800; }
+
+    .section-head { font-size: 0.82rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin: 1.2rem 0 1rem; font-weight: 700; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: #555; margin-bottom: 0.3rem; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 0.55rem 0.85rem; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 0.85rem; font-family: 'Poppins', sans-serif; transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.65rem 1.3rem; border-radius: 8px; border: none; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: #283593; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #1b5e20; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #b71c1c; }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+    .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.75rem; border-radius: 6px; }
+
+    /* Employee List */
+    .emp-list { margin-top: 1.5rem; }
+    .emp-list-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+    .emp-card {
+      background: #f8f9ff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      transition: border-color 0.2s;
+    }
+    .emp-card:hover { border-color: var(--accent); }
+    .emp-card-info .name { font-weight: 700; font-size: 0.88rem; color: #222; }
+    .emp-card-info .sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+    .emp-card-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+    .emp-empty { text-align: center; color: var(--muted); font-size: 0.82rem; padding: 1rem 0; }
+
+    /* Right panel */
+    .right-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* Single Slip Preview */
+    .slip-preview {
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+    }
+    .slip-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 1rem; margin-bottom: 1rem; }
+    .slip-company { font-size: 1.3rem; font-weight: 700; font-family: 'Poppins', sans-serif; color: var(--primary); }
+    .slip-title { font-size: 0.9rem; color: var(--muted); margin-top: 0.2rem; }
+    .slip-row { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dotted #ddd; }
+    .slip-row.total { font-weight: 700; font-size: 0.95rem; border-top: 2px solid #333; border-bottom: 2px solid #333; margin-top: 0.5rem; color: var(--primary); }
+    .slip-section-head { font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin: 0.8rem 0 0.3rem; }
+    .slip-emp-row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.82rem; }
+
+    /* Employee slips list on right */
+    
+    .emp-slips-title { font-size: 1rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .emp-slip-thumb {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .emp-slip-thumb .info .name { font-weight: 700; font-size: 0.9rem; }
+    .emp-slip-thumb .info .meta { font-size: 0.76rem; color: var(--muted); margin-top: 0.2rem; }
+    .emp-slip-thumb .net { font-weight: 800; font-size: 1rem; color: var(--success); }
+    .emp-slips-empty { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem 0; border: 2px dashed var(--border); border-radius: 10px; }
+
+    .actions-bar { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+
+    footer { background: #fff; border-top: 1px solid var(--border); text-align: center; padding: 1.5rem; color: var(--muted); font-size: 0.8rem; margin-top: 3rem; }
+    .footer-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--primary); }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.8rem;
+      max-width: 480px;
+      width: 95%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-title { font-size: 1.1rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; }
+    .modal-actions { display: flex; gap: 0.8rem; margin-top: 1.2rem; justify-content: flex-end; }
+
+    /* Print styles – one employee per page */
+    @media print {
+      body > *:not(#printArea) { display: none !important; }
+      #printArea {
+        display: block !important;
+        position: static;
+        width: 100%;
+      }
+      .print-page {
+        display: block;
+        width: 100%;
+        padding: 1.5cm 2cm;
+        page-break-before: always;
+        page-break-after: always;
+        page-break-inside: avoid;
+        break-before: page;
+        break-after: page;
+        font-family: 'Courier New', monospace;
+        font-size: 11pt;
+        background: #fff;
+        box-sizing: border-box;
+      }
+      .print-page:first-child {
+        page-break-before: avoid;
+        break-before: avoid;
+      }
+      .print-page:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">R</div>
+    <span>RamTools</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="salary.html" class="active">SalaryPro</a></li>
+    <li><a href="electrical.html">Electrical Formulas</a></li>
+    <li><a href="engineering-ai.html">AI Formula Generator</a></li>
+    <li><a href="electrical-quiz.html">Electrical Quiz</a></li>
+    <li><a href="blog.html">Spiritual Blog</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
 
-<h2>Salary Register Entry</h2>
+<section class="hero">
+  <div class="hero-badge">Free Tool</div>
+  <h1>💼 <span>SalaryPro</span></h1>
+  <p>Generate professional salary slips in seconds. Fully calculated & printable.</p>
+</section>
 
-<div class="form-row">
-<div class="form-group">
-<label>Business Name</label>
-<input type="text" id="bname">
-</div>
-<div class="form-group">
-<label>Salary Date</label>
-<input type="date" id="sdate">
-</div>
+<div class="section">
+  <div class="salary-layout">
+
+    <!-- LEFT: FORM -->
+    <div>
+      <div class="card">
+        <div class="card-title">📝 Enter Details</div>
+
+        <div class="section-head">Company Info</div>
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" id="companyName" placeholder="e.g. ABC Technologies Pvt Ltd" value="ABC Technologies Pvt Ltd"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Month</label>
+            <select id="month">
+              <option>January</option><option>February</option><option>March</option>
+              <option>April</option><option>May</option><option>June</option>
+              <option>July</option><option>August</option><option>September</option>
+              <option selected>October</option><option>November</option><option>December</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Year</label>
+            <input type="number" id="year" value="2026"/>
+          </div>
+        </div>
+
+        <div class="section-head">Employee Info</div>
+        <div class="form-group">
+          <label>Employee Name</label>
+          <input type="text" id="empName" placeholder="Full Name"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Employee ID</label>
+            <input type="text" id="empId" placeholder="EMP001"/>
+          </div>
+          <div class="form-group">
+            <label>Designation</label>
+            <input type="text" id="designation" placeholder="Software Engineer"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" id="dept" placeholder="IT"/>
+          </div>
+          <div class="form-group">
+            <label>Date of Joining</label>
+            <input type="date" id="doj"/>
+          </div>
+        </div>
+
+        <div class="section-head">Salary Details (₹)</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Basic Salary</label>
+            <input type="number" id="basic" placeholder="25000" oninput="liveCalc()"/>
+          </div>
+          <div class="form-group">
+            <label>HRA</label>
+            <input type="number" id="hra" placeholder="10000" oninput="liveCalc()"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Travel Allowance</label>
+            <input type="number" id="ta" placeholder="2000" oninput="liveCalc()"/>
+          </div>
+          <div class="form-group">
+            <label>Medical Allowance</label>
+            <input type="number" id="medical" placeholder="1500" oninput="liveCalc()"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Special Allowance</label>
+            <input type="number" id="special" placeholder="3000" oninput="liveCalc()"/>
+          </div>
+          <div class="form-group">
+            <label>Other Allowance</label>
+            <input type="number" id="other" placeholder="0" oninput="liveCalc()"/>
+          </div>
+        </div>
+
+        <div class="section-head" style="color:#e53935;">Deductions (₹)</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>PF (Employee)</label>
+            <input type="number" id="pf" placeholder="1800" oninput="liveCalc()"/>
+          </div>
+          <div class="form-group">
+            <label>Professional Tax</label>
+            <input type="number" id="pt" placeholder="200" oninput="liveCalc()"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>TDS / Income Tax</label>
+            <input type="number" id="tds" placeholder="0" oninput="liveCalc()"/>
+          </div>
+          <div class="form-group">
+            <label>Other Deductions</label>
+            <input type="number" id="otherDed" placeholder="0" oninput="liveCalc()"/>
+          </div>
+        </div>
+
+        <!-- ADD / UPDATE EMPLOYEE BUTTON -->
+        <div style="display:flex; gap:0.8rem; margin-top:1rem; flex-wrap:wrap;">
+          <button class="btn btn-primary" style="flex:1;" onclick="addEmployee()" id="addBtn">
+            ➕ Add Employee
+          </button>
+          <button class="btn btn-outline" style="flex:1; display:none;" onclick="cancelEdit()" id="cancelBtn">
+            ✕ Cancel
+          </button>
+        </div>
+
+        <!-- EMPLOYEE LIST -->
+        <div class="emp-list">
+          <div class="emp-list-title">
+            👥 Added Employees &nbsp;<span id="empCount" style="background:var(--primary);color:#fff;border-radius:20px;padding:0.1rem 0.6rem;font-size:0.75rem;">0</span>
+          </div>
+          <div id="empListContainer">
+            <div class="emp-empty">No employees added yet. Fill the form above and click "Add Employee".</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: PREVIEW + LIST -->
+    <div class="right-panel">
+
+      <!-- Live Slip Preview -->
+      <div>
+        <div style="font-size:1.3rem; color:var(--primary); font-weight:800; margin-bottom:1rem;">📄 Salary Slip Preview</div>
+        <div id="slipPreview" class="slip-preview">
+          <div class="slip-header">
+            <div class="slip-company" id="previewCompany">Company Name</div>
+            <div class="slip-title">SALARY SLIP</div>
+            <div style="font-size:0.78rem; color:var(--muted); margin-top:0.3rem;" id="previewMonth">Month: — —</div>
+          </div>
+          <div class="slip-section-head">Employee Details</div>
+          <div class="slip-emp-row"><span>Employee Name</span><span id="pEmpName">—</span></div>
+          <div class="slip-emp-row"><span>Employee ID</span><span id="pEmpId">—</span></div>
+          <div class="slip-emp-row"><span>Designation</span><span id="pDesignation">—</span></div>
+          <div class="slip-emp-row"><span>Department</span><span id="pDept">—</span></div>
+          <div class="slip-emp-row"><span>Date of Joining</span><span id="pDoj">—</span></div>
+
+          <div class="slip-section-head">Earnings</div>
+          <div class="slip-row"><span>Basic Salary</span><span id="pBasic">₹0</span></div>
+          <div class="slip-row"><span>HRA</span><span id="pHra">₹0</span></div>
+          <div class="slip-row"><span>Travel Allowance</span><span id="pTa">₹0</span></div>
+          <div class="slip-row"><span>Medical Allowance</span><span id="pMedical">₹0</span></div>
+          <div class="slip-row"><span>Special Allowance</span><span id="pSpecial">₹0</span></div>
+          <div class="slip-row"><span>Other Allowance</span><span id="pOther">₹0</span></div>
+          <div class="slip-row total"><span>Gross Salary</span><span id="pGross">₹0</span></div>
+
+          <div class="slip-section-head">Deductions</div>
+          <div class="slip-row"><span>PF (Employee)</span><span id="pPf">₹0</span></div>
+          <div class="slip-row"><span>Professional Tax</span><span id="pPt">₹0</span></div>
+          <div class="slip-row"><span>TDS / Income Tax</span><span id="pTds">₹0</span></div>
+          <div class="slip-row"><span>Other Deductions</span><span id="pOtherDed">₹0</span></div>
+          <div class="slip-row total" style="color:#c62828;"><span>Total Deductions</span><span id="pTotalDed">₹0</span></div>
+
+          <div class="slip-row total" style="font-size:1.05rem; color:#2e7d32; border-color:#2e7d32; margin-top:0.8rem;">
+            <span>NET SALARY</span><span id="pNet">₹0</span>
+          </div>
+          <div style="text-align:center; margin-top:1.5rem; font-size:0.75rem; color:var(--muted); border-top:1px solid #ddd; padding-top:0.8rem;">
+            This is a computer-generated salary slip. No signature required.
+          </div>
+        </div>
+      </div>
+
+      <!-- All Employee Slips -->
+      <div class="card emp-slips-area">
+        <div class="emp-slips-title">
+          🗂️ All Employee Slips
+          <span id="slipCount" style="background:var(--accent);color:#fff;border-radius:20px;padding:0.1rem 0.6rem;font-size:0.75rem;">0</span>
+        </div>
+        <div id="allSlipsContainer">
+          <div class="emp-slips-empty">Add employees using the form on the left. Each employee's salary slip will appear here.</div>
+        </div>
+
+        <div class="actions-bar" style="margin-top:1.2rem;" id="printBtns" style="display:none;">
+          <button class="btn btn-success" onclick="printAllSlips()" id="printAllBtn" style="display:none;">
+            🖨️ Print All Slips (1 per page)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="form-row">
-<div class="form-group">
-<label>Month</label>
-<select id="month">
-<option>January</option><option>February</option>
-<option>March</option><option>April</option>
-<option>May</option><option>June</option>
-<option>July</option><option>August</option>
-<option>September</option><option>October</option>
-<option>November</option><option>December</option>
-</select>
-</div>
-<div class="form-group">
-<label>Year</label>
-<select id="year">
-<option>2024</option><option>2025</option>
-<option selected>2026</option><option>2027</option>
-<option>2028</option>
-</select>
-</div>
+<!-- Hidden Print Area (shown only when printing) -->
+<div id="printArea" style="display:none;"></div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">✏️ Edit Employee</div>
+
+    <div class="section-head" style="margin-top:0;">Company Info</div>
+    <div class="form-group"><label>Company Name</label><input type="text" id="mCompanyName"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Month</label>
+        <select id="mMonth">
+          <option>January</option><option>February</option><option>March</option>
+          <option>April</option><option>May</option><option>June</option>
+          <option>July</option><option>August</option><option>September</option>
+          <option>October</option><option>November</option><option>December</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Year</label><input type="number" id="mYear"/></div>
+    </div>
+
+    <div class="section-head">Employee Info</div>
+    <div class="form-group"><label>Employee Name</label><input type="text" id="mEmpName"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Employee ID</label><input type="text" id="mEmpId"/></div>
+      <div class="form-group"><label>Designation</label><input type="text" id="mDesignation"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Department</label><input type="text" id="mDept"/></div>
+      <div class="form-group"><label>Date of Joining</label><input type="date" id="mDoj"/></div>
+    </div>
+
+    <div class="section-head">Salary Details (₹)</div>
+    <div class="form-row">
+      <div class="form-group"><label>Basic Salary</label><input type="number" id="mBasic"/></div>
+      <div class="form-group"><label>HRA</label><input type="number" id="mHra"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Travel Allowance</label><input type="number" id="mTa"/></div>
+      <div class="form-group"><label>Medical Allowance</label><input type="number" id="mMedical"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Special Allowance</label><input type="number" id="mSpecial"/></div>
+      <div class="form-group"><label>Other Allowance</label><input type="number" id="mOther"/></div>
+    </div>
+
+    <div class="section-head" style="color:#e53935;">Deductions (₹)</div>
+    <div class="form-row">
+      <div class="form-group"><label>PF (Employee)</label><input type="number" id="mPf"/></div>
+      <div class="form-group"><label>Professional Tax</label><input type="number" id="mPt"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>TDS / Income Tax</label><input type="number" id="mTds"/></div>
+      <div class="form-group"><label>Other Deductions</label><input type="number" id="mOtherDed"/></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEdit()">💾 Save Changes</button>
+    </div>
+  </div>
 </div>
 
-<div class="form-row">
-<div class="form-group">
-<label>Employee ID</label>
-<input type="text" id="eid">
-</div>
-<div class="form-group">
-<label>Employee Name</label>
-<input type="text" id="name">
-</div>
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label>Designation</label>
-<input type="text" id="desig">
-</div>
-<div class="form-group">
-<label>No. of Days Present</label>
-<input type="number" id="days">
-</div>
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal" style="max-width:360px; text-align:center;">
+    <div style="font-size:2.5rem; margin-bottom:0.8rem;">🗑️</div>
+    <div class="modal-title" style="justify-content:center;">Delete Employee?</div>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem;" id="deleteModalText">Are you sure you want to delete this employee's salary slip?</p>
+    <div class="modal-actions" style="justify-content:center;">
+      <button class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
 </div>
 
-<div class="form-row">
-<div class="form-group">
-<label>Per Day Salary</label>
-<input type="number" id="perday">
-</div>
-<div class="form-group">
-<label>HRA</label>
-<input type="number" id="hra">
-</div>
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label>DA</label>
-<input type="number" id="da">
-</div>
-<div class="form-group">
-<label>PF</label>
-<input type="number" id="pf">
-</div>
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label>Advance</label>
-<input type="number" id="adv">
-</div>
-<div class="form-group">
-<label>Suspense</label>
-<input type="number" id="sus">
-</div>
-</div>
-
-<button onclick="addEmp()">Add Employee</button>
-<button onclick="deleteLastEmp()">Delete Employee</button>
-<button onclick="printAll()">Print All PDF</button>
-
-<table id="t">
-<tr>
-<th>ID</th><th>Name</th><th>Days</th>
-<th>Basic</th><th>Gross</th><th>Net</th>
-<th>Actions</th>
-</table>
-
-</div>
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="disclaimer.html">Disclaimer</a>
+  </div>
+  <p>© 2026 RamTools. All Rights Reserved.</p>
+</footer>
 
 <script>
+  let employees = [];
+  let editingId = null;
+  let deletingId = null;
 
-document.getElementById("sdate").valueAsDate=new Date();
+  const fmt = n => '₹' + Number(n || 0).toLocaleString('en-IN');
+  const val = id => parseFloat(document.getElementById(id).value) || 0;
+  const gv = id => document.getElementById(id).value.trim();
 
-let emps=[];
+  function calcSalary(e) {
+    const gross = e.basic + e.hra + e.ta + e.medical + e.special + e.other;
+    const ded = e.pf + e.pt + e.tds + e.otherDed;
+    return { gross, ded, net: gross - ded };
+  }
 
-function addEmp(){
+  function liveCalc() {
+    const e = {
+      basic: val('basic'), hra: val('hra'), ta: val('ta'),
+      medical: val('medical'), special: val('special'), other: val('other'),
+      pf: val('pf'), pt: val('pt'), tds: val('tds'), otherDed: val('otherDed')
+    };
+    const { gross, ded, net } = calcSalary(e);
 
-let eid=document.getElementById("eid").value;
-let name=document.getElementById("name").value;
-let desig=document.getElementById("desig").value;
-let days=Number(document.getElementById("days").value);
-let perday=Number(document.getElementById("perday").value);
-let hra=Number(document.getElementById("hra").value);
-let da=Number(document.getElementById("da").value);
-let pf=Number(document.getElementById("pf").value);
-let adv=Number(document.getElementById("adv").value);
-let sus=Number(document.getElementById("sus").value);
+    document.getElementById('pBasic').textContent = fmt(e.basic);
+    document.getElementById('pHra').textContent = fmt(e.hra);
+    document.getElementById('pTa').textContent = fmt(e.ta);
+    document.getElementById('pMedical').textContent = fmt(e.medical);
+    document.getElementById('pSpecial').textContent = fmt(e.special);
+    document.getElementById('pOther').textContent = fmt(e.other);
+    document.getElementById('pPf').textContent = fmt(e.pf);
+    document.getElementById('pPt').textContent = fmt(e.pt);
+    document.getElementById('pTds').textContent = fmt(e.tds);
+    document.getElementById('pOtherDed').textContent = fmt(e.otherDed);
+    document.getElementById('pGross').textContent = fmt(gross);
+    document.getElementById('pTotalDed').textContent = fmt(ded);
+    document.getElementById('pNet').textContent = fmt(net);
 
-let basic=days*perday;
-let gross=basic+hra+da;
-let net=gross-(pf+adv+sus);
+    document.getElementById('previewCompany').textContent = gv('companyName') || 'Company Name';
+    document.getElementById('previewMonth').textContent = 'Month: ' + gv('month') + ' ' + gv('year');
+    document.getElementById('pEmpName').textContent = gv('empName') || '—';
+    document.getElementById('pEmpId').textContent = gv('empId') || '—';
+    document.getElementById('pDesignation').textContent = gv('designation') || '—';
+    document.getElementById('pDept').textContent = gv('dept') || '—';
+    const doj = document.getElementById('doj').value;
+    document.getElementById('pDoj').textContent = doj ? new Date(doj).toLocaleDateString('en-IN') : '—';
+  }
 
-emps.push({eid,name,desig,days,perday,basic,hra,da,pf,adv,sus,gross,net});
+  function addEmployee() {
+    const name = gv('empName');
+    if (!name) { alert('Please enter employee name.'); return; }
 
-let index = emps.length-1;
+    const emp = {
+      id: editingId || Date.now(),
+      companyName: gv('companyName'),
+      month: gv('month'),
+      year: gv('year'),
+      empName: name,
+      empId: gv('empId'),
+      designation: gv('designation'),
+      dept: gv('dept'),
+      doj: document.getElementById('doj').value,
+      basic: val('basic'), hra: val('hra'), ta: val('ta'),
+      medical: val('medical'), special: val('special'), other: val('other'),
+      pf: val('pf'), pt: val('pt'), tds: val('tds'), otherDed: val('otherDed')
+    };
 
-let t=document.getElementById("t");
-let r=t.insertRow();
+    if (editingId) {
+      const idx = employees.findIndex(e => e.id === editingId);
+      if (idx !== -1) employees[idx] = emp;
+      editingId = null;
+      document.getElementById('addBtn').textContent = '➕ Add Employee';
+      document.getElementById('cancelBtn').style.display = 'none';
+    } else {
+      employees.push(emp);
+    }
 
-r.insertCell(0).innerHTML=eid;
-r.insertCell(1).innerHTML=name;
-r.insertCell(2).innerHTML=days;
-r.insertCell(3).innerHTML=basic;
-r.insertCell(4).innerHTML=gross;
-r.insertCell(5).innerHTML=net;
-r.insertCell(6).innerHTML=
-"<button onclick='editEmp("+index+")'>Edit</button> "+
-"<button onclick='deleteEmp("+index+")'>Delete</button>";
+    clearForm();
+    renderAll();
+  }
 
-}
+  function cancelEdit() {
+    editingId = null;
+    clearForm();
+    document.getElementById('addBtn').textContent = '➕ Add Employee';
+    document.getElementById('cancelBtn').style.display = 'none';
+  }
 
-function printAll(){
+  function clearForm() {
+    ['empName','empId','designation','dept','basic','hra','ta','medical','special','other','pf','pt','tds','otherDed'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('doj').value = '';
+    liveCalc();
+  }
 
-const {jsPDF}=window.jspdf;
-let doc=new jsPDF();
+  function renderAll() {
+    renderEmpList();
+    renderSlipsList();
+    updateCounts();
+  }
 
-let bname=document.getElementById("bname").value;
-let month=document.getElementById("month").value;
-let year=document.getElementById("year").value;
-let sdate=document.getElementById("sdate").value;
+  function renderEmpList() {
+    const container = document.getElementById('empListContainer');
+    if (employees.length === 0) {
+      container.innerHTML = '<div class="emp-empty">No employees added yet. Fill the form above and click "Add Employee".</div>';
+      return;
+    }
+    container.innerHTML = employees.map(emp => {
+      const { net } = calcSalary(emp);
+      return `
+        <div class="emp-card" id="empcard-${emp.id}">
+          <div class="emp-card-info">
+            <div class="name">${emp.empName}</div>
+            <div class="sub">${emp.empId ? emp.empId + ' · ' : ''}${emp.designation || ''} | Net: <strong style="color:var(--success)">${fmt(net)}</strong></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="btn btn-outline btn-sm" onclick="editEmployee(${emp.id})">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${emp.id})">🗑️</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
 
-doc.setFontSize(14);
-doc.text(bname,14,10);
+  function renderSlipsList() {
+    const container = document.getElementById('allSlipsContainer');
+    const printBtn = document.getElementById('printAllBtn');
+    if (employees.length === 0) {
+      container.innerHTML = '<div class="emp-slips-empty">Add employees using the form on the left. Each employee\'s salary slip will appear here.</div>';
+      printBtn.style.display = 'none';
+      return;
+    }
+    printBtn.style.display = 'inline-flex';
+    container.innerHTML = employees.map((emp, i) => {
+      const { gross, ded, net } = calcSalary(emp);
+      return `
+        <div class="emp-slip-thumb">
+          <div style="font-size:1.5rem; opacity:0.4;">#${i+1}</div>
+          <div class="info" style="flex:1;">
+            <div class="name">${emp.empName}</div>
+            <div class="meta">${emp.companyName} · ${emp.month} ${emp.year} · ${emp.designation || ''}</div>
+            <div class="meta" style="margin-top:0.2rem;">Gross: ${fmt(gross)} | Deductions: ${fmt(ded)}</div>
+          </div>
+          <div class="net">${fmt(net)}</div>
+        </div>`;
+    }).join('');
+  }
 
-doc.setFontSize(11);
-doc.text("Salary Register - "+month+" "+year,14,18);
-doc.text("Date: "+sdate,150,18);
+  function updateCounts() {
+    document.getElementById('empCount').textContent = employees.length;
+    document.getElementById('slipCount').textContent = employees.length;
+  }
 
-let rows=[];
-emps.forEach((e,i)=>{
-rows.push([i+1,e.eid,e.name,e.desig,e.days,e.perday,e.basic,e.hra,e.da,e.pf,e.adv,e.sus,e.net]);
-});
+  function editEmployee(id) {
+    const emp = employees.find(e => e.id === id);
+    if (!emp) return;
+    editingId = id;
 
-doc.autoTable({
-startY:25,
-head:[["Sl","ID","Name","Desig","Days","PerDay","Basic","HRA","DA","PF","Advance","Suspense","Net"]],
-body:rows,
-theme:'grid',
-styles:{fontSize:7},
-headStyles:{fillColor:[0,102,204],textColor:[255,255,255],fontStyle:'bold'}
-});
+    document.getElementById('companyName').value = emp.companyName;
+    document.getElementById('month').value = emp.month;
+    document.getElementById('year').value = emp.year;
+    document.getElementById('empName').value = emp.empName;
+    document.getElementById('empId').value = emp.empId;
+    document.getElementById('designation').value = emp.designation;
+    document.getElementById('dept').value = emp.dept;
+    document.getElementById('doj').value = emp.doj;
+    document.getElementById('basic').value = emp.basic;
+    document.getElementById('hra').value = emp.hra;
+    document.getElementById('ta').value = emp.ta;
+    document.getElementById('medical').value = emp.medical;
+    document.getElementById('special').value = emp.special;
+    document.getElementById('other').value = emp.other;
+    document.getElementById('pf').value = emp.pf;
+    document.getElementById('pt').value = emp.pt;
+    document.getElementById('tds').value = emp.tds;
+    document.getElementById('otherDed').value = emp.otherDed;
 
-let finalY = doc.lastAutoTable.finalY + 10;
+    document.getElementById('addBtn').textContent = '💾 Update Employee';
+    document.getElementById('cancelBtn').style.display = 'inline-flex';
+    liveCalc();
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+  }
 
-doc.setTextColor(0,0,0);
-doc.text("Total Employees Added: "+emps.length,14,finalY);
+  function openDeleteModal(id) {
+    deletingId = id;
+    const emp = employees.find(e => e.id === id);
+    document.getElementById('deleteModalText').textContent =
+      `Are you sure you want to delete the salary slip for "${emp ? emp.empName : 'this employee'}"?`;
+    document.getElementById('deleteModal').classList.add('open');
+  }
 
-finalY+=8;
+  function closeDeleteModal() {
+    deletingId = null;
+    document.getElementById('deleteModal').classList.remove('open');
+  }
 
-doc.setTextColor(255,0,0);
-doc.text("Maximum 200 employees can be added at once in one entry.",14,finalY);
+  function confirmDelete() {
+    employees = employees.filter(e => e.id !== deletingId);
+    closeDeleteModal();
+    renderAll();
+  }
 
-finalY+=6;
-doc.text("If more employees are required, please refresh the page and continue.",14,finalY);
+  // Modal edit (secondary full modal - kept for reference but using inline form now)
+  function closeModal() {
+    document.getElementById('editModal').classList.remove('open');
+  }
 
-finalY+=10;
+  function saveEdit() {
+    closeModal();
+  }
 
-doc.setTextColor(0,0,0);
-doc.text("Formula Used:",14,finalY);
+  // Print all slips - one page per employee
+  function printAllSlips() {
+    const printArea = document.getElementById('printArea');
+    printArea.innerHTML = employees.map((emp) => {
+      const { gross, ded, net } = calcSalary(emp);
+      const dojStr = emp.doj ? new Date(emp.doj).toLocaleDateString('en-IN') : '—';
+      return `
+        <div class="print-page">
+          <div style="text-align:center; border-bottom:2px solid #333; padding-bottom:12pt; margin-bottom:12pt;">
+            <div style="font-size:16pt; font-weight:800; color:#3949ab;">${emp.companyName || '—'}</div>
+            <div style="font-size:11pt; color:#888; margin-top:3pt;">SALARY SLIP</div>
+            <div style="font-size:9pt; color:#888; margin-top:3pt;">Month: ${emp.month} ${emp.year}</div>
+          </div>
+          <div style="font-size:8pt; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#5c6bc0; margin:10pt 0 4pt;">Employee Details</div>
+          ${row2('Employee Name', emp.empName || '—')}
+          ${row2('Employee ID', emp.empId || '—')}
+          ${row2('Designation', emp.designation || '—')}
+          ${row2('Department', emp.dept || '—')}
+          ${row2('Date of Joining', dojStr)}
+          <div style="font-size:8pt; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#5c6bc0; margin:10pt 0 4pt;">Earnings</div>
+          ${row('Basic Salary', fmt(emp.basic))}
+          ${row('HRA', fmt(emp.hra))}
+          ${row('Travel Allowance', fmt(emp.ta))}
+          ${row('Medical Allowance', fmt(emp.medical))}
+          ${row('Special Allowance', fmt(emp.special))}
+          ${row('Other Allowance', fmt(emp.other))}
+          ${rowTotal('Gross Salary', fmt(gross), '#3949ab')}
+          <div style="font-size:8pt; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#5c6bc0; margin:10pt 0 4pt;">Deductions</div>
+          ${row('PF (Employee)', fmt(emp.pf))}
+          ${row('Professional Tax', fmt(emp.pt))}
+          ${row('TDS / Income Tax', fmt(emp.tds))}
+          ${row('Other Deductions', fmt(emp.otherDed))}
+          ${rowTotal('Total Deductions', fmt(ded), '#c62828')}
+          ${rowTotal('NET SALARY', fmt(net), '#2e7d32', '13pt')}
+          <div style="text-align:center; margin-top:30pt; font-size:8pt; color:#aaa; border-top:1px solid #ddd; padding-top:8pt;">
+            This is a computer-generated salary slip. No signature required.
+          </div>
+        </div>`;
+    }).join('');
 
-finalY+=6;
-doc.text("Basic Salary = No.of Days Present x Per Day Salary",14,finalY);
+    // Show print area, print, then hide
+    printArea.style.display = 'block';
+    requestAnimationFrame(() => {
+      window.print();
+      setTimeout(() => { printArea.style.display = 'none'; }, 2000);
+    });
+  }
 
-finalY+=6;
-doc.text("Gross Salary = Basic + HRA + DA",14,finalY);
+  function row(label, value) {
+    return `<div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dotted #ddd;font-size:0.85rem;">
+      <span>${label}</span><span>${value}</span></div>`;
+  }
+  function row2(label, value) {
+    return `<div style="display:flex;justify-content:space-between;padding:0.18rem 0;font-size:0.8rem;">
+      <span>${label}</span><span>${value}</span></div>`;
+  }
+  function rowTotal(label, value, color, fs='0.95rem') {
+    return `<div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-top:2px solid #333;border-bottom:2px solid #333;margin-top:0.4rem;font-weight:700;font-size:${fs};color:${color};">
+      <span>${label}</span><span>${value}</span></div>`;
+  }
 
-finalY+=6;
-doc.text("Net Salary = Gross - (PF + Advance + Suspense)",14,finalY);
+  // Close modals on overlay click
+  document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+  });
 
-finalY+=10;
-
-doc.setTextColor(255,0,0);
-doc.text("Note: No employee data is saved or stored in this website.",14,finalY);
-
-doc.save("salary_register.pdf");
-
-}
-function deleteLastEmp(){
-emps.pop();
-document.getElementById("t").deleteRow(-1);
-}
-function deleteEmp(index){
-emps.splice(index,1);
-refreshTable();
-}
-function editEmp(index){
-
-let e=emps[index];
-
-document.getElementById("eid").value=e.eid;
-document.getElementById("name").value=e.name;
-document.getElementById("desig").value=e.desig;
-document.getElementById("days").value=e.days;
-document.getElementById("perday").value=e.perday;
-document.getElementById("hra").value=e.hra;
-document.getElementById("da").value=e.da;
-document.getElementById("pf").value=e.pf;
-document.getElementById("adv").value=e.adv;
-document.getElementById("sus").value=e.sus;
-
-emps.splice(index,1);
-refreshTable();
-}
-function refreshTable(){
-
-let t=document.getElementById("t");
-
-while(t.rows.length>1){
-t.deleteRow(1);
-}
-
-emps.forEach((e,i)=>{
-
-let r=t.insertRow();
-
-r.insertCell(0).innerHTML=e.eid;
-r.insertCell(1).innerHTML=e.name;
-r.insertCell(2).innerHTML=e.days;
-r.insertCell(3).innerHTML=e.basic;
-r.insertCell(4).innerHTML=e.gross;
-r.insertCell(5).innerHTML=e.net;
-r.insertCell(6).innerHTML=
-"<button onclick='editEmp("+i+")'>Edit</button> "+
-"<button onclick='deleteEmp("+i+")'>Delete</button>";
-
-});
-}
-
+  window.onload = liveCalc;
 </script>
 </body>
 </html>
-<footer style="text-align:center;margin-top:20px;">
-© 2026 RamTools. All Rights Reserved.
-<br>
-<a href="//www.dmca.com/Protection/Status.aspx?ID=f2802132-cf89-47ad-a9d9-43c36d5ed3b1" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca_protected_sml_120l.png?ID=f2802132-cf89-47ad-a9d9-43c36d5ed3b1"  alt="DMCA.com Protection Status" /></a>  <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script>

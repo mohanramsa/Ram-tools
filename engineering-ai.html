@@ -1,396 +1,249 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>RamTools Engineering AI</title>
-
-<style>
-body { font-family:Arial; background:#f4f4f4; }
-
-#chatbox {
-width:600px;
-height:500px;
-border:1px solid #ccc;
-overflow-y:scroll;
-padding:10px;
-background:white;
-margin:auto;
-}
-
-.user { color:blue; margin:5px; }
-.bot { color:green; margin:5px; }
-
-input { width:400px; padding:10px; }
-button { padding:10px; }
-
-#list {
-width:600px;
-background:white;
-border:1px solid #ccc;
-padding:10px;
-margin:auto;
-margin-top:10px;
-}
-
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Electrical Formula Generator | RamTools</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .ai-container { max-width: 800px; margin: 0 auto; }
+    .prompt-box { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: var(--shadow); }
+    .prompt-box textarea { width:100%; min-height:100px; resize:vertical; }
+    .example-chips { display:flex; flex-wrap:wrap; gap:0.5rem; margin:1rem 0; }
+    .chip { padding:0.4rem 0.9rem; background:#e8eaf6; color:var(--primary); border-radius:100px; font-size:0.8rem; font-weight:600; cursor:pointer; border:none; font-family:'Poppins',sans-serif; transition:background 0.2s; }
+    .chip:hover { background:var(--primary); color:#fff; }
+    .response-area { background:#fff; border-radius:16px; padding:2rem; box-shadow:var(--shadow); margin-top:1.5rem; display:none; }
+    .response-area.show { display:block; }
+    .typing { display:inline-block; }
+    .typing span { display:inline-block; width:8px; height:8px; background:var(--primary); border-radius:50%; margin:0 2px; animation: bounce 1.2s infinite; }
+    .typing span:nth-child(2) { animation-delay:0.2s; }
+    .typing span:nth-child(3) { animation-delay:0.4s; }
+    @keyframes bounce { 0%,80%,100%{transform:scale(0)} 40%{transform:scale(1)} }
+    .formula-highlight { background:#1a237e; color:#ffca28; font-family:'Courier New',monospace; padding:0.4rem 0.8rem; border-radius:6px; display:inline-block; margin:0.3rem 0; font-size:1rem; letter-spacing:0.5px; }
+    .response-section h4 { color:var(--primary); font-size:1rem; margin:1rem 0 0.4rem; }
+    .response-section p { font-size:0.9rem; line-height:1.7; color:#333; }
+    .response-section ul { margin:0.5rem 0 0.5rem 1.2rem; font-size:0.9rem; color:#333; line-height:1.8; }
+    .history-item { background:#f5f7ff; border-radius:10px; padding:1rem; margin-top:0.8rem; border-left:3px solid var(--accent); font-size:0.85rem; color:var(--muted); cursor:pointer; }
+    .history-item:hover { background:#e8eaf6; }
+    .history-q { font-weight:600; color:var(--primary); margin-bottom:0.2rem; }
+  </style>
 </head>
-
 <body>
 
-<h2 align="center">📐 RamTools Engineering AI</h2>
+<nav>
+  <a class="nav-logo" href="index.html"><div class="nav-logo-icon">R</div><span>RamTools</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="salary.html">SalaryPro</a></li>
+    <li><a href="electrical.html">Electrical Formulas</a></li>
+    <li><a href="engineering-ai.html" class="active">AI Formula Generator</a></li>
+    <li><a href="electrical-quiz.html">Electrical Quiz</a></li>
+    <li><a href="blog.html">Spiritual Blog</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
 
-<div id="chatbox"></div>
+<section class="hero" style="padding:2.5rem 1.5rem;">
+  <div class="hero-badge">AI Powered</div>
+  <h1>🤖 AI <span>Formula Generator</span></h1>
+  <p>Describe your electrical problem in plain English and get the right formula / answers instantly.</p>
+</section>
 
-<center>
-<input type="text" id="input" placeholder="Type formula name like Ohms Law">
-<button onclick="reply()">Ask</button>
-</center>
+<div class="section">
+  <div class="ai-container">
 
-<div id="list">
-<b>Available Formulas Stored in RamTools AI:</b><br><br>
+    <div class="prompt-box">
+      <div class="form-group">
+        <label style="font-size:1rem; color:var(--primary); font-weight:700;">💬 Describe Your Problem (Ask Below available questions only)</label>
+        <textarea id="promptInput" placeholder="e.g. How do I calculate the current flowing through a 10 ohm resistor with 5V applied?"></textarea>
+      </div>
 
-Type only below names to get answer:<br><br>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:0.5rem;">Ask:</p>
+      <div class="example-chips">
+        <button class="chip" onclick="useExample(this)">How to calculate power in a circuit?</button>
+        <button class="chip" onclick="useExample(this)">What is the formula for motor speed?</button>
+        <button class="chip" onclick="useExample(this)">How to find impedance in AC circuit?</button>
+        <button class="chip" onclick="useExample(this)">Transformer turns ratio formula?</button>
+        <button class="chip" onclick="useExample(this)">How to calculate resistance in parallel?</button>
+        <button class="chip" onclick="useExample(this)">What is voltage drop formula?</button>
+      </div>
 
-• Gauss Law<br>
-• Ohms Law<br>
-• Kirchhoff Current Law<br>
-• Kirchhoff Voltage Law<br>
-• Coulomb Law<br>
-• Transformer EMF<br>
-• Single Phase Power<br>
-• Three Phase Power<br>
-• Motor Slip<br>
-• Torque Equation<br>
-• Efficiency<br>
-• Resonance Frequency<br>
-• Faradays Law<br>
-• Bus Bar Size<br>
-• Star Delta Current<br>
-• Power Factor Correction<br>
-• Transformer Loss<br>
-• Cable Size<br>
-• MCB Selection<br>
-• Voltage Drop<br>
-• Short Circuit Current<br>
-• Earth Pit Resistance<br>
+      <button class="btn btn-primary" style="width:100%; margin-top:0.5rem;" onclick="generateAnswer()" id="genBtn">
+        ✨ Generate Formula & Explanation
+      </button>
+    </div>
 
+    <div class="response-area" id="responseArea">
+      <div id="loadingIndicator" style="text-align:center; padding:1rem; display:none;">
+        <div class="typing"><span></span><span></span><span></span></div>
+        <p style="font-size:0.88rem; color:var(--muted); margin-top:0.5rem;">AI is thinking...</p>
+      </div>
+      <div id="responseContent"></div>
+    </div>
+
+    <div id="historySection" style="margin-top:2rem; display:none;">
+      <h3 style="font-size:1rem; font-weight:700; color:var(--primary); margin-bottom:0.5rem;">📜 Recent Questions</h3>
+      <div id="historyList"></div>
+    </div>
+
+  </div>
 </div>
 
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="disclaimer.html">Disclaimer</a>
+  </div>
+  <p>© 2026 RamTools. All Rights Reserved.</p>
+</footer>
+
 <script>
-
-let formulas = {
-
-"gauss law":{
-formula:"∮E.dA = Q/ε₀",
-units:"E → V/m , Q → Coulomb",
-explanation:"Electric flux through closed surface equals enclosed charge divided by permittivity.",
-derivation:"Derived from Coulomb's law integrating electric field over closed surface.",
-example:"Q=2C\nε₀=8.85×10⁻¹²\nFlux = 2 / 8.85×10⁻¹²"
-},
-"faradays law":{
-formula:"E = -N(dΦ/dt)",
-units:"E → Volt , Φ → Weber",
-explanation:"Induced EMF is proportional to rate of change of magnetic flux.",
-derivation:"From electromagnetic induction principle.",
-example:"N=100 , dΦ/dt=0.02\nE = 100×0.02"
-},
-
-"star delta current":{
-formula:"Istar = Iline / √3",
-units:"Current in Ampere",
-explanation:"In star connection, line current is reduced to 1/√3 of delta current.",
-derivation:"Based on star-delta conversion relation.",
-example:"Iline = 30A\nIstar = 30 / 1.732 = 17.32A"
-},
-"power factor correction":{
-formula:"Qc = P(tanφ1 - tanφ2)",
-units:"Qc in kVAR",
-explanation:"Capacitor kVAR required to improve power factor.",
-derivation:"From reactive power triangle relation.",
-example:"P=10kW PF1=0.7 PF2=0.95"
-},
-"transformer loss":{
-formula:"Total Loss = Iron Loss + Copper Loss",
-units:"Loss in Watt",
-explanation:"Total loss in transformer is sum of core loss and winding loss.",
-derivation:"Energy losses due to hysteresis, eddy current and I²R loss.",
-example:"Iron=200W Copper=300W\nTotal=500W"
-},
-"cable size":{
-formula:"Area = (2×L×I)/(k×Vdrop)",
-units:"Area in mm²",
-explanation:"Cable size depends on load current and allowable voltage drop.",
-derivation:"From voltage drop equation.",
-example:"L=20m I=30A Vdrop=5V k=56"
-},
-"mcb selection":{
-formula:"MCB Rating = 1.25 × Load Current",
-units:"Current in Ampere",
-explanation:"MCB rating should be 25% higher than load current to avoid nuisance tripping.",
-derivation:"Based on safety margin for continuous load.",
-example:"Load Current = 16A\nMCB = 1.25 × 16 = 20A"
-},
-"voltage drop":{
-formula:"Vd = (2 × L × I × R)/1000",
-units:"Voltage in Volt",
-explanation:"Voltage drop occurs due to resistance in cable over distance.",
-derivation:"From Ohm’s law V=IR.",
-example:"L=30m I=20A R=1.83Ω/km"
-},
-"short circuit current":{
-formula:"Isc = V / Z",
-units:"Current in Ampere",
-explanation:"Fault current depends on system voltage and impedance.",
-derivation:"From Ohm’s law under fault condition.",
-example:"V=415V Z=0.5Ω\nIsc=830A"
-},
-"earth pit resistance":{
-formula:"R = ρ / (2πL)",
-units:"Resistance in Ohm",
-explanation:"Earth resistance depends on soil resistivity and electrode length.",
-derivation:"From grounding system resistance formula.",
-example:"ρ=100Ωm L=2m"
-},
-
-
-
-"motor slip":{
-formula:"Slip = (Ns - Nr)/Ns",
-units:"Slip in %",
-explanation:"Slip is difference between synchronous speed and rotor speed.",
-derivation:"From induction motor speed relation.",
-example:"Ns=1500rpm Nr=1450rpm\nSlip=(1500-1450)/1500"
-},
-
-"torque equation":{
-formula:"T = (P×60)/(2πN)",
-units:"Torque in Nm",
-explanation:"Torque produced by rotating machine.",
-derivation:"From mechanical power relation.",
-example:"P=1000W N=1500rpm"
-},
-
-"efficiency":{
-formula:"η = Output/Input ×100",
-units:"Efficiency in %",
-explanation:"Efficiency is ratio of output power to input power.",
-derivation:"Energy conservation principle.",
-example:"Output=900W Input=1000W\nη=90%"
-},
-
-"resonance frequency":{
-formula:"fr = 1/(2π√LC)",
-units:"Frequency in Hz",
-explanation:"Frequency at which inductive reactance equals capacitive reactance.",
-derivation:"XL = XC condition.",
-example:"L=0.5H C=10µF"
-},
-
-
-"ohms law":{
-formula:"V = IR",
-units:"V→Volt , I→Ampere , R→Ohm",
-explanation:"Voltage across conductor is directly proportional to current flowing.",
-derivation:"Obtained experimentally from V-I characteristics.",
-example:"I=5A , R=10Ω\nV = 5×10 = 50V"
-},
-
-"kirchhoff current law":{
-formula:"∑I = 0",
-units:"Current in Ampere",
-explanation:"Sum of incoming currents equals sum of outgoing currents.",
-derivation:"Based on conservation of charge.",
-example:"I1=3A I2=2A\nOutgoing = 5A"
-},
-
-"kirchhoff voltage law":{
-formula:"∑V = 0",
-units:"Voltage in Volt",
-explanation:"Sum of voltages in closed loop equals zero.",
-derivation:"Based on energy conservation.",
-example:"V1=10V V2=5V\nTotal drop=15V"
-},
-
-"coulomb law":{
-formula:"F = kq₁q₂/r²",
-units:"Force in Newton",
-explanation:"Force between two charges depends on magnitude and distance.",
-derivation:"From electrostatic field concept.",
-example:"q1=1C q2=2C r=1m"
-},
-
-"transformer emf":{
-formula:"E = 4.44fNΦ",
-units:"E→Volt",
-explanation:"Induced EMF depends on frequency, turns and flux.",
-derivation:"From Faraday’s law of electromagnetic induction.",
-example:"f=50Hz N=100 Φ=0.02"
-},
-
-"bus bar size":{
-formula:"Area = I / J",
-units:"Area → mm² , I → Current(A) , J → Current Density (A/mm²)",
-explanation:"Bus bar size depends on allowable current density of conductor material.",
-derivation:"Area required is directly proportional to current and inversely proportional to current density.",
-example:"I = 400A\nJ = 1.5 A/mm²\nArea = 400 / 1.5 = 266 mm²"
-},
-
-"single phase power":{
-formula:"P = VIcosφ",
-units:"Power in Watt",
-explanation:"Power in single phase AC system.",
-derivation:"From AC power relation.",
-example:"V=230 I=10 PF=0.8"
-},
-
-"three phase power":{
-formula:"P = √3VIcosφ",
-units:"Power in Watt",
-explanation:"Total power in balanced 3 phase system.",
-derivation:"Sum of power in all three phases.",
-example:"V=415 I=10 PF=0.8"
-}
-
-
+const knowledgeBase = {
+  "power": {
+    formula: "P = V × I",
+    alt: ["P = I² × R", "P = V² / R"],
+    explanation: "Electric power is the rate at which electrical energy is transferred. P represents Power in Watts (W), V is Voltage in Volts, I is Current in Amperes, and R is Resistance in Ohms.",
+    example: "If V = 230V and I = 5A → P = 230 × 5 = 1150 W (1.15 kW)",
+    variables: ["P = Power (Watts)", "V = Voltage (Volts)", "I = Current (Amperes)", "R = Resistance (Ohms)"]
+  },
+  "ohm": {
+    formula: "V = I × R",
+    alt: ["I = V / R", "R = V / I"],
+    explanation: "Ohm's Law states that voltage across a conductor is directly proportional to the current flowing through it. This is the most fundamental formula in electrical engineering.",
+    example: "If I = 2A and R = 10Ω → V = 2 × 10 = 20V",
+    variables: ["V = Voltage (Volts)", "I = Current (Amperes)", "R = Resistance (Ohms)"]
+  },
+  "motor": {
+    formula: "Ns = 120f / P",
+    alt: ["s = (Ns - Nr) / Ns"],
+    explanation: "Synchronous speed of an AC motor depends on supply frequency and number of poles. Actual rotor speed is slightly less (slip).",
+    example: "For f = 50Hz and P = 4 poles → Ns = 120×50/4 = 1500 RPM",
+    variables: ["Ns = Synchronous Speed (RPM)", "f = Frequency (Hz)", "P = Number of Poles", "s = Slip (dimensionless)"]
+  },
+  "impedance": {
+    formula: "Z = √(R² + (XL - Xc)²)",
+    alt: ["XL = 2πfL", "Xc = 1 / (2πfC)"],
+    explanation: "Impedance is the total opposition to AC current flow. It combines resistance (R) with inductive and capacitive reactance. Measured in Ohms.",
+    example: "If R = 3Ω, XL = 7Ω, Xc = 3Ω → Z = √(9 + 16) = 5Ω",
+    variables: ["Z = Impedance (Ohms)", "R = Resistance (Ohms)", "XL = Inductive Reactance", "Xc = Capacitive Reactance"]
+  },
+  "transformer": {
+    formula: "N1/N2 = V1/V2 = I2/I1",
+    alt: ["E = 4.44 × f × N × Φm"],
+    explanation: "Transformer turns ratio relates primary and secondary voltages and currents. A step-up transformer has N2 > N1 (V2 > V1). A step-down has N2 < N1.",
+    example: "If N1 = 100, N2 = 200, V1 = 230V → V2 = 230 × (200/100) = 460V",
+    variables: ["N1, N2 = Primary/Secondary Turns", "V1, V2 = Primary/Secondary Voltages", "I1, I2 = Primary/Secondary Currents"]
+  },
+  "parallel": {
+    formula: "1/R_total = 1/R1 + 1/R2 + 1/R3",
+    alt: ["R = (R1 × R2) / (R1 + R2)  (for 2 resistors)"],
+    explanation: "In a parallel circuit, the total resistance is always less than the smallest individual resistance. All components share the same voltage.",
+    example: "R1 = 6Ω, R2 = 3Ω → R = (6×3)/(6+3) = 18/9 = 2Ω",
+    variables: ["R_total = Total resistance (Ohms)", "R1, R2... = Individual resistances (Ohms)"]
+  },
+  "voltage drop": {
+    formula: "Vd = I × R",
+    alt: ["Vd = I × ρ × (2L/A)"],
+    explanation: "Voltage drop is the decrease in voltage along a conductor due to its resistance. For cable runs, use the resistivity formula with conductor length and cross-section.",
+    example: "For I = 10A, cable R = 0.5Ω → Vd = 10 × 0.5 = 5V",
+    variables: ["Vd = Voltage Drop (Volts)", "I = Current (Amperes)", "R = Resistance (Ohms)", "ρ = Resistivity", "L = Length (m)", "A = Cross-section (m²)"]
+  }
 };
 
-function reply(){
-
-let input=document.getElementById("input").value.toLowerCase();
-let chat=document.getElementById("chatbox");
-
-chat.innerHTML += "<div class='user'>You: "+input+"</div>";
-
-for(let key in formulas){
-
-if(input.includes(key)){
-autoCalc(key);
-let data=formulas[key];
-
-chat.innerHTML += "<div class='bot'><b>Formula:</b> "+data.formula+"</div>";
-chat.innerHTML += "<div class='bot'><b>Units:</b> "+data.units+"</div>";
-chat.innerHTML += "<div class='bot'><b>Explanation:</b> "+data.explanation+"</div>";
-chat.innerHTML += "<div class='bot'><b>Derivation:</b> "+data.derivation+"</div>";
-chat.innerHTML += "<div class='bot'><b>Example:</b><br>"+data.example+"</div>";
-
-document.getElementById("input").value="";
-chat.scrollTop = chat.scrollHeight;
-return;
+function matchKnowledge(query) {
+  const q = query.toLowerCase();
+  if (q.includes('power') || q.includes('watt')) return knowledgeBase['power'];
+  if (q.includes('ohm') || q.includes('current') || q.includes('voltage') || q.includes('resistance') && !q.includes('parallel')) return knowledgeBase['ohm'];
+  if (q.includes('motor') || q.includes('speed') || q.includes('rpm') || q.includes('slip')) return knowledgeBase['motor'];
+  if (q.includes('impedance') || q.includes('reactance') || q.includes('ac circuit')) return knowledgeBase['impedance'];
+  if (q.includes('transformer') || q.includes('turns ratio')) return knowledgeBase['transformer'];
+  if (q.includes('parallel')) return knowledgeBase['parallel'];
+  if (q.includes('voltage drop') || q.includes('cable') || q.includes('drop')) return knowledgeBase['voltage drop'];
+  return null;
 }
 
+let history = [];
+
+function useExample(btn) {
+  document.getElementById('promptInput').value = btn.textContent;
 }
 
-chat.innerHTML += "<div class='bot'>Please type formula name from list below</div>";
-document.getElementById("input").value="";
-chat.scrollTop = chat.scrollHeight;
+function generateAnswer() {
+  const query = document.getElementById('promptInput').value.trim();
+  if (!query) {
+    alert('Please enter a question first!');
+    return;
+  }
 
+  const responseArea = document.getElementById('responseArea');
+  const loader = document.getElementById('loadingIndicator');
+  const content = document.getElementById('responseContent');
+
+  responseArea.classList.add('show');
+  loader.style.display = 'block';
+  content.innerHTML = '';
+
+  setTimeout(() => {
+    loader.style.display = 'none';
+    const data = matchKnowledge(query);
+
+    if (data) {
+      content.innerHTML = `
+        <div class="response-section">
+          <h4>📐 Primary Formula</h4>
+          <div class="formula-highlight">${data.formula}</div>
+          ${data.alt.map(f => `<div class="formula-highlight" style="background:#283593;">${f}</div>`).join(' ')}
+          
+          <h4>📖 Explanation</h4>
+          <p>${data.explanation}</p>
+          
+          <h4>📌 Variables</h4>
+          <ul>${data.variables.map(v => `<li>${v}</li>`).join('')}</ul>
+          
+          <h4>✅ Example</h4>
+          <p style="background:#f5f7ff; padding:0.8rem 1rem; border-radius:8px; font-family:'Courier New',monospace; font-size:0.88rem;">${data.example}</p>
+          
+          <p style="margin-top:1rem;"><a href="electrical.html" style="color:var(--accent); font-weight:600;">View all related formulas →</a></p>
+        </div>
+      `;
+    } else {
+      content.innerHTML = `
+        <div class="response-section">
+          <h4>🔍 General Electrical Guidance</h4>
+          <p>Your question: <em>"${query}"</em></p>
+          <p>Based on your query, here are the fundamental formulas most likely to apply:</p>
+          <div class="formula-highlight">V = I × R (Ohm's Law)</div>
+          <div class="formula-highlight" style="background:#283593;">P = V × I (Power)</div>
+          <div class="formula-highlight" style="background:#1565c0;">Z = √(R² + X²) (Impedance)</div>
+          <p style="margin-top:1rem;">For more specific formulas, try our <a href="electrical.html" style="color:var(--accent); font-weight:600;">Electrical Formulas page</a> or rephrase your question using specific terms like "Ohm's Law", "motor speed", "transformer", "impedance", etc.</p>
+        </div>
+      `;
+    }
+
+    // Add to history
+    history.unshift({ q: query, answered: !!data });
+    if (history.length > 5) history.pop();
+    renderHistory();
+  }, 1500);
 }
 
-function autoCalc(name){
-
-let chat=document.getElementById("chatbox");
-
-if(name=="motor slip"){
-let Ns=prompt("Enter Ns RPM");
-let Nr=prompt("Enter Nr RPM");
-let slip=(Ns-Nr)/Ns*100;
-chat.innerHTML += "<div class='bot'>Slip = "+slip.toFixed(2)+" %</div>";
+function renderHistory() {
+  const sec = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  if (history.length === 0) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  list.innerHTML = history.map(h => `
+    <div class="history-item" onclick="document.getElementById('promptInput').value='${h.q.replace(/'/g, "\\'")}'; generateAnswer();">
+      <div class="history-q">Q: ${h.q}</div>
+      <span style="font-size:0.75rem;">${h.answered ? '✅ Answered' : '🔍 General guidance'} • Click to retry</span>
+    </div>
+  `).join('');
 }
 
-else if(name=="torque equation"){
-let P=prompt("Enter Power (W)");
-let N=prompt("Enter Speed RPM");
-let T=(P*60)/(2*3.14*N);
-chat.innerHTML += "<div class='bot'>Torque = "+T.toFixed(2)+" Nm</div>";
-}
-
-else if(name=="efficiency"){
-let out=prompt("Enter Output Power");
-let input=prompt("Enter Input Power");
-let eff=(out/input)*100;
-chat.innerHTML += "<div class='bot'>Efficiency = "+eff.toFixed(2)+" %</div>";
-}
-
-else if(name=="resonance frequency"){
-let L=prompt("Enter L (H)");
-let C=prompt("Enter C (F)");
-let fr=1/(2*3.14*Math.sqrt(L*C));
-chat.innerHTML += "<div class='bot'>Resonant Frequency = "+fr.toFixed(2)+" Hz</div>";
-}
-
-else if(name=="bus bar size"){
-let I=prompt("Enter Current (A)");
-let J=prompt("Enter Current Density");
-let area=I/J;
-chat.innerHTML += "<div class='bot'>Bus Bar Area = "+area.toFixed(2)+" mm²</div>";
-}
-
-else if(name=="mcb selection"){
-let I=prompt("Enter Load Current (A)");
-let mcb=1.25*I;
-chat.innerHTML += "<div class='bot'>Required MCB = "+mcb.toFixed(2)+" A</div>";
-}
-
-else if(name=="cable size"){
-let L=prompt("Enter Length (m)");
-let I=prompt("Enter Current (A)");
-let V=prompt("Enter Voltage Drop (V)");
-let k=prompt("Enter Conductivity (56 for Copper)");
-let area=(2*L*I)/(k*V);
-chat.innerHTML += "<div class='bot'>Cable Size = "+area.toFixed(2)+" mm²</div>";
-}
-
-else if(name=="voltage drop"){
-let L=prompt("Enter Length (m)");
-let I=prompt("Enter Current (A)");
-let R=prompt("Enter Resistance Ω/km");
-let vd=(2*L*I*R)/1000;
-chat.innerHTML += "<div class='bot'>Voltage Drop = "+vd.toFixed(2)+" V</div>";
-}
-
-else if(name=="short circuit current"){
-let V=prompt("Enter Voltage");
-let Z=prompt("Enter Impedance");
-let Isc=V/Z;
-chat.innerHTML += "<div class='bot'>Short Circuit Current = "+Isc.toFixed(2)+" A</div>";
-}
-
-else if(name=="earth pit resistance"){
-let rho=prompt("Enter Soil Resistivity");
-let L=prompt("Enter Electrode Length");
-let R=rho/(2*3.14*L);
-chat.innerHTML += "<div class='bot'>Earth Resistance = "+R.toFixed(2)+" Ω</div>";
-}
-
-else if(name=="single phase power"){
-let V=prompt("Enter Voltage");
-let I=prompt("Enter Current");
-let pf=prompt("Enter Power Factor");
-let P=V*I*pf;
-chat.innerHTML += "<div class='bot'>Power = "+P.toFixed(2)+" Watt</div>";
-}
-
-else if(name=="three phase power"){
-let V=prompt("Enter Voltage");
-let I=prompt("Enter Current");
-let pf=prompt("Enter Power Factor");
-let P=1.732*V*I*pf;
-chat.innerHTML += "<div class='bot'>Power = "+P.toFixed(2)+" Watt</div>";
-}
-
-chat.scrollTop = chat.scrollHeight;
-}
-
-
-
-
-
-
-
+document.getElementById('promptInput').addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') generateAnswer();
+});
 </script>
-
 </body>
 </html>
-<footer style="text-align:center;margin-top:20px;">
-© 2026 RamTools. All Rights Reserved.
-<br>
-<a href="//www.dmca.com/Protection/Status.aspx?ID=f2802132-cf89-47ad-a9d9-43c36d5ed3b1" title="DMCA.com Protection Status" class="dmca-badge"> <img src ="https://images.dmca.com/Badges/dmca_protected_sml_120l.png?ID=f2802132-cf89-47ad-a9d9-43c36d5ed3b1"  alt="DMCA.com Protection Status" /></a>  <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script>

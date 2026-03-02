@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wiring Game | RamTools</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-container { max-width: 680px; margin: 0 auto; }
+    .feedback { font-size:1rem; font-weight:700; min-height:1.5rem; margin:0.8rem 0; }
+    .feedback.correct { color:#2e7d32; }
+    .feedback.wrong { color:#c62828; }
+    .progress-bar { background:#e0e4f0; border-radius:100px; height:8px; margin-bottom:1.5rem; overflow:hidden; }
+    .progress-fill { background:linear-gradient(90deg, var(--primary), var(--accent)); height:100%; border-radius:100px; transition:width 0.4s; }
+    .end-screen { text-align:center; display:none; }
+    .end-screen.show { display:block; }
+    .trophy { font-size:5rem; margin-bottom:1rem; }
+    .score-big { font-size:3rem; font-weight:900; color:var(--primary); }
+    .category-chips { display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; margin-bottom:1.5rem; }
+    .cat-btn { padding:0.45rem 1rem; border-radius:100px; font-size:0.82rem; font-weight:600; border:2px solid var(--border); background:#fff; color:var(--muted); cursor:pointer; font-family:'Poppins',sans-serif; transition:all 0.2s; }
+    .cat-btn:hover, .cat-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+    .hint-btn { background:#fff3e0; color:var(--accent); border:1.5px solid #ffcc80; border-radius:8px; padding:0.4rem 0.9rem; font-size:0.82rem; font-weight:600; cursor:pointer; font-family:'Poppins',sans-serif; }
+    .hint-text { background:#fff3e0; border-radius:8px; padding:0.6rem 1rem; font-size:0.85rem; color:#e65100; margin-top:0.5rem; display:none; }
+    .hint-text.show { display:block; }
+    .question-num { font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><div class="nav-logo-icon">R</div><span>RamTools</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="salary.html">SalaryPro</a></li>
+    <li><a href="electrical.html">Electrical Formulas</a></li>
+    <li><a href="engineering-ai.html">AI Formula Generator</a></li>
+    <li><a href="electrical-quiz.html" class="active">Electrical Quiz</a></li>
+    <li><a href="blog.html">Spiritual Blog</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero" style="padding:2.5rem 1.5rem;">
+  <div class="hero-badge">Interactive Quiz</div>
+  <h1>🎮 Electrical <span>Quiz</span></h1>
+  <p>Test your electrical knowledge. Answer questions, earn points, beat your score!</p>
+</section>
+
+<div class="section">
+  <div class="game-container">
+
+    <div id="startScreen" style="text-align:center;">
+      <h2 style="font-size:1.6rem; font-weight:800; color:var(--primary); margin-bottom:1rem;">⚡ Choose Category</h2>
+      <div class="category-chips">
+        <button class="cat-btn active" onclick="setCategory('all', this)">All Topics</button>
+        <button class="cat-btn" onclick="setCategory('basic', this)">Basic Laws</button>
+        <button class="cat-btn" onclick="setCategory('ac', this)">AC Circuits</button>
+        <button class="cat-btn" onclick="setCategory('motor', this)">Motors</button>
+        <button class="cat-btn" onclick="setCategory('safety', this)">Electrical Safety</button>
+      </div>
+      <button class="btn btn-primary" style="font-size:1rem; padding:0.9rem 2.5rem;" onclick="startGame()">🚀 Start Game</button>
+    </div>
+
+    <div id="gameScreen" style="display:none;">
+      <div class="game-score">
+        Score: <span id="scoreDisplay">0</span> &nbsp;|&nbsp; Q: <span id="qNum">1</span>/10 &nbsp;|&nbsp; ❤️ <span id="lives">3</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+
+      <div class="game-area">
+        <div class="question-num" id="questionNum">Question 1 of 10</div>
+        <div class="game-question" id="questionText">Loading...</div>
+
+        <div class="game-options" id="optionsContainer"></div>
+
+        <div class="feedback" id="feedbackText"></div>
+
+        <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
+          <button class="hint-btn" onclick="showHint()" id="hintBtn">💡 Hint (3 left)</button>
+          <button class="btn btn-dark" id="nextBtn" style="display:none;" onclick="nextQuestion()">Next Question →</button>
+        </div>
+        <div class="hint-text" id="hintText"></div>
+      </div>
+    </div>
+
+    <div id="endScreen" class="end-screen">
+      <div class="trophy" id="trophyEmoji">🏆</div>
+      <div class="score-big" id="finalScore">0/10</div>
+      <p style="font-size:1.1rem; color:var(--muted); margin:0.5rem 0 1.5rem;" id="finalMsg">Good job!</p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="restartGame()">🔄 Play Again</button>
+        <a href="electrical.html" class="btn btn-dark">📚 Study Formulas</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="disclaimer.html">Disclaimer</a>
+  </div>
+  <p>© 2026 RamTools. All Rights Reserved.</p>
+</footer>
+
+<script>
+const allQuestions = [
+  // basic
+  { q:"What is Ohm's Law?", options:["V = I × R","P = V × I","I = P / V","R = P / I"], correct:0, hint:"It relates voltage, current and resistance.", cat:'basic' },
+  { q:"What is the unit of electrical resistance?", options:["Ampere","Volt","Ohm","Watt"], correct:2, hint:"Named after Georg Ohm.", cat:'basic' },
+  { q:"In a series circuit, current is:", options:["Different in each component","Same throughout","Zero","Doubled"], correct:1, hint:"Series means one path for current.", cat:'basic' },
+  { q:"The formula for power is:", options:["P = V / I","P = V × I","P = I + V","P = V - I"], correct:1, hint:"P equals voltage times current.", cat:'basic' },
+  { q:"What does KVL stand for?", options:["Kirchhoff's Voltage Law","Kilowatt Voltage Level","Known Voltage Limit","Kirchhoff's Volt Limit"], correct:0, hint:"Named after Gustav Kirchhoff.", cat:'basic' },
+  { q:"In a parallel circuit, which is the same?", options:["Current","Resistance","Voltage","Power"], correct:2, hint:"All branches connect to same two nodes.", cat:'basic' },
+  { q:"1 kWh equals how many Joules?", options:["1000","3,600","36,00,000","3600"], correct:2, hint:"1 kWh = 1000W × 3600 seconds.", cat:'basic' },
+  // ac
+  { q:"What is the frequency of Indian power supply?", options:["60 Hz","50 Hz","25 Hz","100 Hz"], correct:1, hint:"India follows 50Hz like most of Asia & Europe.", cat:'ac' },
+  { q:"RMS value of a sine wave with peak 100V is:", options:["70.7 V","50 V","141 V","100 V"], correct:0, hint:"RMS = Peak / √2 ≈ 0.707 × Peak", cat:'ac' },
+  { q:"Capacitive reactance formula is:", options:["Xc = 2πfC","Xc = 1/(2πfC)","Xc = 2πfL","Xc = L/(2πf)"], correct:1, hint:"It decreases with increasing frequency.", cat:'ac' },
+  { q:"Power factor = 1 means:", options:["No power consumed","Pure reactive load","Unity / ideal condition","Short circuit"], correct:2, hint:"PF=1 means purely resistive load.", cat:'ac' },
+  { q:"In an AC circuit, impedance Z unit is:", options:["Ohm","Ampere","Watt","Henry"], correct:0, hint:"Same unit as resistance.", cat:'ac' },
+  // motor
+  { q:"Synchronous speed formula for AC motors:", options:["Ns = 120f/P","Ns = P/120f","Ns = f×P","Ns = 2πf/P"], correct:0, hint:"120 × frequency ÷ number of poles.", cat:'motor' },
+  { q:"Slip in an induction motor is:", options:["Always zero","Difference between sync & rotor speed / sync speed","Equal to rotor speed","Greater than 1"], correct:1, hint:"s = (Ns - Nr) / Ns", cat:'motor' },
+  { q:"1 HP (Horsepower) equals:", options:["1000 W","746 W","0.746 W","500 W"], correct:1, hint:"Mechanical power unit conversion.", cat:'motor' },
+  { q:"A 4-pole motor at 50Hz has synchronous speed of:", options:["3000 RPM","1500 RPM","1000 RPM","750 RPM"], correct:1, hint:"Ns = 120×50/4", cat:'motor' },
+  // safety
+  { q:"Which color is used for Earth wire in India?", options:["Red","Yellow","Green","Black"], correct:2, hint:"Earth is always green (or green-yellow).", cat:'safety' },
+  { q:"What does MCB stand for?", options:["Main Circuit Breaker","Miniature Circuit Breaker","Motor Control Board","Master Circuit Bus"], correct:1, hint:"Used for overcurrent protection in homes.", cat:'safety' },
+  { q:"Safe current for human body is below:", options:["100 mA","10 mA","1 mA","50 mA"], correct:1, hint:"Below 10mA is generally considered safe.", cat:'safety' },
+  { q:"Which is used to protect against earth leakage?", options:["MCB","Fuse","ELCB/RCCB","Transformer"], correct:2, hint:"Earth Leakage Circuit Breaker.", cat:'safety' },
+  { q:"Live wire color in India (new standard):", options:["Red","Brown","Black","Blue"], correct:1, hint:"India follows IEC standard now.", cat:'safety' },
+];
+
+let selectedCategory = 'all';
+let gameQuestions = [];
+let currentQ = 0, score = 0, lives = 3, hints = 3;
+let answered = false;
+
+function setCategory(cat, btn) {
+  selectedCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function startGame() {
+  let pool = selectedCategory === 'all' ? allQuestions : allQuestions.filter(q => q.cat === selectedCategory);
+  // shuffle & pick 10
+  pool = [...pool].sort(() => Math.random() - 0.5);
+  gameQuestions = pool.slice(0, Math.min(10, pool.length));
+  currentQ = 0; score = 0; lives = 3; hints = 3; answered = false;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('endScreen').classList.remove('show');
+  document.getElementById('gameScreen').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (currentQ >= gameQuestions.length || lives <= 0) { endGame(); return; }
+  const q = gameQuestions[currentQ];
+  answered = false;
+  document.getElementById('questionNum').textContent = `Question ${currentQ+1} of ${gameQuestions.length}`;
+  document.getElementById('qNum').textContent = currentQ+1;
+  document.getElementById('progressBar').style.width = (currentQ / gameQuestions.length * 100) + '%';
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('feedbackText').textContent = '';
+  document.getElementById('feedbackText').className = 'feedback';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('hintText').classList.remove('show');
+  document.getElementById('hintText').textContent = '';
+  document.getElementById('hintBtn').textContent = `💡 Hint (${hints} left)`;
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'game-btn';
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(i, btn);
+    container.appendChild(btn);
+  });
+}
+
+function checkAnswer(idx, btn) {
+  if (answered) return;
+  answered = true;
+  const q = gameQuestions[currentQ];
+  const btns = document.querySelectorAll('.game-btn');
+  btns[q.correct].classList.add('correct');
+
+  if (idx === q.correct) {
+    btn.classList.add('correct');
+    score += 10;
+    document.getElementById('feedbackText').textContent = '✅ Correct! Well done!';
+    document.getElementById('feedbackText').className = 'feedback correct';
+  } else {
+    btn.classList.add('wrong');
+    lives--;
+    document.getElementById('feedbackText').textContent = `❌ Wrong! Correct answer: "${q.options[q.correct]}"`;
+    document.getElementById('feedbackText').className = 'feedback wrong';
+  }
+
+  document.getElementById('scoreDisplay').textContent = score;
+  document.getElementById('lives').textContent = lives;
+  document.getElementById('nextBtn').style.display = 'inline-block';
+
+  if (lives <= 0) {
+    setTimeout(endGame, 1200);
+  }
+}
+
+function showHint() {
+  if (hints <= 0) { alert('No hints remaining!'); return; }
+  const q = gameQuestions[currentQ];
+  hints--;
+  const el = document.getElementById('hintText');
+  el.textContent = '💡 Hint: ' + q.hint;
+  el.classList.add('show');
+  document.getElementById('hintBtn').textContent = `💡 Hint (${hints} left)`;
+}
+
+function nextQuestion() {
+  currentQ++;
+  loadQuestion();
+}
+
+function endGame() {
+  document.getElementById('gameScreen').style.display = 'none';
+  const endScreen = document.getElementById('endScreen');
+  endScreen.classList.add('show');
+  const total = gameQuestions.length * 10;
+  const pct = score / total;
+  document.getElementById('finalScore').textContent = `${score} / ${total}`;
+  let trophy = '🏆', msg = '';
+  if(pct >= 0.9) { trophy='🥇'; msg='Outstanding! You are an electrical expert!'; }
+  else if(pct >= 0.7) { trophy='🥈'; msg='Great work! You know your circuits well!'; }
+  else if(pct >= 0.5) { trophy='🥉'; msg='Good effort! Keep studying the formulas.'; }
+  else { trophy='📚'; msg='Keep practicing! Check the Electrical Formulas page.'; }
+  document.getElementById('trophyEmoji').textContent = trophy;
+  document.getElementById('finalMsg').textContent = msg;
+}
+
+function restartGame() {
+  document.getElementById('endScreen').classList.remove('show');
+  document.getElementById('startScreen').style.display = 'block';
+}
+</script>
+</body>
+</html>

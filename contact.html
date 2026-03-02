@@ -1,3 +1,107 @@
-<h2>Contact Us</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact | RamTools</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html"><div class="nav-logo-icon">R</div><span>RamTools</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="salary.html">SalaryPro</a></li>
+    <li><a href="electrical.html">Electrical Formulas</a></li>
+    <li><a href="engineering-ai.html">AI Formula Generator</a></li>
+    <li><a href="electrical-quiz.html">Electrical Quiz</a></li>
+    <li><a href="blog.html">Spiritual Blog</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+</nav>
+<section class="hero" style="padding:2.5rem 1.5rem;">
+  <div class="hero-badge">Get In Touch</div>
+  <h1>📬 <span>Contact</span> Us</h1>
+  <p>Have a suggestion, question, or feedback? We'd love to hear from you.</p>
+</section>
+<div class="page-content">
+  <div class="contact-grid">
+    <div>
+      <div style="background:#fff; border-radius:14px; padding:2rem; box-shadow:var(--shadow);">
+        <h2 style="border:none; margin-bottom:1.5rem;">Send a Message</h2>
+        <div class="alert alert-success" id="successAlert">✅ Thank you! Your message has been sent. We'll get back to you soon.</div>
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="name" placeholder=""/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder=""/>
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <select id="subject">
+            <option>General Enquiry</option>
+            <option>Feedback on a Tool</option>
+            <option>Bug Report</option>
+            <option>Feature Request</option>
+            <option>Spiritual Blog</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="message" rows="5" placeholder="Write your message here..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="submitForm()">Send Message ✉️</button>
+      </div>
+    </div>
 
-<p>Email: ramtools123@gmail.com</p>
+    <div class="contact-info">
+      <h3>📍 Contact Information</h3>
+      <p>We are a small team passionate about building free, useful tools. Reach out anytime — we typically respond within 1-2 working days.</p>
+      <div class="contact-detail"><span class="icon">📧</span> ramtools123@gmail.com</div>
+      <div class="contact-detail"><span class="icon">🌐</span> www.ramtools.in</div>
+      <div class="contact-detail"><span class="icon">📍</span> India</div>
+
+      <div style="background:#fff; border-radius:14px; padding:1.5rem; box-shadow:var(--shadow); margin-top:1.5rem;">
+        <h3 style="color:var(--primary); margin-bottom:1rem; font-size:1rem;">🔗 Quick Links</h3>
+        <div style="display:flex; flex-direction:column; gap:0.6rem;">
+          <a href="salary.html" style="color:var(--accent); font-weight:600; font-size:0.88rem;">💼 SalaryPro – Generate Salary Slip</a>
+          <a href="electrical.html" style="color:var(--accent); font-weight:600; font-size:0.88rem;">⚡ Electrical Formulas Reference</a>
+          <a href="engineering-ai.html" style="color:var(--accent); font-weight:600; font-size:0.88rem;">🤖 AI Formula Generator</a>
+          <a href="electrical-quiz.html" style="color:var(--accent); font-weight:600; font-size:0.88rem;">🎮 Electrical Quiz – Take the Quiz</a>
+          <a href="blog.html" style="color:var(--accent); font-weight:600; font-size:0.88rem;">🕉️ Spiritual Blog</a>
+        </div>
+      </div>
+
+      <div style="background:#37ff00; color:white; border-radius:14px; padding:1.5rem; margin-top:1.2rem;">
+        <p style="font-weight:600; margin-bottom:0.3rem;">📣 Have a tool idea?</p>
+        <p style="font-size:0.85rem; opacity:0.85;">We love suggestions! If there's a tool you wish existed, tell us and we might just build it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="disclaimer.html">Disclaimer</a>
+  </div>
+  <p>© 2026 RamTools. All Rights Reserved.</p>
+</footer>
+<script>
+function submitForm() {
+  const n = document.getElementById('name').value;
+  const e = document.getElementById('email').value;
+  const m = document.getElementById('message').value;
+  if (!n || !e || !m) { alert('Please fill in all fields.'); return; }
+  document.getElementById('successAlert').classList.add('show');
+  document.getElementById('name').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('message').value = '';
+  setTimeout(() => document.getElementById('successAlert').classList.remove('show'), 5000);
+}
+</script>
+</body>
+</html>

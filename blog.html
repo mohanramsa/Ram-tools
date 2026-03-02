@@ -1,68 +1,268 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Spiritual Blog</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spiritual Blog | RamTools</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .article-view { display:none; max-width:720px; margin:0 auto; }
+    .article-view.show { display:block; }
+    .blog-list-view { display:block; }
+    .blog-list-view.hide { display:none; }
+    .article-header { margin-bottom:2rem; }
+    .article-header h1 { font-size:1.8rem; font-weight:800; color:var(--primary); line-height:1.3; margin-bottom:0.8rem; }
+    .article-meta { font-size:0.82rem; color:var(--muted); margin-bottom:1rem; }
+    .article-thumb-big { font-size:5rem; text-align:center; margin:1.5rem 0; }
+    .article-body p { font-size:0.95rem; line-height:1.85; color:#333; margin-bottom:1.1rem; font-family:'Merriweather',serif; }
+    .article-body h3 { font-size:1.1rem; font-weight:700; color:var(--primary); margin:1.5rem 0 0.5rem; }
+    .article-body blockquote { border-left:4px solid var(--accent); padding:0.8rem 1.2rem; background:#fff8f0; border-radius:0 8px 8px 0; margin:1rem 0; font-style:italic; color:#555; }
+    .back-btn { display:inline-flex; align-items:center; gap:0.4rem; font-size:0.88rem; font-weight:600; color:var(--primary); cursor:pointer; margin-bottom:1.5rem; background:none; border:none; font-family:'Poppins',sans-serif; }
+    .back-btn:hover { color:var(--accent); }
+    .filter-chips { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:2rem; }
+    .filter-btn { padding:0.4rem 1rem; border-radius:100px; font-size:0.8rem; font-weight:600; border:2px solid var(--border); background:#fff; color:var(--muted); cursor:pointer; font-family:'Poppins',sans-serif; transition:all 0.2s; }
+    .filter-btn:hover, .filter-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+  </style>
 </head>
-
 <body>
 
-<div class="navbar">
-<a href="index.html">Home</a>
-<a href="blog.html">Spiritual Blog</a>
+<nav>
+  <a class="nav-logo" href="index.html"><div class="nav-logo-icon">R</div><span>RamTools</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="salary.html">SalaryPro</a></li>
+    <li><a href="electrical.html">Electrical Formulas</a></li>
+    <li><a href="engineering-ai.html">AI Formula Generator</a></li>
+    <li><a href="electrical-quiz.html">Electrical Quiz</a></li>
+    <li><a href="blog.html" class="active">Spiritual Blog</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero" style="padding:2.5rem 1.5rem;">
+  <div class="hero-badge">Spiritual Wisdom</div>
+  <h1>🕉️ Spiritual <span>Blog</span></h1>
+  <p>Thoughtful articles on spirituality, mindfulness, and life's deeper questions.</p>
+</section>
+
+<div class="section">
+
+  <!-- BLOG LIST -->
+  <div class="blog-list-view" id="blogList">
+    <div class="filter-chips">
+      <button class="filter-btn active" onclick="filterBlogs('all', this)">All</button>
+      <button class="filter-btn" onclick="filterBlogs('mindfulness', this)">Mindfulness</button>
+      <button class="filter-btn" onclick="filterBlogs('devotion', this)">Devotion</button>
+      <button class="filter-btn" onclick="filterBlogs('philosophy', this)">Philosophy</button>
+      <button class="filter-btn" onclick="filterBlogs('yoga', this)">Yoga & Meditation</button>
+    </div>
+
+    <div class="blog-grid" id="blogGrid">
+
+      <div class="blog-card" onclick="showArticle(0)" data-cat="mindfulness">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#e8eaf6,#c5cae9);">🧘</div>
+        <div class="blog-body">
+          <div class="blog-cat">Mindfulness</div>
+          <h3>The Power of Present Moment Awareness</h3>
+          <p>Discover how living in the present can transform your daily life and reduce anxiety and stress.</p>
+          <span class="blog-read">Read Article</span>
+        </div>
+      </div>
+
+      <div class="blog-card" onclick="showArticle(1)" data-cat="devotion">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);">🙏</div>
+        <div class="blog-body">
+          <div class="blog-cat">Devotion</div>
+          <h3>Bhakti: The Path of Devotion and Love</h3>
+          <p>Understanding the ancient path of Bhakti Yoga and how surrendering to the divine can bring peace.</p>
+          <span class="blog-read">Read Article</span>
+        </div>
+      </div>
+
+      <div class="blog-card" onclick="showArticle(2)" data-cat="philosophy">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);">🌿</div>
+        <div class="blog-body">
+          <div class="blog-cat">Philosophy</div>
+          <h3>Karma: Understanding Action and Consequence</h3>
+          <p>A deep dive into the philosophical concept of Karma and how it shapes our journey through life.</p>
+          <span class="blog-read">Read Article</span>
+        </div>
+      </div>
+
+      <div class="blog-card" onclick="showArticle(3)" data-cat="yoga">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7);">🌸</div>
+        <div class="blog-body">
+          <div class="blog-cat">Yoga & Meditation</div>
+          <h3>Morning Meditation: Starting Your Day with Peace</h3>
+          <p>A simple 10-minute morning meditation practice to bring clarity and calm to your entire day.</p>
+          <span class="blog-read">Read Article</span>
+        </div>
+      </div>
+
+      <div class="blog-card" onclick="showArticle(4)" data-cat="philosophy">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#e0f7fa,#b2ebf2);">🌊</div>
+        <div class="blog-body">
+          <div class="blog-cat">Philosophy</div>
+          <h3>The Bhagavad Gita: Timeless Wisdom for Modern Life</h3>
+          <p>Key teachings from the Gita that remain profoundly relevant in today's fast-paced world.</p>
+          <span class="blog-read">Read Article</span>
+        </div>
+      </div>
+
+      <div class="blog-card" onclick="showArticle(5)" data-cat="mindfulness">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#fff8e1,#ffecb3);">☀️</div>
+        <div class="blog-body">
+          <div class="blog-cat">Mindfulness</div>
+          <h3>Finding God in Everyday Moments</h3>
+          <p>How to cultivate spiritual awareness in ordinary daily activities — from cooking to commuting.</p>
+          <span class="blog-read">Read Article</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARTICLE VIEW -->
+  <div class="article-view" id="articleView">
+    <button class="back-btn" onclick="showBlogList()">← Back to Blog</button>
+    <div id="articleContent"></div>
+  </div>
 
 </div>
 
-<div class="container">
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="disclaimer.html">Disclaimer</a>
+  </div>
+  <p>© 2026 RamTools. All Rights Reserved.</p>
+</footer>
 
-<h2>Spiritual Blog</h2>
+<script>
+const articles = [
+  {
+    title: "The Power of Present Moment Awareness",
+    cat: "Mindfulness", emoji: "🧘", date: "January 15, 2026",
+    content: `
+      <p>In our increasingly distracted world, the ability to be truly present has become one of the most valuable — and most rare — human capacities. Ancient wisdom traditions from Buddhism to Advaita Vedanta have long recognized that the present moment is the only place where life actually happens.</p>
+      <h3>What is Present Moment Awareness?</h3>
+      <p>Present moment awareness, or mindfulness, is the practice of anchoring your attention to what is actually happening right now — not what happened yesterday, not what might happen tomorrow, but this very breath, this very moment. It is the art of being a witness to your own experience without judgment.</p>
+      <blockquote>"The present moment is the only moment available to us, and it is the door to all moments." — Thich Nhat Hanh</blockquote>
+      <h3>Why We Escape the Present</h3>
+      <p>The human mind has a remarkable tendency to wander. Research suggests we spend nearly 47% of our waking hours thinking about something other than what we are doing. This "mind wandering" is often associated with unhappiness. We ruminate on past mistakes or worry about future uncertainties, missing the simple beauty of what is.</p>
+      <h3>Simple Practices to Cultivate Presence</h3>
+      <p>You do not need an hour of meditation to cultivate presence. Start small: take three conscious breaths before any meal. Feel the water when you wash your hands. When someone speaks to you, truly listen — without planning what you will say next. These tiny moments of presence accumulate into a more awakened life.</p>
+      <h3>The Spiritual Dimension</h3>
+      <p>In the Indian spiritual tradition, the present moment — "Sat" (existence) — is considered closest to the nature of Brahman (universal consciousness). When we are fully present, we touch something eternal. The mind's chatter quiets, and what remains is a vast, peaceful awareness — our true nature.</p>
+      <p>Begin today. Not tomorrow, not after this task — now. Breathe. Be here. This moment, fully lived, is the spiritual path.</p>
+    `
+  },
+  {
+    title: "Bhakti: The Path of Devotion and Love",
+    cat: "Devotion", emoji: "🙏", date: "January 28, 2026",
+    content: `
+      <p>Among the many paths to spiritual realization described in Hindu philosophy, Bhakti Yoga — the path of devotion — is considered the most accessible and the most tender. It is the path of the heart.</p>
+      <h3>What is Bhakti?</h3>
+      <p>Bhakti means devotion, love, faith — an intense longing for the divine. It is not mere ritual worship but an inner attitude: seeing the sacred in everything, loving the Lord as a friend, parent, child, or beloved. The Bhagavata Purana describes nine forms of Bhakti, from listening to divine stories (Shravana) to complete self-surrender (Atma-nivedana).</p>
+      <blockquote>"Let the devotee of Vishnu be filled with love at the sight of his image, let his voice choke with emotion, let tears flow from his eyes." — Srimad Bhagavatam</blockquote>
+      <h3>Why Bhakti Works</h3>
+      <p>The mind can argue against any philosophy, but it cannot argue against love. When the heart is open in devotion, the ego's walls soften. Pride diminishes. Compassion naturally arises. This is why saints like Mirabai, Tukaram, and Andal — through pure love — attained states of consciousness that lifetimes of intellectual study might not achieve.</p>
+      <h3>Bhakti in Daily Life</h3>
+      <p>Bhakti need not be confined to a puja room. Cooking with love for your family is Bhakti. Caring for a sick person is Bhakti. Singing a devotional song on your commute is Bhakti. When any act is offered to the Divine with awareness and love, it becomes worship.</p>
+      <p>Open your heart a little more today. That opening is the beginning of the path.</p>
+    `
+  },
+  {
+    title: "Karma: Understanding Action and Consequence",
+    cat: "Philosophy", emoji: "🌿", date: "February 5, 2026",
+    content: `
+      <p>Few concepts from Indian philosophy have traveled as far into global consciousness as Karma. Yet its popular understanding — "what goes around comes around" — barely scratches the surface of this profound philosophical teaching.</p>
+      <h3>The True Meaning of Karma</h3>
+      <p>In Sanskrit, Karma simply means "action." But within the philosophical framework, it encompasses the actions we perform, the intentions behind them, and the impressions (Samskaras) they leave in our consciousness. The law of Karma states that every intentional action creates a corresponding result — not as punishment or reward, but as a natural law, like gravity.</p>
+      <h3>Three Types of Karma</h3>
+      <p>Ancient texts describe three forms: Sanchita Karma (accumulated Karma from all past actions, including past lives), Prarabdha Karma (the portion of Sanchita Karma bearing fruit in this lifetime), and Agami Karma (new Karma being created by present actions). Understanding this helps make sense of life's apparent inequalities.</p>
+      <blockquote>"You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions." — Bhagavad Gita 2.47</blockquote>
+      <h3>Karma and Freedom</h3>
+      <p>Importantly, Karma is not fatalism. We always have the freedom of our present action and intention. By acting rightly, selflessly, and with awareness, we can gradually purify our Karmic accumulations and move toward liberation (Moksha). This is the liberating message of the Gita.</p>
+      <p>Each moment is a fresh opportunity to act well, love deeply, and add light to the world.</p>
+    `
+  },
+  {
+    title: "Morning Meditation: Starting Your Day with Peace",
+    cat: "Yoga & Meditation", emoji: "🌸", date: "February 10, 2026",
+    content: `
+      <p>How you begin your morning sets the tone for your entire day. Before the phone notifications, before the news, before the to-do list demands your attention — there is a precious window of stillness. Use it.</p>
+      <h3>A Simple 10-Minute Practice</h3>
+      <p>Sit comfortably, spine erect, eyes closed. Begin by taking five deep breaths — inhaling slowly through the nose, exhaling through the mouth. Let the body settle. Now allow your breathing to return to its natural rhythm and simply observe it. Notice the inhale. Notice the exhale. Notice the space between.</p>
+      <h3>When the Mind Wanders</h3>
+      <p>It will wander. This is not failure — this is the practice. Each time you notice your mind has drifted to plans or memories, gently, without judgment, return your attention to the breath. This act of returning is the meditation. Do it ten times or a thousand times — each return is a small act of spiritual discipline.</p>
+      <blockquote>"Meditation is not about stopping thoughts, but recognizing that you are more than your thoughts and your feelings." — Arianna Huffington</blockquote>
+      <h3>Closing the Practice</h3>
+      <p>After 8-10 minutes, take a moment to set an intention for the day. Not a task, but a quality: "Today I will practice patience" or "Today I will be fully present with those I love." Then gently open your eyes. You are ready.</p>
+      <p>Ten minutes of morning meditation, practiced consistently, can be more transformative than years of occasional retreat. Start tomorrow morning — or better yet, right now.</p>
+    `
+  },
+  {
+    title: "The Bhagavad Gita: Timeless Wisdom for Modern Life",
+    cat: "Philosophy", emoji: "🌊", date: "February 15, 2026",
+    content: `
+      <p>Written thousands of years ago on a battlefield, the Bhagavad Gita addresses a crisis that is fundamentally human: the paralysis that comes when we face difficult duty, moral conflict, and the fear of loss. In that sense, it has never been more relevant.</p>
+      <h3>The Setting</h3>
+      <p>Arjuna, a great warrior, stands between two armies — one side his family, the other his duty. Overwhelmed, he collapses. It is here that Lord Krishna, his charioteer and friend, speaks the 700 verses that form the Gita. The outer battlefield becomes a metaphor for the inner conflict we all face.</p>
+      <h3>Key Teachings for Today</h3>
+      <p>Do your duty without attachment to outcomes. This is perhaps the Gita's most radical and liberating teaching. In a results-obsessed world, Krishna reminds us that we control our actions but not their fruits. Giving your best without clinging to success or dreading failure is a pathway to both excellence and inner peace.</p>
+      <blockquote>"The soul is never born nor dies at any time. It has not come into being, does not come into being, and will not come into being. It is unborn, eternal, ever-existing, and primeval." — Bhagavad Gita 2.20</blockquote>
+      <h3>The Gita on Work</h3>
+      <p>Chapter 3 on Karma Yoga teaches that all work, done with the right spirit and offered to the Divine, is sacred. You don't need to renounce the world to be spiritual — you need to transform your relationship with work, making it an act of service rather than ego-driven striving.</p>
+      <p>Read a few verses each morning. Let them sit with you. The Gita does not give you answers so much as it teaches you to ask better questions.</p>
+    `
+  },
+  {
+    title: "Finding God in Everyday Moments",
+    cat: "Mindfulness", emoji: "☀️", date: "February 20, 2026",
+    content: `
+      <p>Spirituality is often imagined as something that happens in temples, on mountaintops, or in meditation halls. But the great mystics of India have always insisted: the Divine is most accessible in the ordinary.</p>
+      <h3>The Sacred Hidden in the Mundane</h3>
+      <p>When we eat with awareness, we can recognize the extraordinary chain of sunlight, soil, water, and human labor that brought food to our table — and feel gratitude. When we listen to rain, we can hear something vast and beautiful. When we hold a child's hand, we touch love itself. These are not merely metaphors. These are genuine spiritual experiences available to anyone willing to slow down and pay attention.</p>
+      <h3>Brother Lawrence's Practice</h3>
+      <p>A 17th-century French monk named Brother Lawrence practiced what he called "the presence of God" while washing dishes in the monastery kitchen. He found as much peace in scrubbing pots as in formal prayer. His writings remain a treasured spiritual classic across traditions.</p>
+      <blockquote>"We ought not to be weary of doing little things for the love of God, who regards not the greatness of the work, but the love with which it is performed." — Brother Lawrence</blockquote>
+      <h3>A Practice for Today</h3>
+      <p>Choose one ordinary activity today — making tea, folding laundry, walking to the bus stop — and do it with complete, loving attention. Offer it inwardly to the Divine, or to Life itself, or to those you love. Notice what shifts. Spirituality is not something you add to life. It is what life becomes when you are fully present to it.</p>
+    `
+  }
+];
 
-<hr>
+function showArticle(idx) {
+  const a = articles[idx];
+  document.getElementById('blogList').classList.add('hide');
+  const av = document.getElementById('articleView');
+  av.classList.add('show');
+  document.getElementById('articleContent').innerHTML = `
+    <div class="article-header">
+      <div class="blog-cat" style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:0.5rem;">${a.cat}</div>
+      <h1 class="article-header" style="font-size:1.8rem; font-weight:800; color:var(--primary); line-height:1.3; margin-bottom:0.6rem;">${a.title}</h1>
+      <div class="article-meta">📅 ${a.date} &nbsp;|&nbsp; ⏱️ ~4 min read</div>
+    </div>
+    <div class="article-thumb-big">${a.emoji}</div>
+    <div class="article-body">${a.content}</div>
+  `;
+  window.scrollTo({top: 0, behavior:'smooth'});
+}
 
-<h3>1. Peaceful Life After Stress</h3>
-<p>
-Modern life creates stress due to work pressure and other health problems.
-Daily Yoga and meditation helps in calming the mind and gives emotional balance.
-Even 10 minutes of silence can bring inner peace.
-</p>
+function showBlogList() {
+  document.getElementById('blogList').classList.remove('hide');
+  document.getElementById('articleView').classList.remove('show');
+}
 
-<hr>
-
-<h3>2. Power of Mantra </h3>
-<p>
-Chanting mantra daily removes negative thoughts.
-The mantra improves concentration and mental stability.
-Regular chanting brings spiritual energy and peace in life.
-</p>
-
-<hr>
-
-<h3>3. Importance of Silence</h3>
-<p>
-Silence is the best medicine for mental stress.
-Talking less and observing more helps in self-realization.
-Spending some time daily in silence improves awareness.
-</p>
-
-<hr>
-
-<h3>4. Meditation for Anxiety Relief</h3>
-<p>
-Meditation reduces anxiety and improves emotional strength.
-Slow breathing with focus on mind helps reduce tension.
-Meditation helps in living present moment peacefully.
-</p>
-
-<hr>
-
-<h3>5. Spirituality in Daily Life</h3>
-<p>
-Spirituality is not about religion.
-It is about understanding self and living peacefully.
-Daily prayer and meditation help in facing life challenges.
-</p>
-
-</div>
-
+function filterBlogs(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.blog-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'flex' : 'none';
+  });
+}
+</script>
 </body>
 </html>
