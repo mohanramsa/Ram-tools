@@ -227,6 +227,312 @@
     <div class="result" id="mot_res"></div>
   </div>
 
+  <!-- Solar Panel Calculator -->
+  <div class="card" style="border:2px solid #fbbf24;background:linear-gradient(135deg,#fffbeb 0%,#fff 60%);">
+    <div class="card-title" style="color:#d97706;">☀️ Solar Panel System Calculator</div>
+    <div class="card-sub">Calculate number of mono solar panels needed based on system voltage and max load requirement.</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('sol','panels',this)" style="background:#fef3c7;border-color:#fbbf24;color:#92400e;">Panel Count</div>
+      <div class="tab" onclick="switchTab('sol','battery',this)" style="background:#fef3c7;border-color:#fbbf24;color:#92400e;">Battery Bank</div>
+    </div>
+
+    <div class="tab-content active" id="sol-panels">
+      <div class="card-sub">Find the number of solar panels required for your system.</div>
+      <div class="grid g3">
+        <div>
+          <label style="color:#92400e;">System Voltage (VDC)</label>
+          <select id="sol_volt" style="border-color:#fbbf24;">
+            <option value="12">12V DC</option>
+            <option value="24">24V DC</option>
+            <option value="48" selected>48V DC</option>
+          </select>
+        </div>
+        <div>
+          <label style="color:#92400e;">Max Load Requirement (kW)</label>
+          <input id="sol_load" type="number" placeholder="e.g. 3.5" step="0.1" style="border-color:#fbbf24;">
+        </div>
+        <div>
+          <label style="color:#92400e;">Peak Sun Hours / Day (hrs)</label>
+          <input id="sol_sun" type="number" placeholder="e.g. 5" step="0.5" value="5" style="border-color:#fbbf24;">
+          <div style="font-size:0.75rem;color:#6b7280;margin-top:4px">Typical: India 5–6h, Middle East 6–7h, UK 3–4h</div>
+        </div>
+        <div>
+          <label style="color:#92400e;">System Efficiency Factor (%)</label>
+          <input id="sol_eff" type="number" placeholder="e.g. 80" value="80" min="50" max="100" style="border-color:#fbbf24;">
+          <div style="font-size:0.75rem;color:#6b7280;margin-top:4px">Accounts for inverter, wiring, dust losses (typically 75–85%)</div>
+        </div>
+        <div>
+          <label style="color:#92400e;">Daily Usage Hours</label>
+          <input id="sol_hrs" type="number" placeholder="e.g. 8" value="8" step="0.5" style="border-color:#fbbf24;">
+        </div>
+        <div>
+          <label style="color:#92400e;">Panel Wattage (W)</label>
+          <select id="sol_watt" style="border-color:#fbbf24;">
+            <option value="400">400W (Standard Mono)</option>
+            <option value="450">450W (High Power Mono)</option>
+            <option value="500" selected>500W (TOPCon Premium)</option>
+            <option value="550">550W (HJT / N-Type)</option>
+            <option value="600">600W (Bifacial N-Type)</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcSolar()" style="background:#d97706;">☀️ Calculate</button></div>
+      <div class="result" id="sol_res" style="background:#fef3c7;color:#92400e;"></div>
+    </div>
+
+    <div class="tab-content" id="sol-battery">
+      <div class="card-sub">Calculate battery bank size for solar storage.</div>
+      <div class="grid g3">
+        <div>
+          <label style="color:#92400e;">System Voltage (VDC)</label>
+          <select id="solb_volt" style="border-color:#fbbf24;">
+            <option value="12">12V DC</option>
+            <option value="24">24V DC</option>
+            <option value="48" selected>48V DC</option>
+          </select>
+        </div>
+        <div>
+          <label style="color:#92400e;">Daily Energy Needed (kWh)</label>
+          <input id="solb_kwh" type="number" placeholder="e.g. 10" step="0.1" style="border-color:#fbbf24;">
+        </div>
+        <div>
+          <label style="color:#92400e;">Backup Days Required</label>
+          <input id="solb_days" type="number" placeholder="e.g. 1" value="1" step="0.5" style="border-color:#fbbf24;">
+        </div>
+        <div>
+          <label style="color:#92400e;">Depth of Discharge % (DoD)</label>
+          <input id="solb_dod" type="number" placeholder="e.g. 80" value="80" style="border-color:#fbbf24;">
+          <div style="font-size:0.75rem;color:#6b7280;margin-top:4px">Lead-acid: 50% | LiFePO4: 80–90%</div>
+        </div>
+        <div>
+          <label style="color:#92400e;">Battery Type</label>
+          <select id="solb_type" style="border-color:#fbbf24;">
+            <option value="lead">Lead-Acid (12V / 100–200Ah)</option>
+            <option value="li" selected>LiFePO4 (48V / 100Ah)</option>
+            <option value="gel">Gel / AGM (12V)</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcSolarBattery()" style="background:#d97706;">🔋 Calculate Battery Bank</button></div>
+      <div class="result" id="solb_res" style="background:#fef3c7;color:#92400e;"></div>
+    </div>
+
+    <!-- Panel Recommendations -->
+    <div style="margin-top:1.5rem;">
+      <div class="section-label" style="display:flex;align-items:center;gap:8px;">
+        <span style="background:#FF9933;width:12px;height:12px;border-radius:2px;display:inline-block;"></span>
+        <span style="background:#fff;width:12px;height:12px;border-radius:2px;display:inline-block;border:1px solid #ddd;"></span>
+        <span style="background:#138808;width:12px;height:12px;border-radius:2px;display:inline-block;"></span>
+        &nbsp;🇮🇳 INDIAN BRANDS — Top Monocrystalline Panels (2024–2025)
+      </div>
+      <div style="display:grid;gap:0.8rem;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));margin-top:0.6rem;margin-bottom:1.2rem;">
+
+        <div style="background:linear-gradient(135deg,#fff7ed,#fff);border:1.5px solid #fb923c;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#FF9933;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🇮🇳 INDIA</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#c2410c;">🥇 Waaree Energies — Mono PERC</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> WS-540M (Mono PERC Half-Cut)<br>
+            <b>Power:</b> 540W | <b>Efficiency:</b> 21.2%<br>
+            <b>Type:</b> Mono PERC Half-Cut Cell | 144 Cells<br>
+            <b>Voc:</b> 49.6V | <b>Isc:</b> 13.98A<br>
+            <b>Temp Coeff:</b> −0.34%/°C<br>
+            <b>Warranty:</b> 10-Year Product | 27-Year Linear<br>
+            <b>Made in:</b> Surat, Gujarat | <b>Cert:</b> IEC, BIS<br>
+            <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">🏆 India's #1 Solar Exporter</span>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,#f0fdf4,#fff);border:1.5px solid #4ade80;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#138808;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🇮🇳 INDIA</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#15803d;">🥈 Vikram Solar — Eldora Grand</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> VSP6M3-545HB (Bifacial PERC)<br>
+            <b>Power:</b> 545W | <b>Efficiency:</b> 21.0%<br>
+            <b>Type:</b> Mono PERC Bifacial Half-Cut | 144 Cells<br>
+            <b>Voc:</b> 49.8V | <b>Isc:</b> 13.80A<br>
+            <b>Temp Coeff:</b> −0.35%/°C<br>
+            <b>Warranty:</b> 12-Year Product | 30-Year Linear<br>
+            <b>Made in:</b> Kolkata, WB | <b>Cert:</b> IEC, UL, BIS<br>
+            <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">⚡ Bifacial — Extra 10–25% Rear Gain</span>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,#eff6ff,#fff);border:1.5px solid #60a5fa;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#1d4ed8;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🇮🇳 INDIA</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#1d4ed8;">🥉 Adani Solar — Jupiter N-TOPCon</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> AS-6MHZ-540W (N-Type TOPCon)<br>
+            <b>Power:</b> 540W | <b>Efficiency:</b> 21.5%<br>
+            <b>Type:</b> N-Type TOPCon Mono | 132 Half-Cut<br>
+            <b>Voc:</b> 50.2V | <b>Isc:</b> 13.65A<br>
+            <b>Temp Coeff:</b> −0.30%/°C<br>
+            <b>Warranty:</b> 12-Year Product | 30-Year Linear<br>
+            <b>Made in:</b> Mundra, Gujarat | <b>Cert:</b> IEC, ALMM<br>
+            <span style="background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">🆕 N-Type TOPCon — Best Indian Tech 2024</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:0.5rem;">🌍 INTERNATIONAL BRANDS — Premium Monocrystalline (2024–2025)</div>
+      <div style="display:grid;gap:0.8rem;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));margin-top:0.6rem;">
+
+        <div style="background:linear-gradient(135deg,#fdf4ff,#fff);border:1.5px solid #c084fc;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#7c3aed;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🌏 GLOBAL</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#7c3aed;">🥇 Jinko Solar — Tiger Neo N-Type</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> JKM580N-72HL4-V<br>
+            <b>Power:</b> 580W | <b>Efficiency:</b> 22.3%<br>
+            <b>Type:</b> N-Type TOPCon Mono Bifacial | 144 Cells<br>
+            <b>Voc:</b> 52.68V | <b>Isc:</b> 14.06A<br>
+            <b>Temp Coeff:</b> −0.29%/°C<br>
+            <b>Warranty:</b> 12-Year Product | 30-Year Linear<br>
+            <b>Origin:</b> China / Global | <b>Cert:</b> IEC, UL, CE, BIS<br>
+            <span style="background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">🌏 World's #1 Solar Manufacturer</span>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,#fff1f2,#fff);border:1.5px solid #f87171;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#dc2626;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🌏 GLOBAL</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#dc2626;">🥈 LONGi Solar — Hi-MO X6 Explorer</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> LR5-72HIH-565M<br>
+            <b>Power:</b> 565W | <b>Efficiency:</b> 22.0%<br>
+            <b>Type:</b> HPBC Mono | 144 Half-Cut Cells<br>
+            <b>Voc:</b> 52.20V | <b>Isc:</b> 13.72A<br>
+            <b>Temp Coeff:</b> −0.29%/°C<br>
+            <b>Warranty:</b> 12-Year Product | 30-Year Linear<br>
+            <b>Origin:</b> China / India Assembly | <b>Cert:</b> IEC, BIS, CE<br>
+            <span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">🏅 Highest Efficiency HPBC Tech 2024</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:1rem;border-color:#fbbf24;background:#fffbeb;">
+      <b>📐 Solar Panel Count Formula</b>
+      Daily Energy (kWh) = Load (kW) × Usage Hours<br>
+      Required Array (kW) = Daily Energy / (Peak Sun Hours × Efficiency)<br>
+      No. of Panels = Required Array (W) / Panel Wattage — <b>always round up</b><br><br>
+      ⚡ <b>System Sizing Note:</b> 12V for loads up to ~1.5kW | 24V for 1.5–3kW | 48V for 3kW+ loads. Higher voltage = less current = thinner cables.
+    </div>
+  </div>
+
+  <!-- Bolt Size & Torque Calculator -->
+  <div class="card">
+    <div class="card-title">🔩 Bolt Size &amp; Torque Calculator</div>
+    <div class="card-sub">Calculate required tightening torque (N·m) for metric bolts as per Indian Standard (IS 1367 / IS 4218) and UAE/GCC Standard (BS EN ISO 898-1 / ASTM).</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('bt','calc',this)">🔧 Torque Calculator</div>
+      <div class="tab" onclick="switchTab('bt','table',this)">📋 Full Reference Table</div>
+    </div>
+
+    <div class="tab-content active" id="bt-calc">
+      <div class="grid g3">
+        <div>
+          <label>Bolt Size (Metric)</label>
+          <select id="bt_size">
+            <option value="M4">M4</option><option value="M5">M5</option><option value="M6">M6</option>
+            <option value="M8">M8</option><option value="M10" selected>M10</option><option value="M12">M12</option>
+            <option value="M14">M14</option><option value="M16">M16</option><option value="M18">M18</option>
+            <option value="M20">M20</option><option value="M22">M22</option><option value="M24">M24</option>
+            <option value="M27">M27</option><option value="M30">M30</option><option value="M33">M33</option>
+            <option value="M36">M36</option>
+          </select>
+        </div>
+        <div>
+          <label>Bolt Grade / Property Class</label>
+          <select id="bt_grade">
+            <option value="4.6">4.6 — Mild Steel (IS / BS)</option>
+            <option value="8.8" selected>8.8 — High Tensile (most common)</option>
+            <option value="10.9">10.9 — High Strength</option>
+            <option value="12.9">12.9 — Ultra High Strength</option>
+          </select>
+          <div style="font-size:0.75rem;color:#6b7280;margin-top:4px">Grade 8.8 = most widely used in electrical panels, cable trays &amp; structural</div>
+        </div>
+        <div>
+          <label>Lubrication Condition</label>
+          <select id="bt_lube">
+            <option value="dry" selected>Dry (no lubrication) — K=1.0</option>
+            <option value="oiled">Oiled / Machine Oil — K=0.75</option>
+            <option value="zinc">Zinc Plated / Hot-Dip Galvanised — K=0.85</option>
+            <option value="moly">Molykote / Anti-seize Grease — K=0.65</option>
+          </select>
+        </div>
+        <div>
+          <label>Standard / Code Reference</label>
+          <select id="bt_std">
+            <option value="india" selected>🇮🇳 India — IS 1367 / IS 4218 / BIS</option>
+            <option value="uae">🇦🇪 UAE / GCC — BS EN ISO 898-1 / ASTM / DEWA</option>
+            <option value="iso">🌍 International — ISO 898-1 / DIN 931 / EN 14399</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcBoltTorque()">🔩 Calculate Torque</button></div>
+      <div class="result" id="bt_res"></div>
+    </div>
+
+    <div class="tab-content" id="bt-table">
+      <div class="card-sub">Complete torque reference for all standard metric bolt sizes.</div>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <div style="min-width:200px"><label>Bolt Grade</label>
+          <select id="bt_tbl_grade">
+            <option value="4.6">4.6 — Mild Steel</option>
+            <option value="8.8" selected>8.8 — High Tensile</option>
+            <option value="10.9">10.9 — High Strength</option>
+            <option value="12.9">12.9 — Ultra High</option>
+          </select>
+        </div>
+        <div style="min-width:220px"><label>Standard</label>
+          <select id="bt_tbl_std">
+            <option value="india" selected>🇮🇳 India — IS 1367 / IS 4218</option>
+            <option value="uae">🇦🇪 UAE — BS EN ISO 898-1 / ASTM</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;"><button class="btn" onclick="renderBoltTable()">📋 Show Table</button></div>
+      </div>
+      <div id="bt_table_wrap" style="display:none;overflow-x:auto;">
+        <table style="border-collapse:collapse;width:100%;font-size:0.82rem;min-width:700px;">
+          <thead>
+            <tr style="background:var(--purple);color:#fff;">
+              <th style="padding:8px 10px;border:1px solid #7c3aed;text-align:left">Bolt Size</th>
+              <th style="padding:8px 10px;border:1px solid #7c3aed;text-align:center">Pitch (mm)</th>
+              <th style="padding:8px 10px;border:1px solid #7c3aed;text-align:center">Hex Key (mm)</th>
+              <th style="padding:8px 10px;border:1px solid #7c3aed;text-align:center">Spanner (mm)</th>
+              <th style="padding:8px 10px;border:1px solid #7c3aed;text-align:center">Torque Dry (N·m)</th>
+              <th style="padding:8px 10px;border:1px solid #7c3aed;text-align:center">Oiled (N·m)</th>
+              <th style="padding:8px 10px;border:1px solid #7c3aed;text-align:center">Zinc Plated (N·m)</th>
+              <th style="padding:8px 10px;border:1px solid #7c3aed;text-align:center">Standard Ref.</th>
+            </tr>
+          </thead>
+          <tbody id="bt_table_body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:1.2rem;">
+      <b>📐 Bolt Grade &amp; Standard Reference</b>
+      <table style="border-collapse:collapse;width:100%;font-size:0.82rem;margin-top:6px;">
+        <tr style="background:#fde68a;">
+          <th style="padding:5px 8px;text-align:left;border:1px solid #f59e0b">Grade</th>
+          <th style="padding:5px 8px;border:1px solid #f59e0b">Tensile Str.</th>
+          <th style="padding:5px 8px;border:1px solid #f59e0b">Yield Str.</th>
+          <th style="padding:5px 8px;border:1px solid #f59e0b">Material</th>
+          <th style="padding:5px 8px;border:1px solid #f59e0b">Indian Std</th>
+          <th style="padding:5px 8px;border:1px solid #f59e0b">UAE Std</th>
+          <th style="padding:5px 8px;border:1px solid #f59e0b">Typical Use</th>
+        </tr>
+        <tr><td style="padding:5px 8px;border:1px solid #f59e0b;font-weight:700">4.6</td><td style="padding:5px 8px;border:1px solid #f59e0b;text-align:center">400 MPa</td><td style="padding:5px 8px;border:1px solid #f59e0b;text-align:center">240 MPa</td><td style="padding:5px 8px;border:1px solid #f59e0b">Low Carbon Steel</td><td style="padding:5px 8px;border:1px solid #f59e0b">IS 1367 Pt.3</td><td style="padding:5px 8px;border:1px solid #f59e0b">BS EN ISO 898-1</td><td style="padding:5px 8px;border:1px solid #f59e0b">General / Non-structural</td></tr>
+        <tr style="background:#fffbeb"><td style="padding:5px 8px;border:1px solid #f59e0b;font-weight:700;color:#ea580c">8.8 ★</td><td style="padding:5px 8px;border:1px solid #f59e0b;text-align:center">800 MPa</td><td style="padding:5px 8px;border:1px solid #f59e0b;text-align:center">640 MPa</td><td style="padding:5px 8px;border:1px solid #f59e0b">Med. Carbon Steel</td><td style="padding:5px 8px;border:1px solid #f59e0b">IS 1367 / IS 3757</td><td style="padding:5px 8px;border:1px solid #f59e0b">BS EN ISO 898-1 / ASTM A325</td><td style="padding:5px 8px;border:1px solid #f59e0b">Structural, Panel, Cable Tray</td></tr>
+        <tr><td style="padding:5px 8px;border:1px solid #f59e0b;font-weight:700">10.9</td><td style="padding:5px 8px;border:1px solid #f59e0b;text-align:center">1000 MPa</td><td style="padding:5px 8px;border:1px solid #f59e0b;text-align:center">900 MPa</td><td style="padding:5px 8px;border:1px solid #f59e0b">Alloy Steel HT</td><td style="padding:5px 8px;border:1px solid #f59e0b">IS 1367 Pt.3</td><td style="padding:5px 8px;border:1px solid #f59e0b">BS EN ISO 898-1 / ASTM A490</td><td style="padding:5px 8px;border:1px solid #f59e0b">Heavy structural</td></tr>
+        <tr style="background:#fffbeb"><td style="padding:5px 8px;border:1px solid #f59e0b;font-weight:700">12.9</td><td style="padding:5px 8px;border:1px solid #f59e0b;text-align:center">1200 MPa</td><td style="padding:5px 8px;border:1px solid #f59e0b;text-align:center">1080 MPa</td><td style="padding:5px 8px;border:1px solid #f59e0b">Alloy Steel Q&amp;T</td><td style="padding:5px 8px;border:1px solid #f59e0b">IS 1367 Pt.3</td><td style="padding:5px 8px;border:1px solid #f59e0b">DIN 912 / ISO 898-1</td><td style="padding:5px 8px;border:1px solid #f59e0b">Machinery, Vibration</td></tr>
+      </table>
+      <br>
+      🇮🇳 <b>Indian:</b> IS 1367 | IS 4218 | IS 3757 | IS 12427<br>
+      🇦🇪 <b>UAE/GCC:</b> BS EN ISO 898-1 | ASTM A193/A307 | BS EN 14399 | DEWA/ADDC
+    </div>
+  </div>
+
   <!-- Relay Testing Calculator -->
   <div class="card">
     <div class="card-title">🛡️ Relay Trip Time Calculator (Overcurrent)</div>
@@ -1783,6 +2089,210 @@ function calcDist_diagram() {
       </table>
     </div>
   `);
+}
+
+// ===== SOLAR PANEL CALCULATOR =====
+function calcSolar() {
+  const volt = parseFloat(document.getElementById('sol_volt').value);
+  const loadKw = parseFloat(document.getElementById('sol_load').value);
+  const sunHrs = parseFloat(document.getElementById('sol_sun').value);
+  const effPct = parseFloat(document.getElementById('sol_eff').value);
+  const usageHrs = parseFloat(document.getElementById('sol_hrs').value);
+  const panelW = parseFloat(document.getElementById('sol_watt').value);
+  if (!loadKw || !sunHrs || !effPct || !usageHrs) { showRes('sol_res','<span style="color:#dc2626">⚠️ Please fill in all fields.</span>'); return; }
+  const eff = effPct / 100;
+  const dailyEnergyKwh = loadKw * usageHrs;
+  const requiredArrayKw = dailyEnergyKwh / (sunHrs * eff);
+  const vmp = 37;
+  const seriesPanels = Math.max(1, Math.round(volt / vmp));
+  const parallelStrings = Math.ceil((requiredArrayKw * 1000 / panelW) / seriesPanels);
+  const actualPanels = seriesPanels * parallelStrings;
+  const totalArrayKw = (actualPanels * panelW / 1000).toFixed(2);
+  const actualDailyKwh = (actualPanels * panelW / 1000 * sunHrs * eff).toFixed(1);
+  const Imp = (panelW / vmp).toFixed(2);
+  const totalCurrentA = (parallelStrings * parseFloat(Imp)).toFixed(2);
+  const mpptSize = Math.ceil(parseFloat(totalCurrentA) * 1.25 / 10) * 10;
+  const invKw = loadKw * 1.25;
+  const invRec = invKw<=1?'1kW':invKw<=2?'2kW':invKw<=3?'3kW':invKw<=5?'5kW':invKw<=8?'8kW':'10kW+';
+  showRes('sol_res', `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.8rem;margin-bottom:1rem">
+      <div style="background:#fff;border:1.5px solid #fbbf24;border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase">Panels Needed</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;color:#d97706;font-weight:700;line-height:1">${actualPanels}</div>
+        <div style="font-size:0.72rem;color:#6b7280">${panelW}W Mono Panels</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #fbbf24;border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase">Total Array</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;color:#d97706;font-weight:700;line-height:1">${totalArrayKw}</div>
+        <div style="font-size:0.72rem;color:#6b7280">kW Peak</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #fbbf24;border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase">Daily Energy</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;color:#d97706;font-weight:700;line-height:1">${actualDailyKwh}</div>
+        <div style="font-size:0.72rem;color:#6b7280">kWh / Day</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #fbbf24;border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase">MPPT Controller</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;color:#d97706;font-weight:700;line-height:1">${mpptSize}A</div>
+        <div style="font-size:0.72rem;color:#6b7280">${volt}V MPPT</div>
+      </div>
+    </div>
+    <table style="border-collapse:collapse;width:100%;font-size:0.85rem;margin-bottom:0.8rem">
+      <tr style="background:#fef3c7"><th style="padding:6px 10px;text-align:left;border:1px solid #fbbf24">Parameter</th><th style="padding:6px 10px;border:1px solid #fbbf24">Value</th></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">System Voltage</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${volt}V DC</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Daily Energy Required</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${dailyEnergyKwh.toFixed(2)} kWh</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Required Array Size</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${requiredArrayKw.toFixed(2)} kW</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Panel Configuration</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${seriesPanels}S × ${parallelStrings}P = ${actualPanels} panels</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">String Voltage (approx Vmp)</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${(seriesPanels * vmp).toFixed(0)}V</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Total Array Current (Imp)</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${totalCurrentA} A</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Recommended MPPT Charge Controller</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${mpptSize}A / ${volt}V MPPT</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Recommended Inverter</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${invRec} Inverter (${volt}V input)</td></tr>
+    </table>
+    <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:0.6rem 1rem;border-radius:6px;font-size:0.82rem;color:#78350f">
+      ⚠️ <b>Wiring Note:</b> Use ${volt>=48?'4mm²':'6mm²'} DC cable for array wiring. Install DC disconnect switch and surge arrestor on both PV and battery sides. Add ${Math.ceil(parseFloat(totalArrayKw)*1.25)}A DC fuse per string.
+    </div>
+  `);
+}
+
+function calcSolarBattery() {
+  const volt = parseFloat(document.getElementById('solb_volt').value);
+  const dailyKwh = parseFloat(document.getElementById('solb_kwh').value);
+  const days = parseFloat(document.getElementById('solb_days').value);
+  const dod = parseFloat(document.getElementById('solb_dod').value);
+  const type = document.getElementById('solb_type').value;
+  if (!dailyKwh || !days || !dod) { showRes('solb_res','<span style="color:#dc2626">⚠️ Please fill in all fields.</span>'); return; }
+  const totalEnergyWh = dailyKwh * days * 1000;
+  const battCapacityWh = totalEnergyWh / (dod / 100);
+  const battCapacityAh = battCapacityWh / volt;
+  let recommend;
+  if (type==='li') {
+    const cnt = Math.ceil(battCapacityAh / 100);
+    recommend = `${cnt}× LiFePO4 ${volt}V 100Ah in parallel<br><b>Recommended:</b> Pylontech US3000C, BYD Battery-Box, CATL 48V 100Ah`;
+  } else if (type==='lead') {
+    const ser = volt/12, par = Math.ceil(battCapacityAh/150);
+    recommend = `${ser*par}× 12V 150Ah Lead-Acid (${ser}S × ${par}P)<br><b>Recommended:</b> Exide / Amaron Tubular Deep Cycle`;
+  } else {
+    const ser = volt/12, par = Math.ceil(battCapacityAh/100);
+    recommend = `${ser*par}× 12V 100Ah Gel/AGM (${ser}S × ${par}P)<br><b>Recommended:</b> Victron Energy AGM / VRLA Gel`;
+  }
+  showRes('solb_res', `
+    <div class="res-val" style="color:#d97706;font-size:1.4rem;margin-bottom:0.8rem">🔋 Battery Bank: ${battCapacityAh.toFixed(0)} Ah @ ${volt}V (${(battCapacityWh/1000).toFixed(2)} kWh)</div>
+    <div style="background:#fef3c7;border-left:4px solid #fbbf24;padding:0.7rem 1rem;border-radius:6px;font-size:0.85rem;color:#78350f;margin-bottom:0.7rem">${recommend}</div>
+    <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:0.6rem 1rem;border-radius:6px;font-size:0.82rem;color:#78350f">
+      💡 <b>Tip:</b> LiFePO4 recommended — lighter, 3000+ cycle life, 80–90% DoD vs 50% for lead-acid.
+    </div>
+  `);
+}
+
+// ===== BOLT TORQUE CALCULATOR =====
+const boltData = [
+  {s:'M4', p:0.7, g46:2.5, g88:4.5, g109:6.5, g129:7.5, hex:3, span:7},
+  {s:'M5', p:0.8, g46:5, g88:9, g109:13, g129:15, hex:4, span:8},
+  {s:'M6', p:1.0, g46:8, g88:14, g109:20, g129:24, hex:5, span:10},
+  {s:'M8', p:1.25, g46:20, g88:35, g109:50, g129:58, hex:6, span:13},
+  {s:'M10', p:1.5, g46:40, g88:70, g109:100, g129:115, hex:8, span:17},
+  {s:'M12', p:1.75, g46:68, g88:120, g109:170, g129:200, hex:10, span:19},
+  {s:'M14', p:2.0, g46:110, g88:190, g109:275, g129:320, hex:12, span:22},
+  {s:'M16', p:2.0, g46:165, g88:295, g109:420, g129:490, hex:14, span:24},
+  {s:'M18', p:2.5, g46:230, g88:400, g109:570, g129:670, hex:14, span:27},
+  {s:'M20', p:2.5, g46:320, g88:560, g109:800, g129:940, hex:17, span:30},
+  {s:'M22', p:2.5, g46:430, g88:760, g109:1080, g129:1270, hex:17, span:32},
+  {s:'M24', p:3.0, g46:560, g88:970, g109:1380, g129:1620, hex:19, span:36},
+  {s:'M27', p:3.0, g46:820, g88:1400, g109:2000, g129:2350, hex:19, span:41},
+  {s:'M30', p:3.5, g46:1100, g88:1900, g109:2700, g129:3200, hex:22, span:46},
+  {s:'M33', p:3.5, g46:1500, g88:2600, g109:3700, g129:4350, hex:24, span:50},
+  {s:'M36', p:4.0, g46:1950, g88:3400, g109:4800, g129:5650, hex:27, span:55},
+];
+
+function calcBoltTorque() {
+  const size = document.getElementById('bt_size').value;
+  const grade = document.getElementById('bt_grade').value;
+  const lube = document.getElementById('bt_lube').value;
+  const std = document.getElementById('bt_std').value;
+  const row = boltData.find(r => r.s === size);
+  if (!row) return;
+  const base = grade==='4.6'?row.g46:grade==='8.8'?row.g88:grade==='10.9'?row.g109:row.g129;
+  const kf = lube==='dry'?1.0:lube==='oiled'?0.75:lube==='zinc'?0.85:0.65;
+  const adj = (base*kf).toFixed(1);
+  const mn = (adj*0.9).toFixed(1), mx = (adj*1.1).toFixed(1);
+  const stdRef = std==='india'
+    ? 'IS 1367 (Technical supply conditions) | IS 4218 (ISO metric threads) | IS 3757 (HT friction grip bolts) | BIS Grade marking'
+    : std==='uae'
+    ? 'BS EN ISO 898-1 (mechanical properties) | ASTM A193/A307 | BS EN 14399 (structural bolting) | DEWA/ADDC electrical torque regs'
+    : 'ISO 898-1 | DIN 931/933/934 | EN 14399 (structural bolting)';
+  const gradeLabel = grade==='4.6'?'Mild Steel':grade==='8.8'?'High Tensile':grade==='10.9'?'High Strength':'Ultra High Strength';
+  showRes('bt_res', `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.8rem;margin-bottom:1rem">
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:var(--purple);font-weight:700;text-transform:uppercase">Bolt Size</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;color:var(--purple);font-weight:700;line-height:1">${size}</div>
+        <div style="font-size:0.72rem;color:#6b7280">Pitch: ${row.p} mm</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:var(--purple);font-weight:700;text-transform:uppercase">Grade</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;color:var(--purple);font-weight:700;line-height:1">${grade}</div>
+        <div style="font-size:0.72rem;color:#6b7280">${gradeLabel}</div>
+      </div>
+      <div style="background:#fff;border:2px solid var(--orange);border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#ea580c;font-weight:700;text-transform:uppercase">Torque Required</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;color:#ea580c;font-weight:700;line-height:1">${adj}</div>
+        <div style="font-size:0.72rem;color:#6b7280">N·m (${lube})</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:var(--purple);font-weight:700;text-transform:uppercase">Range (±10%)</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;color:var(--purple);font-weight:700;line-height:1.3">${mn}–${mx}</div>
+        <div style="font-size:0.72rem;color:#6b7280">N·m</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:var(--purple);font-weight:700;text-transform:uppercase">Hex / Allen Key</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;color:var(--purple);font-weight:700;line-height:1">${row.hex}</div>
+        <div style="font-size:0.72rem;color:#6b7280">mm</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:var(--purple);font-weight:700;text-transform:uppercase">Spanner / Wrench</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;color:var(--purple);font-weight:700;line-height:1">${row.span}</div>
+        <div style="font-size:0.72rem;color:#6b7280">mm A/F</div>
+      </div>
+    </div>
+    <table style="border-collapse:collapse;width:100%;font-size:0.82rem;margin-bottom:0.8rem">
+      <tr style="background:#ede9fe"><th style="padding:6px 10px;text-align:left;border:1px solid var(--border)">Parameter</th><th style="padding:6px 10px;border:1px solid var(--border)">Value</th></tr>
+      <tr><td style="padding:5px 10px;border:1px solid var(--border)">Base Torque (Dry)</td><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">${base} N·m</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid var(--border)">Lubrication Factor (K)</td><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">${kf} (${lube})</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid var(--border)">Adjusted Torque</td><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">${adj} N·m</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid var(--border)">Acceptable Range (±10%)</td><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">${mn} – ${mx} N·m</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid var(--border)">Thread Pitch</td><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">${row.p} mm (Coarse)</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid var(--border)">Hex Key (Allen Key)</td><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">${row.hex} mm</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid var(--border)">Spanner / Box Wrench</td><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">${row.span} mm A/F</td></tr>
+    </table>
+    <div style="background:#ede9fe;border-left:4px solid var(--purple);padding:0.6rem 1rem;border-radius:6px;font-size:0.82rem;color:#3730a3;margin-bottom:0.6rem">
+      📋 <b>Standard:</b> ${stdRef}
+    </div>
+    <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:0.6rem 1rem;border-radius:6px;font-size:0.82rem;color:#78350f">
+      ⚠️ <b>Note:</b> Use calibrated torque wrench. Apply in 3 stages: 30% → 70% → 100%. For structural bolts per IS 3757 / BS EN 14399, verify with torque audit after 48 hrs.
+    </div>
+  `);
+}
+
+function renderBoltTable() {
+  const grade = document.getElementById('bt_tbl_grade').value;
+  const std = document.getElementById('bt_tbl_std').value;
+  const stdNote = std==='india'?'IS 1367 / IS 4218':'BS EN ISO 898-1 / ASTM';
+  const rows = boltData.map((r,i) => {
+    const t = grade==='4.6'?r.g46:grade==='8.8'?r.g88:grade==='10.9'?r.g109:r.g129;
+    const bg = i%2===0?'#fff':'#f5f3ff';
+    return `<tr style="background:${bg}">
+      <td style="padding:6px 10px;border:1px solid var(--border);font-weight:700;color:var(--purple)">${r.s}</td>
+      <td style="padding:6px 10px;border:1px solid var(--border);text-align:center">${r.p}</td>
+      <td style="padding:6px 10px;border:1px solid var(--border);text-align:center">${r.hex}</td>
+      <td style="padding:6px 10px;border:1px solid var(--border);text-align:center">${r.span}</td>
+      <td style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-weight:700;color:#ea580c">${t}</td>
+      <td style="padding:6px 10px;border:1px solid var(--border);text-align:center">${(t*0.75).toFixed(0)}</td>
+      <td style="padding:6px 10px;border:1px solid var(--border);text-align:center">${(t*0.85).toFixed(0)}</td>
+      <td style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-size:0.75rem;color:#6b7280">${stdNote}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('bt_table_body').innerHTML = rows;
+  document.getElementById('bt_table_wrap').style.display = 'block';
 }
 
 // Tab switch
