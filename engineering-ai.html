@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9NWVZHYXLH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9NWVZHYXLH');
+</script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Electrical Formula Generator | RamTools</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .ai-container { max-width: 800px; margin: 0 auto; }
+    .prompt-box { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: var(--shadow); }
+    .prompt-box textarea { width:100%; min-height:100px; resize:vertical; }
+    .example-chips { display:flex; flex-wrap:wrap; gap:0.5rem; margin:1rem 0; }
+    .chip { padding:0.4rem 0.9rem; background:#e8eaf6; color:var(--primary); border-radius:100px; font-size:0.8rem; font-weight:600; cursor:pointer; border:none; font-family:'Poppins',sans-serif; transition:background 0.2s; }
+    .chip:hover { background:var(--primary); color:#fff; }
+    .response-area { background:#fff; border-radius:16px; padding:2rem; box-shadow:var(--shadow); margin-top:1.5rem; display:none; }
+    .response-area.show { display:block; }
+    .typing { display:inline-block; }
+    .typing span { display:inline-block; width:8px; height:8px; background:var(--primary); border-radius:50%; margin:0 2px; animation: bounce 1.2s infinite; }
+    .typing span:nth-child(2) { animation-delay:0.2s; }
+    .typing span:nth-child(3) { animation-delay:0.4s; }
+    @keyframes bounce { 0%,80%,100%{transform:scale(0)} 40%{transform:scale(1)} }
+    .formula-highlight { background:#1a237e; color:#ffca28; font-family:'Courier New',monospace; padding:0.4rem 0.8rem; border-radius:6px; display:inline-block; margin:0.3rem 0; font-size:1rem; letter-spacing:0.5px; }
+    .response-section h4 { color:var(--primary); font-size:1rem; margin:1rem 0 0.4rem; }
+    .response-section p { font-size:0.9rem; line-height:1.7; color:#333; }
+    .response-section ul { margin:0.5rem 0 0.5rem 1.2rem; font-size:0.9rem; color:#333; line-height:1.8; }
+    .history-item { background:#f5f7ff; border-radius:10px; padding:1rem; margin-top:0.8rem; border-left:3px solid var(--accent); font-size:0.85rem; color:var(--muted); cursor:pointer; }
+    .history-item:hover { background:#e8eaf6; }
+    .history-q { font-weight:600; color:var(--primary); margin-bottom:0.2rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><div class="nav-logo-icon">R</div><span>RamTools</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="salary.html">SalaryPro</a></li>
+    <li><a href="electrical.html">Electrical Formulas</a></li>
+    <li><a href="engineering-ai.html" class="active">AI Formula Generator</a></li>
+    <li><a href="electrical-quiz.html">Electrical Quiz</a></li>
+    <li><a href="blog.html">Spiritual Blog</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero" style="padding:2.5rem 1.5rem;">
+  <div class="hero-badge">AI Powered</div>
+  <h1>🤖 AI <span>Formula Generator</span></h1>
+  <p>Describe your electrical problem in plain English and get the right formula / answers instantly.</p>
+</section>
+
+<div class="section">
+  <div class="ai-container">
+
+    <div class="prompt-box">
+      <div class="form-group">
+        <label style="font-size:1rem; color:var(--primary); font-weight:700;">💬 Describe Your Problem (Ask Below available questions only)</label>
+        <textarea id="promptInput" placeholder="e.g. How do I calculate the current flowing through a 10 ohm resistor with 5V applied?"></textarea>
+      </div>
+
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:0.5rem;">Ask:</p>
+
+      <!-- Colour legend -->
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.9rem;align-items:center;">
+        <span style="font-size:0.72rem;color:#555;font-weight:600;margin-right:0.2rem;">Categories:</span>
+        <span style="font-size:0.72rem;background:#e8eaf6;color:#283593;border:1px solid #9fa8da;border-radius:20px;padding:2px 10px;font-weight:700;">🔵 Basic Electrical</span>
+        <span style="font-size:0.72rem;background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7;border-radius:20px;padding:2px 10px;font-weight:700;">🟢 Transformer Tests</span>
+        <span style="font-size:0.72rem;background:#e3f2fd;color:#0d47a1;border:1px solid #90caf9;border-radius:20px;padding:2px 10px;font-weight:700;">🔷 Electrical Laws</span>
+        <span style="font-size:0.72rem;background:#fff8e1;color:#e65100;border:1px solid #ffcc02;border-radius:20px;padding:2px 10px;font-weight:700;">🟡 Physics & Science</span>
+      </div>
+
+      <!-- Group 1: Basic Electrical -->
+      <p style="font-size:0.75rem;font-weight:700;color:#283593;margin:0 0 0.4rem;letter-spacing:0.5px;text-transform:uppercase;">⚡ Basic Electrical Formulas</p>
+      <div class="example-chips" style="margin-bottom:0.9rem;">
+        <button class="chip" onclick="useExample(this)" style="background:#e8eaf6;color:#1a237e;border:1.5px solid #9fa8da;">⚡ How to calculate power in a circuit?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e8eaf6;color:#1a237e;border:1.5px solid #9fa8da;">🔄 What is the formula for motor speed?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e8eaf6;color:#1a237e;border:1.5px solid #9fa8da;">〰️ How to find impedance in AC circuit?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e8eaf6;color:#1a237e;border:1.5px solid #9fa8da;">🔁 Transformer turns ratio formula?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e8eaf6;color:#1a237e;border:1.5px solid #9fa8da;">🔀 How to calculate resistance in parallel?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e8eaf6;color:#1a237e;border:1.5px solid #9fa8da;">📉 What is voltage drop formula?</button>
+      </div>
+
+      <!-- Group 2: Transformer Tests -->
+      <p style="font-size:0.75rem;font-weight:700;color:#1b5e20;margin:0 0 0.4rem;letter-spacing:0.5px;text-transform:uppercase;">🔧 Transformer Field Tests</p>
+      <div class="example-chips" style="margin-bottom:0.9rem;">
+        <button class="chip" onclick="useExample(this)" style="background:#e8f5e9;color:#1b5e20;border:1.5px solid #a5d6a7;">🧲 How to perform magnetising current test on transformer?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e8f5e9;color:#1b5e20;border:1.5px solid #a5d6a7;">⚖️ How to do magnetic balance test in transformer?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e8f5e9;color:#1b5e20;border:1.5px solid #a5d6a7;">🔌 How to perform transformer vector group test for Dyn11?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e8f5e9;color:#1b5e20;border:1.5px solid #a5d6a7;">⚡ How to do hipot testing in cables and busbar?</button>
+      </div>
+
+      <!-- Group 3: Electrical Laws -->
+      <p style="font-size:0.75rem;font-weight:700;color:#0d47a1;margin:0 0 0.4rem;letter-spacing:0.5px;text-transform:uppercase;">📐 Electrical Engineering Laws</p>
+      <div class="example-chips" style="margin-bottom:0.9rem;">
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">🔮 What is Gauss law with formula?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">⚡ What is Faradays law of electromagnetic induction?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">🔁 What is Kirchhoffs current and voltage law?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">🧲 What is Lenz law?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">🌀 What is Tesla law?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">✋ What is Flemings right and left hand rule?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">📊 What is reactive and apparent power formula?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">💡 What is energy consumption formula?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#e3f2fd;color:#0d47a1;border:1.5px solid #90caf9;">🌊 What is Maxwells theory?</button>
+      </div>
+
+      <!-- Group 4: Physics & Science -->
+      <p style="font-size:0.75rem;font-weight:700;color:#e65100;margin:0 0 0.4rem;letter-spacing:0.5px;text-transform:uppercase;">⚛️ Physics & Science</p>
+      <div class="example-chips" style="margin-bottom:1rem;">
+        <button class="chip" onclick="useExample(this)" style="background:#fff8e1;color:#e65100;border:1.5px solid #ffcc02;">⚛️ What is Einstein law E=mc2?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#fff8e1;color:#e65100;border:1.5px solid #ffcc02;">🌌 What is Schrodinger Equation quantum mechanics?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#fff8e1;color:#e65100;border:1.5px solid #ffcc02;">🌡️ What is thermodynamic law and entropy?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#fff8e1;color:#e65100;border:1.5px solid #ffcc02;">🍎 What is Newtons second law?</button>
+        <button class="chip" onclick="useExample(this)" style="background:#fff8e1;color:#e65100;border:1.5px solid #ffcc02;">🔬 What is Heisenberg uncertainty principle?</button>
+      </div>
+
+      <!-- Animated hint banner -->
+      <div id="clickHint" style="background:linear-gradient(135deg,#1a237e,#283593);color:#fff;border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.7rem;display:flex;align-items:center;gap:0.7rem;font-size:0.85rem;font-weight:600;box-shadow:0 3px 12px rgba(26,35,126,0.25);">
+        <span style="font-size:1.4rem;animation:bounce-arrow 1.2s infinite;">👆</span>
+        <span>Click any question above to load it, then press <span style="background:#ffca28;color:#1a237e;border-radius:5px;padding:1px 8px;font-size:0.8rem;font-weight:800;">✨ Generate Formula & Explanation</span> button below!</span>
+      </div>
+      <style>
+        @keyframes bounce-arrow { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        .chip:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.15); transition:all 0.2s; }
+      </style>
+
+      <button class="btn btn-primary" style="width:100%;margin-top:0.5rem;padding:1rem;font-size:1rem;font-weight:700;letter-spacing:0.5px;border-radius:12px;box-shadow:0 4px 15px rgba(26,35,126,0.3);transition:all 0.2s;" onclick="generateAnswer()" id="genBtn">
+        ✨ Generate Formula &amp; Explanation
+      </button>
+    </div>
+
+    <div class="response-area" id="responseArea">
+      <div id="loadingIndicator" style="text-align:center; padding:1rem; display:none;">
+        <div class="typing"><span></span><span></span><span></span></div>
+        <p style="font-size:0.88rem; color:var(--muted); margin-top:0.5rem;">AI is thinking...</p>
+      </div>
+      <div id="responseContent"></div>
+    </div>
+
+    <div id="historySection" style="margin-top:2rem; display:none;">
+      <h3 style="font-size:1rem; font-weight:700; color:var(--primary); margin-bottom:0.5rem;">📜 Recent Questions</h3>
+      <div id="historyList"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="disclaimer.html">Disclaimer</a>
+  </div>
+  <p>© 2026 RamTools. All Rights Reserved.</p>
+</footer>
+
+<script>
+const knowledgeBase = {
+  "power": { formula:"P = V × I", alt:["P = I² × R","P = V² / R"], explanation:"Electric power is the rate at which electrical energy is transferred. P = Power (Watts), V = Voltage (Volts), I = Current (Amperes), R = Resistance (Ohms).", example:"If V = 230V and I = 5A → P = 230 × 5 = 1150 W (1.15 kW)", variables:["P = Power (Watts)","V = Voltage (Volts)","I = Current (Amperes)","R = Resistance (Ohms)"] },
+  "ohm": { formula:"V = I × R", alt:["I = V / R","R = V / I"], explanation:"Ohm's Law states that voltage across a conductor is directly proportional to the current flowing through it.", example:"If I = 2A and R = 10Ω → V = 2 × 10 = 20V", variables:["V = Voltage (Volts)","I = Current (Amperes)","R = Resistance (Ohms)"] },
+  "motor": { formula:"Ns = 120f / P", alt:["s = (Ns - Nr) / Ns"], explanation:"Synchronous speed of an AC motor depends on supply frequency and number of poles. Actual rotor speed is slightly less due to slip.", example:"For f = 50Hz and P = 4 poles → Ns = 120×50/4 = 1500 RPM", variables:["Ns = Synchronous Speed (RPM)","f = Frequency (Hz)","P = Number of Poles","s = Slip (dimensionless)"] },
+  "impedance": { formula:"Z = √(R² + (XL - Xc)²)", alt:["XL = 2πfL","Xc = 1 / (2πfC)"], explanation:"Impedance is the total opposition to AC current flow combining resistance with inductive and capacitive reactance.", example:"If R = 3Ω, XL = 7Ω, Xc = 3Ω → Z = √(9 + 16) = 5Ω", variables:["Z = Impedance (Ohms)","R = Resistance (Ohms)","XL = Inductive Reactance","Xc = Capacitive Reactance"] },
+  "transformer": { formula:"N1/N2 = V1/V2 = I2/I1", alt:["E = 4.44 × f × N × Φm"], explanation:"Transformer turns ratio relates primary and secondary voltages and currents. A step-up transformer has N2 > N1 (V2 > V1).", example:"If N1 = 100, N2 = 200, V1 = 230V → V2 = 230 × (200/100) = 460V", variables:["N1, N2 = Primary/Secondary Turns","V1, V2 = Primary/Secondary Voltages","I1, I2 = Primary/Secondary Currents"] },
+  "parallel": { formula:"1/R_total = 1/R1 + 1/R2 + 1/R3", alt:["R = (R1 × R2) / (R1 + R2)  (for 2 resistors)"], explanation:"In a parallel circuit total resistance is always less than the smallest individual resistance. All components share the same voltage.", example:"R1 = 6Ω, R2 = 3Ω → R = (6×3)/(6+3) = 2Ω", variables:["R_total = Total resistance (Ohms)","R1, R2 = Individual resistances (Ohms)"] },
+  "voltage drop": { formula:"Vd = I × R", alt:["Vd = I × ρ × (2L/A)"], explanation:"Voltage drop is the decrease in voltage along a conductor due to resistance. For cable runs use the resistivity formula with conductor length and cross-section.", example:"For I = 10A, cable R = 0.5Ω → Vd = 10 × 0.5 = 5V", variables:["Vd = Voltage Drop (Volts)","I = Current (Amperes)","R = Resistance (Ohms)","ρ = Resistivity","L = Length (m)","A = Cross-section (m²)"] },
+
+  "magnetising": { type:"special", formula:"I₀ = √(Iw² + Iμ²)", alt:["Iw = I₀ × cosφ₀  (Active component — Iron/Core loss current)","Iμ = I₀ × sinφ₀  (Reactive component — Magnetises the core)","Iμ% = (I₀ / I_rated) × 100  (Magnetising current as % of rated)"], example:"magnetising_table", variables:["I₀ = No-load (magnetising) current (mA)","Iw = Active component — core loss current (in phase with V)","Iμ = Reactive component — magnetises core (90° lagging)","I_rated = Full load rated current of the winding (A)","Iμ% — Typical acceptable range: 0.5% – 2% of rated current","Standard: IEC 60076-1 | IEEE C57.12.90 | IS 2026 | CBIP Manual"] },
+  "magnetic balance": { type:"special", formula:"Magnetic Balance Test — Apply 400V Single Phase across RY, YB, BR sequentially", alt:["Induced voltage ratio: RY : YB : BR should be 100% : 70% : 30% (Dyn11)","Middle limb (Y-phase) gets full voltage, outer limbs share remainder"], example:"magnetic_balance_table", variables:["Apply 400V 1-phase across one pair (RY) — measure induced on YB and BR","Apply 400V across YB — measure RY and BR","Apply 400V across BR — measure RY and YB","Expected ratio for Dyn11: Applied ≈ 100% | Adjacent ≈ 70% | Far ≈ 30%","Unequal distribution → core fault / shorted turns","Standard: IS 2026 | IEC 60076-1 | CBIP Manual"] },
+  "vector group": { type:"special", formula:"Dyn11 → HV: Delta (D) | LV: Star+Neutral (yn) | Phase shift: 11 × 30° = 330° lag", alt:["1U·2N + 2N·1V = 1U·1V  (phasor addition HV side)","1V·2W = 1V·2V  (cross measurement confirms Dyn11)","1W·2W ≤ 1W·2V  (confirms correct phase rotation)","Short Rφ and Yφ (1U, 2U) on test board. Apply 3-phase voltage."], example:"vector_group_table", variables:["1U, 1V, 1W = HV terminals (Primary — Delta side)","2U, 2V, 2W, 2N = LV terminals (Secondary — Star side)","Short link: 1U ↔ 2U (Rφ HV shorted to Rφ LV)","Apply 3-phase voltage on HV (1U, 1V, 1W)","Standard: IEC 60076-1 | IS 2026 Part 4 | BS EN 60076 | CBIP Manual"] },
+  "hipot": { type:"special", formula:"V_test = (2 × V_rated + 1) kV   [IEC 60502 — Factory Test]", alt:["For site/maintenance: V_test = (2E + 1) × 80%","33kV example: (2×33 + 1) × 0.8 = 41.6 kV","For 415V LV Panel: (2×0.415 + 1) = 1.83 kV ≈ 2 kV for 1 minute"], example:"hipot_table", variables:["V_test = Test voltage to be applied (kV)","V_rated = Rated system voltage (kV)","E = Rated voltage in kV","U₀ = Phase-to-earth voltage = V_line / √3","80% factor = Reduction for in-service / site testing","Duration: 1 minute for all cables and busbars","Standard: IEC 60502 | IEC 60060 | IEEE 400 | IS 13573"] },
+
+  "gauss": { type:"law", category:"elec", formula:"Φ_E = Q_enc / ε₀   (Electric) | Φ_B = 0   (Magnetic — no monopoles)", alt:["∮ E · dA = Q_enc / ε₀  (Gauss Electric Law)","∮ B · dA = 0  (Gauss Magnetic Law — no monopoles)","ε₀ = 8.854 × 10⁻¹² F/m  (Permittivity of free space)","Forms one of Maxwell's four fundamental equations"], explanation:"Gauss's Law states that the total electric flux through any closed surface equals the enclosed electric charge divided by the permittivity of free space. The magnetic form states the net magnetic flux through any closed surface is always zero — meaning magnetic monopoles do not exist. It is one of Maxwell's four equations and is fundamental to all electromagnetic field theory. In practical engineering, it is used to calculate electric fields around charged conductors, capacitors, and in cable insulation design.", example:"Point charge Q = 1μC enclosed in a sphere:\nΦ_E = (1×10⁻⁶) / (8.854×10⁻¹²) = 1.13 × 10⁵ N·m²/C\n\nFor a long cable (coaxial) of radius r, charge/length = λ:\nE = λ / (2πε₀r) — used in cable capacitance calculations", variables:["Φ_E = Electric flux (N·m²/C)","Φ_B = Magnetic flux (Weber, Wb)","Q_enc = Total enclosed charge (Coulombs)","ε₀ = Permittivity of free space = 8.854×10⁻¹² F/m","E = Electric field intensity (V/m)","B = Magnetic flux density (Tesla)","dA = Infinitesimal area element of closed surface"] },
+
+  "faraday": { type:"law", category:"elec", formula:"EMF = −N × (dΦ/dt)", alt:["EMF = −dΦ/dt  (for single turn)","Φ = B × A × cosθ  (Magnetic flux in Webers)","EMF = B × L × v  (conductor moving in field)","Faraday's law is the working principle of transformers and generators"], explanation:"Faraday's Law of Electromagnetic Induction states that the induced EMF in a coil is proportional to the rate of change of magnetic flux linking the coil. The negative sign (Lenz's Law) indicates the induced EMF opposes the change that causes it. This is the fundamental operating principle behind transformers, alternators, generators, induction motors, and all electromagnetic energy conversion. The faster the flux changes, the higher the induced EMF — this is why higher frequency transformers can be made smaller.", example:"A coil of N=200 turns, flux changes 0→0.05 Wb in 0.1 sec:\nEMF = −200 × (0.05 / 0.1) = −200 × 0.5 = −100 V\n(100V is induced, negative sign = opposing direction)\n\nGenerator: Conductor L=0.5m moving at v=10m/s in B=0.4T field:\nEMF = B × L × v = 0.4 × 0.5 × 10 = 2V", variables:["EMF = Induced electromotive force (Volts)","N = Number of turns in coil","dΦ/dt = Rate of change of magnetic flux (Wb/s)","Φ = Magnetic flux = B × A × cosθ (Webers)","B = Magnetic flux density (Tesla)","A = Area of coil (m²)","θ = Angle between B and normal to coil","L = Conductor length (m)","v = Velocity of conductor (m/s)"] },
+
+  "kirchhoff": { type:"law", category:"elec", formula:"KCL: ΣI_in = ΣI_out  |  KVL: ΣV = 0  (around closed loop)", alt:["KCL (Current Law): Σ I = 0 at any node — charge conservation","KVL (Voltage Law): V₁ + V₂ + V₃ + ... = 0 around any loop","KVL: V_source = V_R1 + V_R2 + V_R3  (sum of drops = source)","Foundation of all circuit analysis — used in relay, panel, and network design"], explanation:"Kirchhoff's Current Law (KCL): The algebraic sum of all currents entering and leaving any node (junction point) in a circuit is zero. This is based on conservation of charge — no charge accumulates at a node. Kirchhoff's Voltage Law (KVL): The algebraic sum of all voltages around any closed loop in a circuit is zero. This is based on conservation of energy — energy supplied equals energy consumed. These two laws, combined with Ohm's Law, are the foundation of all electrical circuit analysis used daily in panel design, relay coordination, fault calculations, and network analysis.", example:"KCL Example: Node with I₁=5A in, I₂=2A in → I₃ = 7A out\nVerify: 5 + 2 − 7 = 0 ✓\n\nKVL Example: 12V battery, R₁=2Ω, R₂=4Ω in series:\n12 = I×2 + I×4 = 6I → I = 2A\nV_R1 = 4V, V_R2 = 8V → 4+8 = 12V ✓", variables:["KCL: ΣI = 0 at any junction/node","KVL: ΣV = 0 around any closed loop","I_in = Currents entering node (positive)","I_out = Currents leaving node (negative)","V_source = EMF source voltage","V_R = Voltage drop across each element = I × R","Applications: Load flow, fault analysis, relay settings, busbar design"] },
+
+  "lenz": { type:"law", category:"elec", formula:"Induced EMF direction always opposes the change in flux that caused it", alt:["EMF = −N × (dΦ/dt)  — negative sign IS Lenz's Law","Induced current creates B-field opposing original flux change","F = B × I × L  (opposing force on conductor)","Back-EMF in motor: E_back = V_supply − (I × R_armature)"], explanation:"Lenz's Law states that the direction of an induced current is always such as to oppose the change in magnetic flux that produced it. It is a consequence of the conservation of energy — if the induced current aided the change, energy would be created from nothing. In electric motors, this manifests as back-EMF which limits motor current. In transformers, it explains why secondary current opposes primary magnetising effect. In induction motors, rotor currents oppose the rotating field, creating torque. In eddy current brakes, induced currents oppose motion, creating braking force. The negative sign in Faraday's equation is the mathematical expression of Lenz's Law.", example:"Magnet pushed toward coil (flux increasing):\n→ Induced current flows to create opposing N-pole (repels magnet)\n\nMagnet pulled away (flux decreasing):\n→ Induced current reverses to attract magnet (maintain flux)\n\nMotor back-EMF: V=230V, R=2Ω, E_back=210V\nI = (V − E_back)/R = (230−210)/2 = 10A  (limits current!)", variables:["Induced EMF direction = always opposes the change causing it","dΦ/dt > 0 (increasing flux) → induced EMF creates opposing field","dΦ/dt < 0 (decreasing flux) → induced EMF tries to maintain flux","Back-EMF in motors: E_back = V − I×R (reduces input current)","Eddy current loss: P = (B² × f² × t² × V) / ρ","Practical: Transformers, induction motors, eddy current brakes, generators"] },
+
+  "tesla": { type:"law", category:"elec", formula:"B = μ₀ × (N/L) × I   [Magnetic field inside a solenoid]", alt:["1 Tesla = 1 Wb/m² = 1 V·s/m²  (SI unit of magnetic flux density)","F = q × v × B  (Force on moving charge in magnetic field)","F = B × I × L  (Force on current-carrying conductor — motor principle)","τ = N × B × I × A  (Torque on a coil — basis of all rotating machines)","Earth's field ≈ 50 μT | MRI machines = 1.5–3T | Research magnets = 45T"], explanation:"Tesla (T) is the SI unit of magnetic flux density (magnetic field strength), named after Nikola Tesla who invented AC power systems, the induction motor, polyphase transformer, and rotating magnetic field theory. 1 Tesla = 1 Weber per square metre. Tesla's greatest contribution to electrical engineering was proving that AC power could be transmitted over long distances efficiently — the basis of all modern power grids. The Tesla unit is used in transformer core design (flux density typically 1.5–1.7T), motor design, MRI machines, and electromagnetic compatibility (EMC) testing.", example:"Solenoid: N=500 turns, L=0.25m, I=2A\nB = (4π×10⁻⁷) × (500/0.25) × 2\nB = 4π×10⁻⁷ × 2000 × 2 = 5.03 × 10⁻³ T = 5.03 mT\n\nTransformer core flux density:\nB = E / (4.44 × f × N × A)\nFor 11kV, 50Hz, 200 turns, A=0.05m²:\nB = 11000 / (4.44×50×200×0.05) = 11000/2220 = 4.95T  (too high! reduce turns)", variables:["B = Magnetic flux density (Tesla, T)","μ₀ = Permeability of free space = 4π×10⁻⁷ H/m","N = Number of turns","L = Length of solenoid (m)","I = Current (Amperes)","F = Force on conductor = B×I×L (Newtons)","τ = Torque on coil = N×B×I×A (Newton-metres)","1 Tesla = 10,000 Gauss = 1 Wb/m²"] },
+
+  "fleming": { type:"law", category:"elec", formula:"LEFT hand = MOTOR  |  RIGHT hand = GENERATOR", alt:["Left Hand Rule: Thumb=Force, Index=B-field, Middle=Current (FBI)","Right Hand Rule: Thumb=Motion, Index=B-field, Middle=Induced EMF","F = B × I × L × sinθ  (Force on conductor, Newtons)","E = B × L × v × sinθ  (Induced EMF in moving conductor)"], explanation:"Fleming's Left Hand Rule (Motor Rule): Hold the left hand with thumb, index finger, and middle finger mutually perpendicular. Point the index finger in the direction of the magnetic field (B), the middle finger in the direction of conventional current (I) — the thumb points in the direction of the force/motion on the conductor. Memory: FBI — Force(thumb), B-field(index), Current(middle). Used for electric motors, solenoids, and any device where current in a field produces motion. Fleming's Right Hand Rule (Generator Rule): Point the thumb in the direction of conductor motion, index finger in the magnetic field direction — the middle finger gives the direction of induced EMF and current. Used for generators, alternators, and dynamos. These rules are used daily in motor rewinding, generator commissioning, and determining conductor force directions in switchgear.", example:"MOTOR (Left Hand Rule):\nCurrent flows East, B-field points North → Force is UPWARD (thumb)\nF = B×I×L = 0.5T × 10A × 0.3m = 1.5N upward\n\nGENERATOR (Right Hand Rule):\nConductor moves upward, B-field points North → Current flows East\nEMF = B×L×v = 0.5 × 0.3 × 5 = 0.75V induced", variables:["Left Hand Rule = MOTOR action (current → motion)","Right Hand Rule = GENERATOR action (motion → current)","Thumb = Force direction / Motion direction","Index finger = Magnetic field direction (B)","Middle finger = Current (I) / Induced EMF direction","F = B × I × L × sinθ  (Newtons)","E = B × L × v × sinθ  (Volts)","θ = Angle between conductor and magnetic field"] },
+
+  "reactive power": { type:"law", category:"elec", formula:"Q = V × I × sinφ  (VAr)  |  S = V × I  (VA)  |  P = V × I × cosφ  (W)", alt:["S² = P² + Q²  (Power Triangle — Pythagoras)","Power Factor PF = cosφ = P / S  (range 0 to 1)","3-phase: P = √3 × VL × IL × cosφ","3-phase: S = √3 × VL × IL","Q = √(S² − P²)  (reactive power from triangle)","kVAr = kVA × sinφ  |  kW = kVA × cosφ"], explanation:"In AC circuits, three types of power exist. Active Power (P, Watts) is the real power that does useful work — runs motors, heats elements, produces light. Reactive Power (Q, VAr — Volt-Ampere Reactive) is power stored and returned by inductors and capacitors — it does no useful work but causes extra current to flow, increasing conductor losses and requiring larger cables and transformers. Apparent Power (S, VA) is the total power the source must supply — the vector sum of P and Q. Power Factor (cosφ) is the ratio of real to apparent power. Low power factor (e.g. 0.7) means 70% of current does useful work and 30% is wasted reactive current. Power factor correction (capacitor banks) reduces Q, reduces current, and lowers losses. All switchgear, cables, and transformers must be sized on kVA (apparent power), not kW.", example:"3-phase motor: VL=415V, IL=50A, cosφ=0.85, sinφ=0.527\nS = √3 × 415 × 50 = 35,930 VA = 35.93 kVA\nP = 35.93 × 0.85 = 30.54 kW  (actual work done)\nQ = 35.93 × 0.527 = 18.93 kVAr  (reactive — needs PF correction!)\n\nPF correction capacitor to bring PF from 0.7 to 0.95:\nQc = P × (tanφ₁ − tanφ₂) = 30 × (1.02 − 0.33) = 20.7 kVAr", variables:["P = Active (Real) Power (Watts, W or kW)","Q = Reactive Power (VAr or kVAr)","S = Apparent Power (VA or kVA)","φ = Phase angle between voltage and current","cosφ = Power Factor (0 to 1, ideally > 0.9)","sinφ = Reactive factor","S² = P² + Q²  (power triangle)","3-phase: S = √3 × VL × IL"] },
+
+  "energy": { type:"law", category:"elec", formula:"E = P × t   (Watt-hours or Joules)", alt:["E (kWh) = P (kW) × t (hours)  — electricity billing unit","E (Joules) = P (Watts) × t (seconds)","Monthly units = P(kW) × daily hours × 30","Cost = E(kWh) × Tariff (₹/unit or AED/unit)","E = V × I × t × cosφ  (AC energy with power factor)"], explanation:"Energy consumption is the total electrical energy used by a load over time. In electrical engineering, energy is measured in kilowatt-hours (kWh) — also called 'units' on electricity bills. 1 unit = 1 kWh = using 1000W continuously for 1 hour. This is exactly what your energy meter (kWh meter) measures and bills. Energy efficiency is critical in electrical design — inefficient loads waste energy as heat, increasing running costs and carbon footprint. The difference between power (kW — rate of energy use) and energy (kWh — total consumed) is fundamental for load scheduling, energy audits, DG sizing, UPS autonomy calculations, and billing.", example:"AC unit: 1.5kW running 8hrs/day, 30 days:\nE = 1.5 × 8 × 30 = 360 kWh (360 units)\nAt ₹8/unit → Cost = 360 × 8 = ₹2,880/month\nAt AED 0.38/unit → Cost = 360 × 0.38 = AED 136.80/month\n\nDG fuel consumption estimate:\nGenerator 100kVA at 0.8 PF = 80kW output\nFuel = ~0.28 litres/kWh → 80 × 0.28 = 22.4 L/hr running cost", variables:["E = Energy (kWh or Joules)","P = Power (kW or Watts)","t = Time (hours or seconds)","1 kWh = 3.6 × 10⁶ Joules = 1 unit of electricity","cosφ = Power factor (for AC loads, typically 0.8–0.95)","Monthly units = P(kW) × hours/day × days","Cost = E(kWh) × tariff rate"] },
+
+  "maxwell": { type:"law", category:"physics", formula:"∇·E = ρ/ε₀  |  ∇·B = 0  |  ∇×E = −∂B/∂t  |  ∇×B = μ₀J + μ₀ε₀(∂E/∂t)", alt:["Eq.1 — Gauss Electric:    ∮ E·dA = Q_enc/ε₀","Eq.2 — Gauss Magnetic:   ∮ B·dA = 0  (no monopoles)","Eq.3 — Faraday-Maxwell:  ∮ E·dl = −dΦ_B/dt","Eq.4 — Ampere-Maxwell:  ∮ B·dl = μ₀I + μ₀ε₀(dΦ_E/dt)","c = 1/√(μ₀ε₀) = 3×10⁸ m/s  (Maxwell predicted speed of light!)"], explanation:"Maxwell's four equations are the complete mathematical description of classical electromagnetism — one of the greatest achievements in physics. Together they describe: (1) how electric charges create electric fields, (2) that magnetic monopoles do not exist, (3) how a changing magnetic field creates an electric field (Faraday's law), and (4) how electric currents and changing electric fields create magnetic fields (Ampere's law with Maxwell's correction). From these equations, Maxwell predicted that electromagnetic waves must exist and travel at the speed of light — proving that light itself is an electromagnetic wave. This unified electricity, magnetism, and optics into a single theory. All wireless communication (radio, WiFi, 5G), radar, microwave ovens, and optical fibre are based on Maxwell's electromagnetic waves.", example:"From Eq.4, Maxwell predicted EM wave speed:\nc = 1/√(μ₀ × ε₀)\nc = 1/√(4π×10⁻⁷ × 8.854×10⁻¹²)\nc = 1/√(1.113×10⁻¹⁷)\nc = 2.998×10⁸ m/s\n→ Matches measured speed of light — light IS an EM wave!", variables:["E = Electric field vector (V/m)","B = Magnetic field vector (Tesla)","ρ = Electric charge density (C/m³)","J = Electric current density (A/m²)","ε₀ = Permittivity of free space = 8.854×10⁻¹² F/m","μ₀ = Permeability of free space = 4π×10⁻⁷ H/m","c = Speed of light = 3×10⁸ m/s = 1/√(μ₀ε₀)","∇· = Divergence | ∇× = Curl operator"] },
+
+  "einstein": { type:"law", category:"physics", formula:"E = mc²", alt:["c = 2.998×10⁸ m/s  (speed of light)","c² = 8.988×10¹⁶ m²/s²","E_total = γmc²  (relativistic total energy)","E_kinetic = (γ−1)mc²  (relativistic kinetic energy)","γ = 1/√(1 − v²/c²)  (Lorentz factor — approaches ∞ as v→c)","ΔE = Δmc²  (energy from mass deficit in nuclear reactions)"], explanation:"Einstein's mass-energy equivalence (Special Relativity, 1905) states that mass and energy are two forms of the same thing — interchangeable by the factor c². Because c² = 9×10¹⁶, even a tiny mass contains enormous energy. This equation is the foundation of nuclear physics. In nuclear fission (uranium splitting), a small mass deficit (Δm) releases enormous energy E = Δmc² — this powers nuclear reactors and atomic bombs. In nuclear fusion (hydrogen → helium, as in the sun), even more energy per kg is released. In electrical engineering, this principle underpins radiation shielding design for nuclear power plants, PET scan machines used in hospitals, and particle accelerator magnets used in research.", example:"1 gram fully converted to energy:\nE = 0.001 kg × (3×10⁸)² = 0.001 × 9×10¹⁶\nE = 9×10¹³ Joules = 25 million kWh!\n(Enough to power a city of 100,000 homes for a month)\n\nNuclear fission: U-235 fission releases 200 MeV per atom\nΔm per fission ≈ 3.5×10⁻²⁸ kg → ΔE = 3.5×10⁻²⁸ × (3×10⁸)² = 3.15×10⁻¹¹ J", variables:["E = Energy (Joules)","m = Mass (kilograms)","c = Speed of light = 2.998×10⁸ m/s","c² = 8.988×10¹⁶ m²/s²","Δm = Mass defect in nuclear reaction (kg)","ΔE = Δmc²  (energy released from mass deficit)","γ = Lorentz factor = 1/√(1−v²/c²)  (>1 at high speeds)"] },
+
+  "schrodinger": { type:"law", category:"physics", formula:"iℏ × (∂Ψ/∂t) = ĤΨ   [Time-dependent Schrödinger Equation]", alt:["ĤΨ = EΨ  (Time-independent form — stationary states)","Ĥ = −(ℏ²/2m)∇² + V  (Hamiltonian = kinetic + potential energy)","ℏ = h/2π = 1.055×10⁻³⁴ J·s  (Reduced Planck constant)","E_n = −13.6/n² eV  (Hydrogen atom energy levels from solution)","P(x) = |Ψ(x)|²  (Probability of finding particle at position x)"], explanation:"The Schrödinger Equation is the fundamental equation of quantum mechanics, describing how the quantum state (wave function Ψ) of a physical system evolves with time. Unlike classical mechanics where particles have definite positions and momenta, quantum mechanics says particles exist as probability waves — |Ψ|² gives the probability density of finding the particle at a given location. Solving this equation for the hydrogen atom gives exact electron energy levels (−13.6/n² eV) explaining atomic spectra. The equation explains chemical bonding, semiconductor band structure, tunnelling, and all of modern electronics. Transistors, LEDs, laser diodes, solar cells, and MRI machines all rely on quantum mechanical effects described by this equation.", example:"For electron in hydrogen atom — solving ĤΨ = EΨ:\nE_n = −13.6 / n² eV\nn=1 (ground): E = −13.6 eV\nn=2 (first excited): E = −3.4 eV\nn=3: E = −1.51 eV\n\nTransition n=3→2: ΔE = 3.4−1.51 = 1.89 eV\n→ Emits red light at λ = 656 nm (Balmer series)\n→ This is why hydrogen glows red in discharge tubes!", variables:["Ψ (Psi) = Wave function of the quantum system","i = Imaginary unit = √(−1)","ℏ = Reduced Planck constant = 1.055×10⁻³⁴ J·s","Ĥ = Hamiltonian operator (total energy of system)","E = Energy eigenvalue (Joules or eV)","V = Potential energy function","∂Ψ/∂t = Time derivative of wave function","|Ψ|² = Probability density — probability per unit volume"] },
+
+  "thermodynamics": { type:"law", category:"physics", formula:"ΔS = Q_rev / T   (Entropy)  |  ΔU = Q − W   (First Law)", alt:["0th Law: A=B thermal equilibrium and B=C → A=C  (defines temperature)","1st Law: ΔU = Q − W  (energy conservation — cannot create energy)","2nd Law: ΔS_universe ≥ 0  (entropy always increases — irreversibility)","3rd Law: S → 0 as T → 0 K  (perfect order at absolute zero)","Carnot efficiency: η_max = 1 − T_cold/T_hot  (no engine beats this)"], explanation:"The Four Laws of Thermodynamics are the most universal laws in physics — they govern all energy conversion in the universe. The Zeroth Law defines temperature and thermal equilibrium. The First Law states energy cannot be created or destroyed, only converted — a 100kW motor draws more than 100kW of electrical power because some is lost as heat. The Second Law introduces entropy (disorder) — all real processes increase total entropy; heat naturally flows from hot to cold never the reverse; no engine is 100% efficient. The Third Law states entropy approaches zero at absolute zero (−273.15°C), making absolute zero unachievable. In electrical engineering: transformer efficiency losses, motor heat, cable I²R losses, and cooling system design are all governed by thermodynamic laws. The Carnot efficiency sets the theoretical maximum for any heat engine.", example:"Steam turbine generator: T_hot=600°C=873K, T_cold=30°C=303K\nη_max = 1 − 303/873 = 1 − 0.347 = 65.3% maximum!\nNo thermal power plant can exceed this.\n\nEntropy example: 1000J of heat flows at T=500K:\nΔS = Q/T = 1000/500 = 2 J/K  (entropy increases)\n\nTransformer 99% efficient, 1000kVA:\nLosses = 10kW as heat → entropy always increases", variables:["ΔU = Change in internal energy (Joules)","Q = Heat added to system (Joules, positive = heat in)","W = Work done BY system (Joules, positive = work out)","S = Entropy (J/K) — measure of disorder/randomness","ΔS = Q_rev/T  (entropy change for reversible process)","T = Absolute temperature (Kelvin = °C + 273.15)","η_Carnot = 1 − T_cold/T_hot  (maximum possible efficiency)","2nd Law: ΔS_universe ≥ 0  (total entropy never decreases)"] },
+
+  "newton": { type:"law", category:"physics", formula:"F = m × a   (Newton's Second Law)", alt:["a = F / m  (acceleration from force and mass)","F_net = Σ F  (net force = vector sum of all forces)","Impulse: J = F × t = Δp = m × Δv  (change in momentum)","Rotational form: T = J × α  (torque = moment of inertia × angular acceleration)","Work: W = F × d × cosθ  (Joules)","Power: P = F × v = T × ω  (Watts)"], explanation:"Newton's Second Law of Motion states that the net force on an object equals its mass times its acceleration. It is the most used law in mechanical and electromechanical engineering. In electrical engineering, it governs motor dynamics (torque producing acceleration of mechanical load), relay trip forces (force on armature vs spring tension), circuit breaker contact opening speed during fault clearing, and bus bar mechanical stress during short circuit (I²L/r forces). The rotational form T = Jα governs motor starting, generator synchronisation, and flywheel energy storage. Understanding F=ma allows engineers to calculate whether a motor can accelerate a load within acceptable time, and whether relay springs provide sufficient reset force.", example:"Motor starting: Load inertia J=2 kg·m², required acceleration α=10 rad/s²:\nRequired torque T = J × α = 2 × 10 = 20 N·m (minimum motor torque)\n\nRelay armature: F_magnetic=5N, F_spring=2N, m=0.05kg:\nNet F = 5−2 = 3N → a = F/m = 3/0.05 = 60 m/s²  (fast trip!)\n\nCable mechanical force during fault (I=20kA, spacing 0.3m, length 1m):\nF = μ₀×I²×L / (2π×d) = 4π×10⁻⁷×(20000)²×1/(2π×0.3) = 267 N", variables:["F = Net Force (Newtons, N)","m = Mass (kilograms, kg)","a = Linear acceleration (m/s²)","T = Torque (Newton-metres, N·m)","J = Moment of inertia (kg·m²)","α = Angular acceleration (rad/s²)","p = Momentum = m×v (kg·m/s)","W = Work = F×d (Joules)","P = Power = F×v = T×ω (Watts)"] },
+
+  "heisenberg": { type:"law", category:"physics", formula:"Δx × Δp ≥ ℏ/2   (Position-Momentum Uncertainty)", alt:["ΔE × Δt ≥ ℏ/2  (Energy-Time Uncertainty)","ℏ = h/2π = 1.055×10⁻³⁴ J·s  (Reduced Planck constant)","Δx = uncertainty in position | Δp = uncertainty in momentum","More precisely you know position → less precisely you can know momentum","This is NOT due to measurement clumsiness — it is fundamental nature"], explanation:"The Heisenberg Uncertainty Principle states that it is fundamentally impossible to simultaneously know both the exact position AND exact momentum of a quantum particle to arbitrary precision. This is not a limitation of instruments — it is a fundamental property of nature arising from the wave nature of matter. The more precisely you measure position (Δx small), the more uncertain the momentum becomes (Δp large), and vice versa. This explains why electrons don't spiral into the nucleus (they would need perfectly defined position AND momentum), why atomic orbitals have specific probability distributions, and why quantum tunnelling is possible. Quantum tunnelling — electrons passing through energy barriers that classical physics says are impossible to cross — is the working principle of tunnel diodes, Josephson junctions, scanning tunnelling microscopes, and flash memory. Without Heisenberg's principle, transistors and all modern electronics would not function.", example:"Electron in atom, position uncertainty Δx = 10⁻¹⁰ m (atom size):\nΔp ≥ ℏ/(2×Δx) = (1.055×10⁻³⁴)/(2×10⁻¹⁰) = 5.28×10⁻²⁵ kg·m/s\nMinimum KE = (Δp)²/2m = (5.28×10⁻²⁵)²/(2×9.11×10⁻³¹) = 1.53×10⁻¹⁹ J = 0.96 eV\n→ Electron has minimum energy preventing it from falling into nucleus!\n\nTunnel diode (Esaki diode): electrons tunnel through p-n junction barrier\n→ Used in high-frequency oscillators, microwave circuits, fast switches", variables:["Δx = Uncertainty in position (metres)","Δp = Uncertainty in momentum (kg·m/s)","ΔE = Uncertainty in energy (Joules)","Δt = Uncertainty in time (seconds)","ℏ = Reduced Planck constant = 1.055×10⁻³⁴ J·s","h = Planck's constant = 6.626×10⁻³⁴ J·s","Applications: Tunnel diodes, flash memory, electron microscopy, MRI, quantum computing"] }
+};
+
+function matchKnowledge(query) {
+  const q = query.toLowerCase();
+  if (q.includes('magnetic balance') || (q.includes('balance') && q.includes('transformer'))) return knowledgeBase['magnetic balance'];
+  if (q.includes('magnetis') || q.includes('magnetiz') || q.includes('no-load') || q.includes('no load') || q.includes('magnetising current')) return knowledgeBase['magnetising'];
+  if (q.includes('vector group') || q.includes('dyn11') || q.includes('dyn 11') || q.includes('vgt')) return knowledgeBase['vector group'];
+  if (q.includes('hipot') || q.includes('hi-pot') || q.includes('hi pot') || q.includes('withstand') || q.includes('high voltage test') || q.includes('high pot')) return knowledgeBase['hipot'];
+  if (q.includes('gauss')) return knowledgeBase['gauss'];
+  if (q.includes('faraday') || q.includes('electromagnetic induction') || q.includes('faradays')) return knowledgeBase['faraday'];
+  if (q.includes('kirchhoff') || q.includes('kirchoff') || q.includes('kcl') || q.includes('kvl') || q.includes('current and voltage law')) return knowledgeBase['kirchhoff'];
+  if (q.includes('lenz')) return knowledgeBase['lenz'];
+  if (q.includes('tesla law') || q.includes('tesla unit') || q.includes('what is tesla')) return knowledgeBase['tesla'];
+  if (q.includes('fleming') || q.includes('left hand') || q.includes('right hand rule')) return knowledgeBase['fleming'];
+  if (q.includes('reactive') || q.includes('apparent power') || q.includes('reactive power') || q.includes('power factor') || q.includes('kvar')) return knowledgeBase['reactive power'];
+  if (q.includes('energy consumption') || q.includes('kwh') || q.includes('energy formula') || q.includes('electricity bill')) return knowledgeBase['energy'];
+  if (q.includes('maxwell') || q.includes('maxwells')) return knowledgeBase['maxwell'];
+  if (q.includes('einstein') || q.includes('e=mc') || q.includes('mc2') || q.includes('mass energy')) return knowledgeBase['einstein'];
+  if (q.includes('schrodinger') || q.includes('schrödinger') || q.includes('quantum mechanics') || q.includes('wave function')) return knowledgeBase['schrodinger'];
+  if (q.includes('thermodynamic') || q.includes('entropy') || q.includes('carnot')) return knowledgeBase['thermodynamics'];
+  if (q.includes('newton') || q.includes('f = ma') || q.includes('f=ma') || q.includes('newtons second')) return knowledgeBase['newton'];
+  if (q.includes('heisenberg') || q.includes('uncertainty principle') || q.includes('heisenburg')) return knowledgeBase['heisenberg'];
+  if (q.includes('power') || q.includes('watt')) return knowledgeBase['power'];
+  if (q.includes('ohm') || (q.includes('resistance') && !q.includes('parallel'))) return knowledgeBase['ohm'];
+  if (q.includes('motor') || q.includes('speed') || q.includes('rpm') || q.includes('slip')) return knowledgeBase['motor'];
+  if (q.includes('impedance') || q.includes('reactance') || q.includes('ac circuit')) return knowledgeBase['impedance'];
+  if (q.includes('transformer') || q.includes('turns ratio')) return knowledgeBase['transformer'];
+  if (q.includes('parallel')) return knowledgeBase['parallel'];
+  if (q.includes('voltage drop') || q.includes('cable drop')) return knowledgeBase['voltage drop'];
+  return null;
+}
+
+let history = [];
+
+function useExample(btn) {
+  const txt = btn.textContent.trim();
+  document.getElementById('promptInput').value = txt.replace(/^[\u{1F300}-\u{1FAD6}\u{1F004}-\u{1F0CF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}✋⚡🔌🧲⚖️🔮🔁🌀📊💡🌊⚛️🌌🌡️🍎🔬📉〰️🔀🔄🔲⚡]\s*/u, '').trim();
+  // Flash textarea
+  const ta = document.getElementById('promptInput');
+  ta.style.border = '2px solid #1a237e';
+  ta.style.background = '#f0f4ff';
+  setTimeout(() => { ta.style.border = ''; ta.style.background = ''; }, 800);
+  // Pulse generate button
+  const btn2 = document.getElementById('genBtn');
+  btn2.style.transform = 'scale(1.03)';
+  btn2.style.boxShadow = '0 6px 24px rgba(26,35,126,0.5)';
+  btn2.style.background = '#283593';
+  setTimeout(() => { btn2.style.transform = ''; btn2.style.boxShadow = ''; btn2.style.background = ''; }, 700);
+  // Hide hint after first use
+  const hint = document.getElementById('clickHint');
+  if (hint) { hint.style.opacity='0.4'; hint.innerHTML = hint.innerHTML.replace('👆','✅').replace('Click any question above to load it, then press','Question loaded! Now press'); }
+  ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function generateAnswer() {
+  const query = document.getElementById('promptInput').value.trim();
+  if (!query) { alert('Please enter a question first!'); return; }
+  const responseArea = document.getElementById('responseArea');
+  const loader = document.getElementById('loadingIndicator');
+  const content = document.getElementById('responseContent');
+  responseArea.classList.add('show');
+  loader.style.display = 'block';
+  content.innerHTML = '';
+
+  setTimeout(() => {
+    loader.style.display = 'none';
+    const data = matchKnowledge(query);
+
+    if (data) {
+
+      /* ══ LAW / THEORY RENDERER ══ */
+      if (data.type === 'law') {
+        const isPhysics = data.category === 'physics';
+        const headerBg = isPhysics ? 'linear-gradient(135deg,#e65100,#bf360c)' : 'linear-gradient(135deg,#1a237e,#283593)';
+        const accentColor = isPhysics ? '#ff8a65' : '#5c6bc0';
+        const badgeLabel = isPhysics ? '⚛️ Physics & Science' : '⚡ Electrical Engineering Law';
+        content.innerHTML = `<div class="response-section">
+          <div style="background:${headerBg};color:#fff;border-radius:10px;padding:0.8rem 1.2rem;margin-bottom:1.2rem;">
+            <span style="font-size:0.75rem;font-weight:700;opacity:0.85;letter-spacing:1px;text-transform:uppercase;">${badgeLabel}</span>
+            <h3 style="margin:0.3rem 0 0;font-size:1.1rem;font-weight:700;">${data.formula}</h3>
+          </div>
+
+          <h4>📐 All Formulas</h4>
+          ${data.alt.map(f=>`<div class="formula-highlight" style="background:#283593;margin-top:4px;font-size:0.88rem;">${f}</div>`).join('')}
+
+          <h4>📖 Explanation</h4>
+          <p style="line-height:1.9;color:#222;">${data.explanation}</p>
+
+          <h4>📌 Variables &amp; Units</h4>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.4rem;margin-bottom:1rem;">
+            ${data.variables.map(v=>`<div style="background:#f5f7ff;border-left:3px solid ${accentColor};border-radius:5px;padding:6px 10px;font-size:0.82rem;color:#333;">${v}</div>`).join('')}
+          </div>
+
+          <h4>✅ Worked Example</h4>
+          <div style="background:#0d1b2a;color:#ffca28;padding:1.1rem 1.3rem;border-radius:10px;font-family:'Courier New',monospace;font-size:0.85rem;line-height:2;white-space:pre-wrap;">${data.example}</div>
+
+          <p style="margin-top:1.2rem;"><a href="electrical.html" style="color:var(--accent);font-weight:600;">View all related formulas →</a></p>
+        </div>`;
+
+      /* ══ MAGNETISING CURRENT TABLE ══ */
+      } else if (data.example === 'magnetising_table') {
+        content.innerHTML = `<div class="response-section">
+          <h4>📐 Primary Formula</h4>
+          <div class="formula-highlight">${data.formula}</div>
+          ${data.alt.map(f=>`<div class="formula-highlight" style="background:#283593;margin-top:4px;">${f}</div>`).join('')}
+          <h4>📖 Explanation — Magnetising Current Test</h4>
+          <p>Apply <b>400V single-phase</b> across each line pair (R–Y, Y–B, B–R) on the HV side with LV open-circuited. Measure magnetising current in mA on both HV and LV sides for each injection.</p>
+          <p style="margin-top:0.5rem;">• <b>Iw (Active)</b> — in phase with voltage → core losses | • <b>Iμ (Reactive)</b> — 90° lagging → magnetises core</p>
+          <h4>📌 Variables</h4>
+          <ul>${data.variables.map(v=>`<li>${v}</li>`).join('')}</ul>
+          <h4>⚡ Measurement Table — Apply 400V, Measure Current (mA) on HV &amp; LV</h4>
+          <div style="overflow-x:auto;">
+            <table style="border-collapse:collapse;width:100%;font-size:0.84rem;">
+              <thead>
+                <tr style="background:#1a237e;color:#ffca28;">
+                  <th style="padding:10px 12px;border:1px solid #283593;" rowspan="2">Applied 400V</th>
+                  <th style="padding:10px 12px;border:1px solid #283593;text-align:center" colspan="3">HV Side (mA)</th>
+                  <th style="padding:10px 12px;border:1px solid #283593;text-align:center" colspan="3">LV Side (mA)</th>
+                  <th style="padding:10px 12px;border:1px solid #283593;" rowspan="2">Status</th>
+                </tr>
+                <tr style="background:#283593;color:#fff;">
+                  <th style="padding:7px 10px;border:1px solid #3949ab;text-align:center">R–Y</th>
+                  <th style="padding:7px 10px;border:1px solid #3949ab;text-align:center">Y–B</th>
+                  <th style="padding:7px 10px;border:1px solid #3949ab;text-align:center">B–R</th>
+                  <th style="padding:7px 10px;border:1px solid #3949ab;text-align:center">r–y</th>
+                  <th style="padding:7px 10px;border:1px solid #3949ab;text-align:center">y–b</th>
+                  <th style="padding:7px 10px;border:1px solid #3949ab;text-align:center">b–r</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#f5f7ff">
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;font-weight:700;color:#1a237e">Apply R–Y</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;font-weight:700;color:#1a237e">850</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;font-weight:700;color:#e65100">320</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center"><span style="color:#059669;font-weight:700">✅ Normal</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;font-weight:700;color:#1a237e">Apply Y–B</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;font-weight:700;color:#1a237e">880</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;font-weight:700;color:#e65100">335</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center"><span style="color:#059669;font-weight:700">✅ Normal</span></td>
+                </tr>
+                <tr style="background:#f5f7ff">
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;font-weight:700;color:#1a237e">Apply B–R</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;font-weight:700;color:#1a237e">840</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;color:#9e9e9e">—</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center;font-weight:700;color:#e65100">315</td>
+                  <td style="padding:9px 12px;border:1px solid #c5cae9;text-align:center"><span style="color:#059669;font-weight:700">✅ Normal</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="background:#e8f5e9;border-left:4px solid #2e7d32;border-radius:8px;padding:0.9rem 1rem;font-size:0.85rem;color:#1b5e20;margin-top:0.8rem">
+            <b>✅ Result:</b> HV currents 850/880/840 mA — close range, core healthy. Y–B slightly higher (middle limb) — normal. LV induced currents 320/335/315 mA confirm no open circuit. Iμ% ≈ 0.85–0.88% — within 0.5%–2% acceptable range.
+          </div>
+          <p style="margin-top:1rem;"><a href="electrical.html" style="color:var(--accent);font-weight:600;">View all transformer formulas →</a></p>
+        </div>`;
+
+      /* ══ MAGNETIC BALANCE TABLE ══ */
+      } else if (data.example === 'magnetic_balance_table') {
+        content.innerHTML = `<div class="response-section">
+          <h4>📐 Primary Formula</h4>
+          <div class="formula-highlight">${data.formula}</div>
+          ${data.alt.map(f=>`<div class="formula-highlight" style="background:#283593;margin-top:4px;">${f}</div>`).join('')}
+          <h4>📖 Explanation — Magnetic Balance Test</h4>
+          <p>Apply <b>400V single-phase</b> across one HV line pair at a time (LV open). Measure induced voltages on the other two HV pairs. Distribution reveals core magnetic symmetry.</p>
+          <p style="margin-top:0.5rem;"><b>Dyn11 3-limb core expected pattern:</b> Apply R–Y → Y–B≈70%, B–R≈30% | Apply Y–B → R–Y≈50%, B–R≈50% | Apply B–R → R–Y≈30%, Y–B≈70%</p>
+          <h4>📌 Variables</h4>
+          <ul>${data.variables.map(v=>`<li>${v}</li>`).join('')}</ul>
+          <h4>📊 Measurement Table</h4>
+          <div style="overflow-x:auto;">
+            <table style="border-collapse:collapse;width:100%;font-size:0.84rem;margin-bottom:0.8rem;">
+              <thead>
+                <tr style="background:#1b5e20;color:#fff;">
+                  <th style="padding:9px 12px;border:1px solid #2e7d32;text-align:center">Applied 400V</th>
+                  <th style="padding:9px 12px;border:1px solid #2e7d32;text-align:center">R–Y (V)</th>
+                  <th style="padding:9px 12px;border:1px solid #2e7d32;text-align:center">Y–B (V)</th>
+                  <th style="padding:9px 12px;border:1px solid #2e7d32;text-align:center">B–R (V)</th>
+                  <th style="padding:9px 12px;border:1px solid #2e7d32;text-align:center">R–Y%</th>
+                  <th style="padding:9px 12px;border:1px solid #2e7d32;text-align:center">Y–B%</th>
+                  <th style="padding:9px 12px;border:1px solid #2e7d32;text-align:center">B–R%</th>
+                  <th style="padding:9px 12px;border:1px solid #2e7d32;text-align:center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#f1f8e9"><td style="padding:8px 12px;border:1px solid #a5d6a7;font-weight:700;text-align:center">Apply R–Y</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center;font-weight:700;color:#1b5e20">400</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">280</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">120</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center;font-weight:700">100%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">70%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">30%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center"><span style="color:#059669;font-weight:700">✅ Normal</span></td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #a5d6a7;font-weight:700;text-align:center">Apply Y–B</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">200</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center;font-weight:700;color:#1b5e20">400</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">200</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">50%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center;font-weight:700">100%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">50%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center"><span style="color:#059669;font-weight:700">✅ Normal</span></td></tr>
+                <tr style="background:#f1f8e9"><td style="padding:8px 12px;border:1px solid #a5d6a7;font-weight:700;text-align:center">Apply B–R</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">120</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">280</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center;font-weight:700;color:#1b5e20">400</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">30%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center">70%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center;font-weight:700">100%</td><td style="padding:8px 12px;border:1px solid #a5d6a7;text-align:center"><span style="color:#059669;font-weight:700">✅ Normal</span></td></tr>
+                <tr style="background:#ffebee"><td style="padding:8px 12px;border:1px solid #ef9a9a;font-weight:700;text-align:center;color:#c62828">⚠️ Fault Example<br>Apply R–Y</td><td style="padding:8px 12px;border:1px solid #ef9a9a;text-align:center;font-weight:700">400</td><td style="padding:8px 12px;border:1px solid #ef9a9a;text-align:center;font-weight:700;color:#dc2626">6.3V</td><td style="padding:8px 12px;border:1px solid #ef9a9a;text-align:center;font-weight:700;color:#dc2626">4V</td><td style="padding:8px 12px;border:1px solid #ef9a9a;text-align:center">100%</td><td style="padding:8px 12px;border:1px solid #ef9a9a;text-align:center;color:#dc2626">1.6%</td><td style="padding:8px 12px;border:1px solid #ef9a9a;text-align:center;color:#dc2626">1%</td><td style="padding:8px 12px;border:1px solid #ef9a9a;text-align:center"><span style="color:#dc2626;font-weight:700">❌ Core fault / Open circuit Y or B limb</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="background:#fff8e1;border-left:4px solid #fbc02d;border-radius:8px;padding:0.9rem 1rem;font-size:0.85rem;color:#5d4037;">
+            <b>Standard:</b> IS 2026 | IEC 60076-1 | CBIP Manual on Transformers | IEEE C57.12.90
+          </div>
+          <p style="margin-top:1rem;"><a href="electrical.html" style="color:var(--accent);font-weight:600;">View all transformer formulas →</a></p>
+        </div>`;
+
+      /* ══ VECTOR GROUP TABLE ══ */
+      } else if (data.example === 'vector_group_table') {
+        content.innerHTML = `<div class="response-section">
+          <h4>📐 Primary Formula</h4>
+          <div class="formula-highlight">${data.formula}</div>
+          ${data.alt.map(f=>`<div class="formula-highlight" style="background:#283593;margin-top:4px;">${f}</div>`).join('')}
+          <h4>📖 Explanation</h4>
+          <p>Short <b>1U ↔ 2U</b> (Rφ HV to Rφ LV) on test board. Apply 3-phase 415V on HV (1U,1V,1W). Measure voltages between HV and LV terminals. Match within ±2% to confirm Dyn11.</p>
+          <h4>📌 Variables</h4>
+          <ul>${data.variables.map(v=>`<li>${v}</li>`).join('')}</ul>
+
+          <h4>📐 Phasor Diagram — Dyn11 Vector Group</h4>
+          <div style="background:#fff;border:2px solid #c5cae9;border-radius:12px;padding:1.5rem 1rem 1rem;margin-bottom:1rem;text-align:center;">
+            <svg viewBox="0 0 340 320" width="100%" style="max-width:360px;display:inline-block;font-family:Arial,sans-serif;">
+
+              <!-- ═══ OUTER BIG TRIANGLE (HV Delta) ═══ -->
+              <!-- Top: 1U,2U = (170, 20) -->
+              <!-- Bottom-left: 1W = (30, 270) -->
+              <!-- Bottom-right: 1V = (280, 270) -->
+
+              <!-- Left side: 1U → 1W -->
+              <line x1="170" y1="22" x2="30" y2="270" stroke="#222" stroke-width="2.5"/>
+              <!-- Bottom: 1W → 1V (solid) -->
+              <line x1="30" y1="270" x2="280" y2="270" stroke="#222" stroke-width="2.5"/>
+              <!-- Right side: 1V → 1U -->
+              <line x1="280" y1="270" x2="170" y2="22" stroke="#222" stroke-width="2.5"/>
+
+              <!-- ═══ INNER SMALLER TRIANGLE ═══ -->
+              <!-- Shares TOP vertex with outer (170,22) -->
+              <!-- Right vertex: 2N/2V junction = (210, 165) -->
+              <!-- Bottom-left vertex: 2W = (115, 270) — sits ON the bottom edge -->
+
+              <!-- Left side of inner: top → 2W -->
+              <line x1="170" y1="22" x2="115" y2="270" stroke="#222" stroke-width="2"/>
+              <!-- Right side of inner: top → 2N/2V -->
+              <line x1="170" y1="22" x2="210" y2="165" stroke="#222" stroke-width="2"/>
+              <!-- Bottom of inner: 2W → 2N/2V (DASHED) -->
+              <line x1="115" y1="270" x2="210" y2="165" stroke="#222" stroke-width="2" stroke-dasharray="6,4"/>
+
+              <!-- ═══ VERTICAL DASHED LINE: 2V down to 1V ═══ -->
+              <line x1="210" y1="165" x2="280" y2="270" stroke="#222" stroke-width="2" stroke-dasharray="6,4"/>
+
+              <!-- ═══ OUTER VERTEX DOTS & LABELS ═══ -->
+              <!-- 1U, 2U — top -->
+              <circle cx="170" cy="22" r="4" fill="#111"/>
+              <text x="170" y="11" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">1U, 2U</text>
+
+              <!-- 1W — bottom left -->
+              <circle cx="30" cy="270" r="4" fill="#111"/>
+              <text x="30" y="292" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">1W</text>
+
+              <!-- 1V — bottom right -->
+              <circle cx="280" cy="270" r="4" fill="#111"/>
+              <text x="280" y="292" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">1V</text>
+
+              <!-- ═══ INNER VERTEX DOTS & LABELS ═══ -->
+              <!-- 2N / 2V — right vertex of inner triangle -->
+              <circle cx="210" cy="165" r="4" fill="#111"/>
+              <text x="196" y="158" text-anchor="end" font-size="13" font-weight="bold" fill="#111">2N</text>
+              <text x="218" y="158" text-anchor="start" font-size="13" font-weight="bold" fill="#111">2V</text>
+
+              <!-- 2W — on bottom edge of inner triangle -->
+              <circle cx="115" cy="270" r="4" fill="#111"/>
+              <text x="115" y="260" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">2W</text>
+
+              <!-- ═══ RIGHT SIDE NOTES ═══ -->
+              <text x="300" y="80" font-size="11" font-weight="bold" fill="#1a237e">1U - Primary</text>
+              <text x="300" y="95" font-size="11" fill="#444">     R phase</text>
+              <text x="300" y="118" font-size="11" font-weight="bold" fill="#1a237e">2U - Secondary</text>
+              <text x="300" y="133" font-size="11" fill="#444">     R phase</text>
+
+            </svg>
+            <p style="font-size:0.79rem;color:#555;margin:0.4rem 0 0;line-height:1.8;">
+              <b>Outer triangle</b> (1U–1W–1V) = HV Delta primary &nbsp;|&nbsp; <b>Inner triangle</b> = LV secondary phasors<br>
+              <b>2N</b> = LV neutral point &nbsp;|&nbsp; <b>2V</b> = LV Y-phase &nbsp;|&nbsp; <b>2W</b> = LV B-phase &nbsp;|&nbsp; Dashed = reference lines
+            </p>
+          </div>
+
+          <h4>📊 Measurement Table (1000kVA 11kV/415V)</h4>
+          <div style="overflow-x:auto;">
+            <table style="border-collapse:collapse;width:100%;font-size:0.84rem;margin-bottom:0.8rem;">
+              <thead><tr style="background:#0d47a1;color:#fff;"><th style="padding:9px 12px;border:1px solid #1565c0;text-align:left">Measurement</th><th style="padding:9px 12px;border:1px solid #1565c0;text-align:center">Terminals</th><th style="padding:9px 12px;border:1px solid #1565c0;text-align:center">Theoretical (V)</th><th style="padding:9px 12px;border:1px solid #1565c0;text-align:center">Measured (V)</th><th style="padding:9px 12px;border:1px solid #1565c0;text-align:center">Deviation</th><th style="padding:9px 12px;border:1px solid #1565c0;text-align:center">Result</th></tr></thead>
+              <tbody>
+                <tr style="background:#e3f2fd"><td style="padding:8px 12px;border:1px solid #90caf9;font-weight:700">Short link</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">1U↔2U</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center;font-weight:700">0.00</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">0.00</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">—</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center"><span style="color:#059669;font-weight:700">✅</span></td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #90caf9;font-weight:700">1V→2V</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">1V↔2V</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center;font-weight:700">380.5</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">381.2</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">+0.18%</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center"><span style="color:#059669;font-weight:700">✅ Pass</span></td></tr>
+                <tr style="background:#e3f2fd"><td style="padding:8px 12px;border:1px solid #90caf9;font-weight:700">1V→2W</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">1V↔2W</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center;font-weight:700">415.0</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">414.3</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">-0.17%</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center"><span style="color:#059669;font-weight:700">✅ Pass</span></td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #90caf9;font-weight:700">1W→2V</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">1W↔2V</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center;font-weight:700">415.0</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">415.8</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">+0.19%</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center"><span style="color:#059669;font-weight:700">✅ Pass</span></td></tr>
+                <tr style="background:#e3f2fd"><td style="padding:8px 12px;border:1px solid #90caf9;font-weight:700">1W→2N</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">1W↔2N</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center;font-weight:700">239.6</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">240.1</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">+0.21%</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center"><span style="color:#059669;font-weight:700">✅ Pass</span></td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #90caf9;font-weight:700">1V→2N</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">1V↔2N</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center;font-weight:700">239.6</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">239.0</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center">-0.25%</td><td style="padding:8px 12px;border:1px solid #90caf9;text-align:center"><span style="color:#059669;font-weight:700">✅ Pass</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="background:#e8f5e9;border-left:4px solid #2e7d32;border-radius:8px;padding:0.9rem 1rem;font-size:0.85rem;color:#1b5e20;">
+            <b>✅ Vector Group CONFIRMED: Dyn11</b> — All within ±2%. Phase shift 330° confirmed.<br>
+            <b>Standard:</b> IEC 60076-1 | IS 2026 Part 4 | BS EN 60076 | CBIP Manual
+          </div>
+          <p style="margin-top:1rem;"><a href="electrical.html" style="color:var(--accent);font-weight:600;">View all transformer formulas →</a></p>
+        </div>`;
+
+      /* ══ HIPOT TABLE ══ */
+      } else if (data.example === 'hipot_table') {
+        content.innerHTML = `<div class="response-section">
+          <h4>📐 Primary Formula</h4>
+          <div class="formula-highlight">${data.formula}</div>
+          ${data.alt.map(f=>`<div class="formula-highlight" style="background:#283593;margin-top:4px;">${f}</div>`).join('')}
+          <h4>📖 Explanation — Hi-Pot Test</h4>
+          <p>• <b>Busbar</b> → AC Hi-Pot kit &nbsp;|&nbsp; <b>Cable</b> → DC Hi-Pot kit<br>
+          <b>Procedure:</b> IR test first → Discharge → Apply Hi-Pot voltage → Discharge → IR test again after</p>
+          <h4>📌 Variables</h4>
+          <ul>${data.variables.map(v=>`<li>${v}</li>`).join('')}</ul>
+          <h4>📊 Hi-Pot Voltage Reference Table</h4>
+          <div style="overflow-x:auto;">
+            <table style="border-collapse:collapse;width:100%;font-size:0.84rem;margin-bottom:0.8rem;">
+              <thead><tr style="background:#880e4f;color:#fff;"><th style="padding:9px 12px;border:1px solid #ad1457;text-align:left">Equipment</th><th style="padding:9px 12px;border:1px solid #ad1457;text-align:center">Rated V</th><th style="padding:9px 12px;border:1px solid #ad1457;text-align:center">Factory (100%)</th><th style="padding:9px 12px;border:1px solid #ad1457;text-align:center">Site (80%)</th><th style="padding:9px 12px;border:1px solid #ad1457;text-align:center">Duration</th><th style="padding:9px 12px;border:1px solid #ad1457;text-align:center">Kit</th></tr></thead>
+              <tbody>
+                <tr style="background:#fce4ec"><td style="padding:8px 12px;border:1px solid #f48fb1;font-weight:700">LV Busbar/Panel</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center">415V</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center;font-weight:700">2.0 kV AC</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center">1.6 kV</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center;font-weight:700;color:#1b5e20">1 min</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center">AC</td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #f48fb1;font-weight:700">11 kV Cable/Busbar</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center">11 kV</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center;font-weight:700">28 kV AC</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center">22.4 kV</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center;font-weight:700;color:#1b5e20">1 min</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center">DC</td></tr>
+                <tr style="background:#fce4ec"><td style="padding:8px 12px;border:1px solid #f48fb1;font-weight:700">33 kV Cable</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center">33 kV</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center;font-weight:700">76 kV AC</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center;font-weight:700;color:#880e4f">41.6 kV</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center;font-weight:700;color:#1b5e20">1 min</td><td style="padding:8px 12px;border:1px solid #f48fb1;text-align:center">DC</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="background:#1a237e;color:#ffca28;font-family:'Courier New',monospace;padding:0.9rem 1.2rem;border-radius:8px;font-size:0.88rem;line-height:2;margin-bottom:0.8rem;">
+            33kV cable: V_test = (2×33 + 1) × 0.8 = 67 × 0.8 = <b>41.6 kV ✅</b>
+          </div>
+          <div style="background:#fff8e1;border-left:4px solid #fbc02d;border-radius:8px;padding:0.9rem 1rem;font-size:0.85rem;color:#5d4037;">
+            <b>⚠️ Safety:</b> Always IR test before AND after Hi-Pot. Discharge before touching terminals. Test duration: <b>1 minute for all cables and busbars</b>.<br>
+            <b>Standard:</b> IEC 60502 | IEC 60060 | IEEE 400 | IS 13573
+          </div>
+          <p style="margin-top:1rem;"><a href="electrical.html" style="color:var(--accent);font-weight:600;">View all formulas →</a></p>
+        </div>`;
+
+      /* ══ DEFAULT ══ */
+      } else {
+        content.innerHTML = `<div class="response-section">
+          <h4>📐 Primary Formula</h4>
+          <div class="formula-highlight">${data.formula}</div>
+          ${data.alt.map(f=>`<div class="formula-highlight" style="background:#283593;">${f}</div>`).join('')}
+          <h4>📖 Explanation</h4>
+          <p>${data.explanation}</p>
+          <h4>📌 Variables</h4>
+          <ul>${data.variables.map(v=>`<li>${v}</li>`).join('')}</ul>
+          <h4>✅ Example</h4>
+          <p style="background:#f5f7ff;padding:0.8rem 1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:0.88rem;">${data.example}</p>
+          <p style="margin-top:1rem;"><a href="electrical.html" style="color:var(--accent);font-weight:600;">View all related formulas →</a></p>
+        </div>`;
+      }
+
+    } else {
+      content.innerHTML = `<div class="response-section">
+        <h4>🔍 General Electrical Guidance</h4>
+        <p>Your question: <em>"${query}"</em></p>
+        <p>Try rephrasing using terms like: "Ohm's Law", "motor speed", "transformer", "magnetising current", "magnetic balance", "vector group", "hipot", "Gauss", "Faraday", "Kirchhoff", "Lenz", "Fleming", "reactive power", "energy", "Maxwell", "Einstein", "Schrodinger", "thermodynamics", "Newton", "Heisenberg"</p>
+        <div class="formula-highlight">V = I × R (Ohm's Law)</div>
+        <div class="formula-highlight" style="background:#283593;">P = V × I (Power)</div>
+        <div class="formula-highlight" style="background:#1565c0;">E = mc² (Einstein)</div>
+      </div>`;
+    }
+
+    history.unshift({ q: query, answered: !!data });
+    if (history.length > 5) history.pop();
+    renderHistory();
+  }, 1500);
+}
+
+function renderHistory() {
+  const sec = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  if (history.length === 0) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  list.innerHTML = history.map(h => `
+    <div class="history-item" onclick="document.getElementById('promptInput').value='${h.q.replace(/'/g,"\\'")}'; generateAnswer();">
+      <div class="history-q">Q: ${h.q}</div>
+      <span style="font-size:0.75rem;">${h.answered ? '✅ Answered' : '🔍 General guidance'} • Click to retry</span>
+    </div>
+  `).join('');
+}
+
+document.getElementById('promptInput').addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') generateAnswer();
+});
+</script>
+</body>
+</html>
