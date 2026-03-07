@@ -28,6 +28,7 @@
   --radius:  12px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
+html,body{overflow-x:hidden;width:100%;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
 /* NAV */
@@ -238,65 +239,7 @@ footer a:hover{color:#fff;}
   @page{size:A4 landscape;margin:8mm;}
 }
 
-/* ── MOBILE RESPONSIVE ─────────────────────────────────────── */
-@media(max-width:768px){
-  /* Nav */
-  .nav-links{display:none;}
-  nav{padding:0 1rem;}
-
-  /* Hero */
-  .hero{padding:1.5rem 1rem 1.2rem;}
-  .hero h1{font-size:1.4rem;}
-
-  /* Tabs - scrollable */
-  .tabs-wrap{padding:0 0;overflow-x:auto;display:flex;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
-  .tab-btn{padding:.6rem .9rem;font-size:.75rem;white-space:nowrap;flex-shrink:0;}
-
-  /* Main padding */
-  .main{padding:1rem .75rem 2rem;}
-
-  /* Payroll header block */
-  #payrollHeader .ph-inner{flex-direction:column!important;gap:.4rem!important;}
-  #payrollHeader .ph-inner > div:last-child{text-align:left!important;}
-  #payrollHeader .ph-grid{grid-template-columns:1fr 1fr!important;}
-
-  /* Salary date action bar */
-  .payroll-actions{flex-direction:column!important;align-items:flex-start!important;gap:.5rem!important;}
-  .payroll-actions > div{min-width:unset!important;width:100%!important;}
-  .payroll-actions input[type=date]{width:100%!important;}
-
-  /* Summary cards - 2 cols on mobile */
-  .payroll-summary-cards{grid-template-columns:1fr 1fr!important;}
-  .ps-card .psv{font-size:1.1rem!important;}
-
-  /* Payroll table — horizontal scroll */
-  .payroll-table-wrap{
-    overflow-x:auto!important;
-    -webkit-overflow-scrolling:touch;
-    border-radius:8px;
-  }
-  .payroll-table{
-    font-size:.7rem!important;
-    min-width:900px!important;
-    width:max-content!important;
-  }
-  .payroll-table th{font-size:.65rem!important;padding:.35rem .4rem!important;}
-  .payroll-table td{padding:.35rem .4rem!important;}
-
-  /* Scroll hint */
-  .scroll-hint{display:flex!important;}
-}
-
-@media(max-width:480px){
-  .payroll-summary-cards{grid-template-columns:1fr 1fr!important;gap:.5rem!important;}
-  .ps-card{padding:.6rem .7rem!important;}
-  .ps-card .psv{font-size:1rem!important;}
-  .hero h1{font-size:1.2rem!important;}
-  .tab-btn{padding:.55rem .75rem!important;font-size:.72rem!important;}
-  #payrollHeader .ph-grid{grid-template-columns:1fr 1fr!important;}
-}
-
-/* scroll hint — hidden by default, shown on mobile */
+/* ── SCROLL HINT ─────────────────────────────────────────── */
 .scroll-hint{
   display:none;
   align-items:center;
@@ -310,7 +253,127 @@ footer a:hover{color:#fff;}
   box-shadow:var(--shadow);
 }
 .scroll-hint span{animation:scrollPulse 1.5s ease-in-out infinite;}
-@keyframes scrollPulse{0%,100%{transform:translateX(0);}50%{transform:translateX(4px);}}
+@keyframes scrollPulse{0%,100%{transform:translateX(0);}50%{transform:translateX(5px);}}
+
+/* ── MOBILE ≤768px ───────────────────────────────────────── */
+@media(max-width:768px){
+  /* prevent any element from blowing out page width */
+  .main,.hero,.tabs-wrap,nav,footer{max-width:100vw;}
+
+  /* Nav */
+  nav{padding:0 .75rem;height:50px;}
+  .nav-links{display:none;}
+
+  /* Hero */
+  .hero{padding:1.2rem .75rem 1rem;}
+  .hero h1{font-size:1.3rem;}
+  .hero p{font-size:.8rem;}
+
+  /* Tabs — horizontally scrollable strip */
+  .tabs-wrap{
+    padding:0;
+    overflow-x:auto;
+    overflow-y:visible;
+    white-space:nowrap;
+    display:block;        /* block so children are inline */
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .tabs-wrap::-webkit-scrollbar{display:none;}
+  .tab-btn{
+    display:inline-flex;
+    padding:.6rem .85rem;
+    font-size:.74rem;
+    white-space:nowrap;
+  }
+
+  /* Main */
+  .main{padding:.75rem .6rem 2rem;}
+
+  /* Cards */
+  .card-body{padding:.85rem;}
+
+  /* Net salary box */
+  .net-box{padding:1rem;}
+  .net-amount{font-size:2rem!important;}
+  .sum-grid{grid-template-columns:1fr 1fr 1fr;gap:.5rem;}
+  .sum-box .sv{font-size:1rem!important;}
+  .sum-box .sl{font-size:.65rem!important;}
+
+  /* Salary slip preview inside calc tab */
+  .slip-empbar{grid-template-columns:1fr 1fr;}
+  .slip-emp-cell{font-size:.72rem;padding:.4rem .6rem;}
+  .slip-rows{grid-template-columns:1fr 1fr;}
+  .slip-row{font-size:.72rem;padding:.28rem .6rem;}
+  .slip-totals{grid-template-columns:1fr 1fr;}
+  .slip-tot-cell{font-size:.75rem;padding:.5rem .6rem;}
+  .slip-net{padding:.6rem 1rem;}
+  .slip-net-label{font-size:.8rem!important;}
+  .slip-net-amt{font-size:1.1rem!important;}
+
+  /* Employee cards */
+  .emp-card{flex-wrap:wrap;gap:.4rem;}
+  .emp-actions{flex-wrap:wrap;}
+
+  /* Payroll header */
+  #payrollHeader .ph-inner{flex-direction:column!important;gap:.5rem!important;}
+  #payrollHeader .ph-inner > div:last-child{text-align:left!important;}
+  #payrollHeader .ph-grid{grid-template-columns:1fr 1fr!important;gap:.4rem!important;}
+
+  /* Salary date bar */
+  .payroll-actions{
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:.5rem!important;
+  }
+  .payroll-actions > div{min-width:unset!important;width:100%!important;}
+  .payroll-actions input[type=date]{width:100%!important;box-sizing:border-box;}
+
+  /* Summary cards 2×2 */
+  .payroll-summary-cards{grid-template-columns:1fr 1fr!important;gap:.6rem!important;}
+  .ps-card .psv{font-size:1.05rem!important;}
+  .ps-card{padding:.7rem .8rem!important;}
+
+  /* Payroll table — scroll container */
+  .payroll-table-wrap{
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+    border-radius:8px;
+    max-width:100%;
+  }
+  .payroll-table{
+    font-size:.68rem!important;
+    min-width:860px!important;
+    table-layout:auto;
+  }
+  .payroll-table th{font-size:.62rem!important;padding:.32rem .38rem!important;}
+  .payroll-table td{padding:.32rem .38rem!important;}
+  .scroll-hint{display:flex!important;}
+
+  /* Guide tab */
+  #guideTab .card-body > div > div{
+    grid-template-columns:28px 1fr!important;
+    gap:.5rem!important;
+  }
+}
+
+/* ── SMALL MOBILE ≤480px ─────────────────────────────────── */
+@media(max-width:480px){
+  .hero h1{font-size:1.1rem;}
+  .tab-btn{padding:.55rem .7rem;font-size:.7rem;}
+  .net-amount{font-size:1.7rem!important;}
+  .sum-grid{gap:.4rem;}
+  .payroll-summary-cards{grid-template-columns:1fr 1fr!important;gap:.4rem!important;}
+  .ps-card .psv{font-size:.95rem!important;}
+  .ps-card{padding:.55rem .6rem!important;}
+  .ps-card .psl{font-size:.65rem!important;}
+  .slip-net-amt{font-size:1rem!important;}
+  .btn-row{gap:.4rem;}
+  .btn{padding:.45rem .7rem;font-size:.78rem;}
+  .print-btn{padding:.5rem .9rem;font-size:.78rem;}
+  #payrollHeader .ph-grid{grid-template-columns:1fr 1fr!important;}
+  .payroll-table{min-width:800px!important;}
+}
 
 </style>
 </head>
