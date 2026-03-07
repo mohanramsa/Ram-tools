@@ -237,6 +237,81 @@ footer a:hover{color:#fff;}
 
   @page{size:A4 landscape;margin:8mm;}
 }
+
+/* ── MOBILE RESPONSIVE ─────────────────────────────────────── */
+@media(max-width:768px){
+  /* Nav */
+  .nav-links{display:none;}
+  nav{padding:0 1rem;}
+
+  /* Hero */
+  .hero{padding:1.5rem 1rem 1.2rem;}
+  .hero h1{font-size:1.4rem;}
+
+  /* Tabs - scrollable */
+  .tabs-wrap{padding:0 0;overflow-x:auto;display:flex;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .tab-btn{padding:.6rem .9rem;font-size:.75rem;white-space:nowrap;flex-shrink:0;}
+
+  /* Main padding */
+  .main{padding:1rem .75rem 2rem;}
+
+  /* Payroll header block */
+  #payrollHeader .ph-inner{flex-direction:column!important;gap:.4rem!important;}
+  #payrollHeader .ph-inner > div:last-child{text-align:left!important;}
+  #payrollHeader .ph-grid{grid-template-columns:1fr 1fr!important;}
+
+  /* Salary date action bar */
+  .payroll-actions{flex-direction:column!important;align-items:flex-start!important;gap:.5rem!important;}
+  .payroll-actions > div{min-width:unset!important;width:100%!important;}
+  .payroll-actions input[type=date]{width:100%!important;}
+
+  /* Summary cards - 2 cols on mobile */
+  .payroll-summary-cards{grid-template-columns:1fr 1fr!important;}
+  .ps-card .psv{font-size:1.1rem!important;}
+
+  /* Payroll table — horizontal scroll */
+  .payroll-table-wrap{
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+    border-radius:8px;
+  }
+  .payroll-table{
+    font-size:.7rem!important;
+    min-width:900px!important;
+    width:max-content!important;
+  }
+  .payroll-table th{font-size:.65rem!important;padding:.35rem .4rem!important;}
+  .payroll-table td{padding:.35rem .4rem!important;}
+
+  /* Scroll hint */
+  .scroll-hint{display:flex!important;}
+}
+
+@media(max-width:480px){
+  .payroll-summary-cards{grid-template-columns:1fr 1fr!important;gap:.5rem!important;}
+  .ps-card{padding:.6rem .7rem!important;}
+  .ps-card .psv{font-size:1rem!important;}
+  .hero h1{font-size:1.2rem!important;}
+  .tab-btn{padding:.55rem .75rem!important;font-size:.72rem!important;}
+  #payrollHeader .ph-grid{grid-template-columns:1fr 1fr!important;}
+}
+
+/* scroll hint — hidden by default, shown on mobile */
+.scroll-hint{
+  display:none;
+  align-items:center;
+  gap:.4rem;
+  font-size:.75rem;
+  color:var(--muted);
+  background:#fff;
+  border-radius:8px;
+  padding:.45rem .8rem;
+  margin-bottom:.6rem;
+  box-shadow:var(--shadow);
+}
+.scroll-hint span{animation:scrollPulse 1.5s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{transform:translateX(0);}50%{transform:translateX(4px);}}
+
 </style>
 </head>
 <body>
@@ -555,7 +630,7 @@ footer a:hover{color:#fff;}
   <!-- Company & Month header (shown on print) -->
   <div id="payrollHeader" style="display:block;margin-bottom:1.2rem;">
     <div style="background:var(--navy);color:#fff;border-radius:10px;padding:1rem 1.5rem;">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;">
+      <div class="ph-inner" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;">
         <div>
           <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;" id="payrollHeaderTitle">Company Name</div>
           <div style="font-size:.8rem;opacity:.7;margin-top:2px;">MONTHLY PAYROLL SUMMARY SHEET</div>
@@ -565,7 +640,7 @@ footer a:hover{color:#fff;}
           <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;" id="payrollHeaderMonth">—</div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-top:.8rem;border-top:1px solid rgba(255,255,255,0.15);padding-top:.8rem;">
+      <div class="ph-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-top:.8rem;border-top:1px solid rgba(255,255,255,0.15);padding-top:.8rem;">
         <div style="background:rgba(255,255,255,0.08);border-radius:7px;padding:.5rem .7rem;text-align:center;">
           <div style="font-size:.68rem;opacity:.6;text-transform:uppercase;letter-spacing:.4px;">Salary Date</div>
           <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;" id="payrollHeaderSalaryDate">—</div>
@@ -615,6 +690,7 @@ footer a:hover{color:#fff;}
   </div>
 
   <!-- Payroll Table -->
+  <div class="scroll-hint">← Swipe left to see full table <span>→</span></div>
   <div class="payroll-table-wrap" id="payrollTableWrap">
     <table class="payroll-table" id="payrollTable">
       <thead>
