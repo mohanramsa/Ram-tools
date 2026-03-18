@@ -222,7 +222,7 @@ footer a:hover{color:#fff;}
   nav,footer,.tabs-wrap,.hero,.btn-row,.emp-card,
   .card-head,.prorata-panel,.method-select,.tab-btn,
   #calcTab,#slipTab,#empTab,#guideTab,
-  .payroll-actions{display:none!important;}
+  .payroll-actions,.page-content{display:none!important;}
 
   /* show only payroll tab */
   #payrollTab{display:block!important;}
@@ -401,7 +401,30 @@ footer a:hover{color:#fff;}
   <h1>💼 Salary<span>Pro</span></h1>
   <p>Professional salary slip generator with pro-rata, all deductions & instant preview</p>
 </div>
+<section class="page-content" style="margin-top:2rem;">
 
+<h2>About Salary Calculator</h2>
+<p>
+This salary calculator helps employees, HR professionals, and small business owners calculate salary components such as basic pay, HRA, PF, and deductions easily.
+It simplifies payroll calculations and generates accurate salary slips instantly.
+</p>
+
+<h2>How to Use</h2>
+<ol>
+<li>Enter employee salary details</li>
+<li>Add allowances and deductions</li>
+<li>Click calculate</li>
+<li>Download or view salary slip</li>
+</ol>
+
+<h2>Example</h2>
+<p>
+If basic salary is ₹20,000 and allowances are ₹5,000, total gross salary becomes ₹25,000. After deductions like PF and tax, net salary is calculated.
+</p>
+<p style="font-size:16px;color:black;font-weight:bold;">
+⚠️ Note: Your data is saved only in your browser. Do not refresh the page or Click top menu links while entering data. Use only the buttons inside this page (Salary Slip / Payroll Summary).  
+Otherwise, your data may be lost.
+</section>
 <div class="tabs-wrap">
   <button class="tab-btn active" onclick="switchTab('calc')">⚙️ Calculator</button>
   <button class="tab-btn" onclick="switchTab('slip')">📄 Salary Slip</button>
@@ -808,7 +831,7 @@ footer a:hover{color:#fff;}
     <a href="contact.html">Contact</a> &nbsp;|&nbsp;
     <a href="privacy.html">Privacy</a>
   </div>
-  © 2026 RamTools. All Rights Reserved. | Made with ❤️ in India
+  © 2026 RamTools. All Rights Reserved.
 </footer>
 
 <script>
@@ -891,7 +914,7 @@ function liveCalc() {
     otherDed: parseFloat($('otherDed').value) || 0,
     totalDays:v('totalDays'), daysWorked:v('daysWorked'), method
   };
-  const r = calcSalary(e);
+  const r = calcSalary(e)
 
   // Summary boxes
   $('dispNet').textContent    = fmt(r.net);
@@ -903,6 +926,7 @@ function liveCalc() {
   } else {
     $('dispNetAdj').textContent = '';
   }
+
 
   // Pro-rata panel
   const panel = $('proRataPanel');
@@ -1377,5 +1401,6 @@ window.onload = () => {
   liveCalc();
 };
 </script>
+
 </body>
 </html>
