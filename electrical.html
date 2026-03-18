@@ -66,6 +66,9 @@
   list-style: none;
   flex-wrap: wrap;
 }
+.menu-toggle {
+  margin-left: auto;
+}
 
 /* Mobile fix */
 @media (max-width: 768px) {
@@ -77,19 +80,32 @@
   }
 
   .menu {
+     display: none;
     flex-direction: column;
     width: 100%;
   }
 
   .menu li {
     width: 100%;
-    padding: 8px 0;
+    padding: 12px 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
   }
 
   .menu a {
     display: block;
     width: 100%;
+    font-size: 16px;
+  color: #ffffff;
+  font-weight: 500;
   }
+
+  .menu {
+  gap: 0;
+}
+nav {
+  padding: 12px 15px;
+}
+
 }
 .page-content {
   margin-top: 20px;
@@ -104,6 +120,7 @@
     <div class="logo-icon">R</div> RamTools
   </div>
 
+  <div class="menu-toggle" onclick="toggleMenu()" style="color:white;font-size:24px;cursor:pointer;">☰</div>
   <ul class="menu">
     <li><a href="index.html">Home</a></li>
     <li><a href="salary.html">SalaryPro</a></li>
@@ -2438,6 +2455,39 @@ function switchTab(group, name, el) {
   el.classList.add('active');
 }
 </script>
+<script>
+function toggleMenu() {
+  let menu = document.querySelector('.menu');
+  if (menu.style.display === 'block') {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'block';
+  }
+}
+</script>
+<script>
+function toggleMenu() {
+  let menu = document.querySelector('.menu');
+  if (menu.style.display === 'block') {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'block';
+  }
+}
+</script>
+
+<script>
+function toggleMenu() {
+  let menu = document.querySelector('.menu');
+  if (menu.style.display === 'block') {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'block';
+  }
+}
+</script>
+
+
 </body>
 </html>
 <footer>
