@@ -217,6 +217,56 @@ footer{background:var(--navy);color:rgba(255,255,255,0.5);text-align:center;padd
 footer a{color:rgba(255,255,255,0.5);text-decoration:none;}
 footer a:hover{color:#fff;}
 
+/* ── BACKUP / RESTORE ──────────────────────────────────────── */
+.backup-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:.7rem;
+  background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:.85rem 1.1rem;
+  margin-bottom:1.1rem;
+  border-left:4px solid var(--blue);
+}
+.backup-bar-label{
+  font-size:.78rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;
+  display:flex;align-items:center;gap:.4rem;
+}
+.backup-btns{display:flex;gap:.5rem;flex-wrap:wrap;}
+.btn-backup{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;border:none;border-radius:8px;
+  padding:.5rem 1rem;font-size:.83rem;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;gap:.4rem;
+  transition:opacity .2s;
+}
+.btn-backup:hover{opacity:.88;}
+.btn-restore{
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  color:#fff;border:none;border-radius:8px;
+  padding:.5rem 1rem;font-size:.83rem;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;gap:.4rem;
+  transition:opacity .2s;
+}
+.btn-restore:hover{opacity:.88;}
+
+/* Toast notification */
+.toast{
+  position:fixed;bottom:1.4rem;right:1.4rem;z-index:9999;
+  padding:.65rem 1.2rem;border-radius:10px;
+  font-size:.85rem;font-weight:600;font-family:'DM Sans',sans-serif;
+  color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.22);
+  opacity:0;transform:translateY(12px);
+  transition:opacity .3s,transform .3s;
+  pointer-events:none;max-width:300px;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.toast-success{background:var(--green);}
+.toast.toast-error{background:var(--red);}
+.toast.toast-info{background:var(--blue);}
+
 @media print{
   /* hide everything except payroll summary */
   nav,footer,.tabs-wrap,.hero,.btn-row,.emp-card,
@@ -422,8 +472,9 @@ It simplifies payroll calculations and generates accurate salary slips instantly
 If basic salary is ₹20,000 and allowances are ₹5,000, total gross salary becomes ₹25,000. After deductions like PF and tax, net salary is calculated.
 </p>
 <p style="font-size:16px;color:black;font-weight:bold;">
-⚠️ Note: Your data is saved only in your browser. Do not refresh the page or Click top menu links while entering data. Use only the buttons inside this page (Salary Slip / Payroll Summary).  
-Otherwise, your data may be lost.
+🔒⚠️ Data Safety Notice:
+All employee data is stored locally in your browser. Do not refresh the page or Click top menu links while entering data. Use only the buttons inside this page like Salary Slip/Payroll Summary etc., To prevent data loss, please download a backup (JSON file) before leaving this page.The back up and restore buttons available at Employees page.
+You can restore the data anytime using the Restore button. Otherwise, your data may be lost.
 </section>
 <div class="tabs-wrap">
   <button class="tab-btn active" onclick="switchTab('calc')">⚙️ Calculator</button>
@@ -654,6 +705,18 @@ Otherwise, your data may be lost.
     <h2 style="font-family:'Syne',sans-serif;font-size:1.1rem;color:var(--navy);">👥 Employee List <span id="empCountBadge" style="background:#e8f4fd;color:#1a5fa8;border-radius:20px;padding:2px 10px;font-size:.8rem;font-weight:700;margin-left:.5rem;">0</span></h2>
     <button class="btn btn-primary" onclick="switchTab('calc')">➕ Add New Employee</button>
   </div>
+
+  <!-- BACKUP / RESTORE BAR -->
+  <div class="backup-bar">
+    <div class="backup-bar-label">🛡️ Data Safety — Backup &amp; Restore</div>
+    <div class="backup-btns">
+      <button class="btn-backup" onclick="backupData()">⬇️ Backup Data</button>
+      <button class="btn-restore" onclick="document.getElementById('restoreFileInput').click()">⬆️ Restore Data</button>
+    </div>
+  </div>
+  <!-- Hidden file input used by Restore -->
+  <input type="file" id="restoreFileInput" accept=".json" style="display:none;" onchange="restoreData(event)"/>
+
   <div id="empListWrap"><div class="empty">No employees added yet. Fill the calculator form and click "Add Employee".</div></div>
 </div>
 
@@ -1400,7 +1463,176 @@ window.onload = () => {
   $('salaryPayDate').value = today;
   liveCalc();
 };
+
+// ════════════════════════════════════════════════════════════════
+// ─── BACKUP & RESTORE ───────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+
+/**
+ * showToast — displays a small pop-up message at the bottom-right.
+ * @param {string} msg    - Message text
+ * @param {string} type   - 'success' | 'error' | 'info'
+ * @param {number} dur    - Auto-hide after X ms (default 3500)
+ */
+function showToast(msg, type = 'success', dur = 3500) {
+  const toast = document.getElementById('appToast');
+  toast.textContent = msg;
+  toast.className = 'toast toast-' + type + ' show';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, dur);
+}
+
+/**
+ * backupData — gathers all employee data + salaryPayDate from
+ * memory (the `employees` array) and downloads it as a .json file.
+ * The user can rename the file in the browser's Save dialog.
+ */
+function backupData() {
+  // Nothing to back up?
+  if (employees.length === 0) {
+    showToast('⚠️ No employee data to back up yet.', 'info');
+    return;
+  }
+
+  // Build backup object
+  const backup = {
+    _meta: {
+      app: 'SalaryPro — RamTools',
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      totalEmployees: employees.length
+    },
+    employees: employees,
+    salaryPayDate: document.getElementById('salaryPayDate')
+                    ? document.getElementById('salaryPayDate').value
+                    : ''
+  };
+
+  // Convert to JSON string (pretty-printed for readability)
+  const jsonStr = JSON.stringify(backup, null, 2);
+
+  // Build a suggested file name like: SalaryPro_Backup_2026-03-19.json
+  const dateTag = new Date().toISOString().slice(0, 10);
+  const suggestedName = 'SalaryPro_Backup_' + dateTag + '.json';
+
+  // Create a temporary <a> element and trigger download
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = suggestedName;   // browser's Save dialog lets user rename
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);     // free memory
+
+  showToast(
+    '✅ Backup downloaded! (' + employees.length + ' employee' +
+    (employees.length !== 1 ? 's' : '') + ')',
+    'success'
+  );
+}
+
+/**
+ * restoreData — called when the user selects a .json file.
+ * Reads, validates, and loads the data back into the app.
+ * @param {Event} event - the <input type="file"> change event
+ */
+function restoreData(event) {
+  const file = event.target.files[0];
+
+  // Reset the file input so the same file can be selected again later
+  event.target.value = '';
+
+  if (!file) return;
+
+  // Basic file-type check
+  if (!file.name.endsWith('.json') && file.type !== 'application/json') {
+    showToast('❌ Invalid file. Please select a valid .json backup file.', 'error', 5000);
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    let parsed;
+
+    // ── Step 1: Parse JSON ─────────────────────────────────────
+    try {
+      parsed = JSON.parse(e.target.result);
+    } catch (err) {
+      showToast('❌ Corrupted file — could not read JSON. Please select a valid backup.', 'error', 6000);
+      return;
+    }
+
+    // ── Step 2: Validate structure ─────────────────────────────
+    if (!parsed || !Array.isArray(parsed.employees)) {
+      showToast('❌ Invalid backup file — missing employee data.', 'error', 6000);
+      return;
+    }
+
+    // Each employee must at least have a name
+    const allValid = parsed.employees.every(
+      emp => emp && typeof emp.empName === 'string'
+    );
+    if (!allValid) {
+      showToast('❌ Backup file contains invalid employee records.', 'error', 6000);
+      return;
+    }
+
+    // ── Step 3: Confirm overwrite ──────────────────────────────
+    const empCount = parsed.employees.length;
+    const exportedAt = parsed._meta && parsed._meta.exportedAt
+      ? new Date(parsed._meta.exportedAt).toLocaleString('en-IN')
+      : 'unknown date';
+
+    const proceed = confirm(
+      'Restore ' + empCount + ' employee' + (empCount !== 1 ? 's' : '') +
+      ' from backup?\n' +
+      'Backup date: ' + exportedAt + '\n\n' +
+      '⚠️ This will OVERWRITE your current data. Are you sure?'
+    );
+    if (!proceed) {
+      showToast('ℹ️ Restore cancelled.', 'info');
+      return;
+    }
+
+    // ── Step 4: Restore data ───────────────────────────────────
+    employees = parsed.employees;
+
+    // Restore salary pay date if present
+    if (parsed.salaryPayDate && document.getElementById('salaryPayDate')) {
+      document.getElementById('salaryPayDate').value = parsed.salaryPayDate;
+    }
+
+    // ── Step 5: Refresh all UI ─────────────────────────────────
+    renderEmpList();          // Employees tab list
+    buildPayrollSummary();    // Payroll summary table + cards
+    liveCalc();               // Calculator live preview
+
+    showToast(
+      '✅ Restored ' + empCount + ' employee' +
+      (empCount !== 1 ? 's' : '') + ' successfully!',
+      'success', 4500
+    );
+
+    // Switch to the Employees tab so the user sees the restored data
+    switchTab('emp');
+  };
+
+  reader.onerror = function() {
+    showToast('❌ Could not read the file. Please try again.', 'error', 5000);
+  };
+
+  reader.readAsText(file);
+}
+// ════════════════════════════════════════════════════════════════
 </script>
+
+<!-- Toast notification element (used by showToast) -->
+<div id="appToast" class="toast"></div>
 
 </body>
 </html>
