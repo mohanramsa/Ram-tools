@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
+  --currency-symbol: '₹';
   --navy:    #0f2540;
   --blue:    #1a5fa8;
   --blue2:   #2980b9;
@@ -42,6 +43,15 @@ nav{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justif
 .nav-links{display:flex;gap:1.5rem;list-style:none;}
 .nav-links a{color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color .2s;}
 .nav-links a:hover,.nav-links a.active{color:#fff;}
+
+/* CURRENCY SELECTOR */
+.currency-select-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.currency-select-wrap label{color:rgba(255,255,255,0.5);font-size:.65rem;font-weight:600;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;}
+.currency-select-inner{display:flex;align-items:center;gap:.4rem;}
+.currency-icon{font-size:1rem;line-height:1;}
+#currencySelect{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:.28rem .55rem;font-size:.8rem;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;transition:background .2s,border .2s;max-width:215px;}
+#currencySelect:hover,#currencySelect:focus{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.55);}
+#currencySelect option{background:var(--navy);color:#fff;}
 
 /* HERO */
 .hero{background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 60%,#1e5fa8 100%);padding:2.5rem 2rem 2rem;text-align:center;position:relative;overflow:hidden;}
@@ -140,7 +150,7 @@ nav{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justif
 
 /* NET SALARY BOX */
 .net-box{background:linear-gradient(135deg,var(--green),#0d6b3a);border-radius:var(--radius);padding:1.5rem;color:#fff;text-align:center;position:relative;overflow:hidden;}
-.net-box::after{content:'₹';position:absolute;right:-10px;top:-20px;font-size:8rem;opacity:.06;font-weight:900;}
+.net-box::after{content:var(--currency-symbol,'₹');position:absolute;right:-10px;top:-20px;font-size:8rem;opacity:.06;font-weight:900;}
 .net-label{font-size:.8rem;text-transform:uppercase;letter-spacing:1px;opacity:.8;margin-bottom:.3rem;}
 .net-amount{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;letter-spacing:-1px;}
 .net-adj{font-size:.8rem;opacity:.75;margin-top:.2rem;}
@@ -365,6 +375,8 @@ footer a:hover{color:#fff;}
   /* Nav */
   nav{padding:0 .75rem;height:50px;}
   .nav-links{display:none;}
+  .currency-select-wrap label{display:block;font-size:.58rem;}
+  #currencySelect{font-size:.72rem;padding:.2rem .35rem;max-width:150px;}
 
   /* Hero */
   .hero{padding:1.2rem .75rem 1rem;}
@@ -648,6 +660,25 @@ footer a:hover{color:#fff;}
     <li><a href="engineering-ai.html">AI Generator</a></li>
     <li><a href="blog.html">Blog</a></li>
   </ul>
+  <div class="currency-select-wrap">
+    <label for="currencySelect">💱 Choose Currency</label>
+    <div class="currency-select-inner">
+      <select id="currencySelect" onchange="setCurrency(this.value)">
+        <option value="INR">🇮🇳 INR — ₹ Indian Rupee</option>
+        <option value="USD">🇺🇸 USD — $ US Dollar</option>
+        <option value="EUR">🇪🇺 EUR — € Euro</option>
+        <option value="GBP">🇬🇧 GBP — £ British Pound</option>
+        <option value="AED">🇦🇪 AED — د.إ UAE Dirham</option>
+        <option value="SGD">🇸🇬 SGD — S$ Singapore Dollar</option>
+        <option value="AUD">🇦🇺 AUD — A$ Australian Dollar</option>
+        <option value="CAD">🇨🇦 CAD — C$ Canadian Dollar</option>
+        <option value="JPY">🇯🇵 JPY — ¥ Japanese Yen</option>
+        <option value="MYR">🇲🇾 MYR — RM Malaysian Ringgit</option>
+        <option value="SAR">🇸🇦 SAR — ﷼ Saudi Riyal</option>
+        <option value="ZAR">🇿🇦 ZAR — R South African Rand</option>
+      </select>
+    </div>
+  </div>
 </nav>
 
 <div class="hero">
@@ -677,7 +708,7 @@ If basic salary is ₹20,000 and allowances are ₹5,000, total gross salary bec
 <p style="font-size:16px;color:black;font-weight:bold;">
 🔒⚠️ Data Safety Notice:
 All employee data is stored locally in your browser. Do not refresh the page or Click top menu links while entering data. Use only the buttons inside this page like Salary Slip/Payroll Summary etc., To prevent data loss, please download a backup (JSON file) before leaving this page.The back up and restore buttons available at Employees page.
-You can restore the data anytime using the Restore button. Otherwise, your data may be lost.
+You can restore the data anytime using the Restore button. Otherwise, your data may be lost. Choose currency from top right corner before entering any data. The selected currency will be used across all calculations and salary slips.
 </section>
 <div class="tabs-wrap">
   <button class="tab-btn active" onclick="switchTab('calc')">⚙️ Calculator</button>
@@ -769,7 +800,7 @@ You can restore the data anytime using the Restore button. Otherwise, your data 
 
 <!-- Earnings -->
 <div class="card">
-  <div class="card-head ch-blue">💰 Earnings — Monthly Amounts (₹)</div>
+  <div class="card-head ch-blue">💰 Earnings — Monthly Amounts (<span class="card-head-sym">₹</span>)</div>
   <div class="card-body">
     <div class="form-grid">
       <div class="fg"><label>Basic Salary</label><input id="basic" type="number" placeholder="25000" class="earn-input" oninput="liveCalc()"/></div>
@@ -784,7 +815,7 @@ You can restore the data anytime using the Restore button. Otherwise, your data 
 
 <!-- Deductions -->
 <div class="card">
-  <div class="card-head ch-red">➖ Deductions (₹)</div>
+  <div class="card-head ch-red">➖ Deductions (<span class="card-head-sym">₹</span>)</div>
   <div class="card-body">
     <div class="form-grid">
       <div class="fg"><label>PF — Employee 12%</label><input id="pf" type="number" placeholder="0" class="ded-input" oninput="liveCalc()"/></div>
@@ -1056,12 +1087,12 @@ You can restore the data anytime using the Restore button. Otherwise, your data 
           <th class="info-h" rowspan="2" style="min-width:90px;">Designation</th>
           <th class="info-h" rowspan="2">Days<br/>Present</th>
           <th class="info-h" rowspan="2">Pro-Rata<br/>%</th>
-          <th class="earn-h" colspan="6">EARNINGS (₹)</th>
-          <th class="earn-h" rowspan="2">GROSS<br/>SALARY (₹)</th>
-          <th class="ded-h" colspan="3">STATUTORY DED. (₹)</th>
-          <th class="ded-h" colspan="3">OTHER DED. (₹)</th>
-          <th class="ded-h" rowspan="2">TOTAL<br/>DED. (₹)</th>
-          <th class="net-h" rowspan="2">NET<br/>PAYABLE (₹)</th>
+          <th class="earn-h" colspan="6">EARNINGS (<span class="curr-sym-th">₹</span>)</th>
+          <th class="earn-h" rowspan="2">GROSS<br/>SALARY (<span class="curr-sym-th">₹</span>)</th>
+          <th class="ded-h" colspan="3">STATUTORY DED. (<span class="curr-sym-th">₹</span>)</th>
+          <th class="ded-h" colspan="3">OTHER DED. (<span class="curr-sym-th">₹</span>)</th>
+          <th class="ded-h" rowspan="2">TOTAL<br/>DED. (<span class="curr-sym-th">₹</span>)</th>
+          <th class="net-h" rowspan="2">NET<br/>PAYABLE (<span class="curr-sym-th">₹</span>)</th>
         </tr>
         <tr>
           <th class="earn-h">Basic</th>
@@ -1084,7 +1115,7 @@ You can restore the data anytime using the Restore button. Otherwise, your data 
   </div>
 
   <div style="margin-top:.8rem;font-size:.75rem;color:var(--muted);font-style:italic;" class="payroll-actions">
-    💡 All amounts in ₹ &nbsp;|&nbsp; Pro-rata already applied in adjusted amounts shown &nbsp;|&nbsp; Click Print to save as PDF
+    💡 All amounts in <span id="payrollAmountTip">₹ INR</span> &nbsp;|&nbsp; Pro-rata already applied in adjusted amounts shown &nbsp;|&nbsp; Click Print to save as PDF
   </div>
 </div>
 
@@ -1101,6 +1132,39 @@ You can restore the data anytime using the Restore button. Otherwise, your data 
 </footer>
 
 <script>
+// ─── CURRENCY CONFIG ─────────────────────────────────────────────
+const CURRENCIES = {
+  INR: { symbol: '₹', code: 'INR', locale: 'en-IN',  cssVar: "'₹'" },
+  USD: { symbol: '$', code: 'USD', locale: 'en-US',  cssVar: "'$'" },
+  EUR: { symbol: '€', code: 'EUR', locale: 'de-DE',  cssVar: "'€'" },
+  GBP: { symbol: '£', code: 'GBP', locale: 'en-GB',  cssVar: "'£'" },
+  AED: { symbol: 'د.إ', code: 'AED', locale: 'ar-AE', cssVar: "'د.إ'" },
+  SGD: { symbol: 'S$', code: 'SGD', locale: 'en-SG',  cssVar: "'S$'" },
+  AUD: { symbol: 'A$', code: 'AUD', locale: 'en-AU',  cssVar: "'A$'" },
+  CAD: { symbol: 'C$', code: 'CAD', locale: 'en-CA',  cssVar: "'C$'" },
+  JPY: { symbol: '¥',  code: 'JPY', locale: 'ja-JP',  cssVar: "'¥'",  noDecimal: true },
+  MYR: { symbol: 'RM', code: 'MYR', locale: 'ms-MY',  cssVar: "'RM'" },
+  SAR: { symbol: '﷼',  code: 'SAR', locale: 'ar-SA',  cssVar: "'﷼'" },
+  ZAR: { symbol: 'R',  code: 'ZAR', locale: 'en-ZA',  cssVar: "'R'" },
+};
+let activeCurrency = CURRENCIES.INR;
+
+function setCurrency(code) {
+  activeCurrency = CURRENCIES[code] || CURRENCIES.INR;
+  const sym = activeCurrency.symbol;
+  // CSS variable for net-box watermark
+  document.documentElement.style.setProperty('--currency-symbol', activeCurrency.cssVar);
+  // Card head symbols (Earnings / Deductions labels)
+  document.querySelectorAll('.card-head-sym').forEach(el => el.textContent = sym);
+  // Payroll table header cells
+  document.querySelectorAll('.curr-sym-th').forEach(el => el.textContent = sym);
+  // "All amounts in X" tip line
+  const tip = $('payrollAmountTip');
+  if (tip) tip.textContent = sym + ' ' + activeCurrency.code;
+  liveCalc();
+  buildPayrollSummary();
+}
+
 // ─── STATE ───────────────────────────────────────────────────────
 let employees = [], editingId = null, _dragSrc = null;
 
@@ -1108,7 +1172,12 @@ let employees = [], editingId = null, _dragSrc = null;
 const $  = id => document.getElementById(id);
 const v  = id => parseFloat($(id).value) || 0;
 const gv = id => $(id).value.trim();
-const fmt = n => '₹' + Math.round(Number(n)||0).toLocaleString('en-IN');
+const fmt = n => {
+  const cur = activeCurrency;
+  const num = Math.round(Number(n)||0);
+  const formatted = num.toLocaleString(cur.locale);
+  return cur.symbol + ' ' + formatted + ' ' + cur.code;
+};
 
 // ─── TABS ─────────────────────────────────────────────────────────
 function switchTab(name) {
@@ -1533,9 +1602,9 @@ function buildPayrollSummary() {
     wrap.style.display  = 'none';
     $('payrollCards').style.opacity = '.4';
     $('psEmpCount').textContent  = '0';
-    $('psTotalGross').textContent = '₹0';
-    $('psTotalDed').textContent   = '₹0';
-    $('psTotalNet').textContent   = '₹0';
+    $('psTotalGross').textContent = fmt(0);
+    $('psTotalDed').textContent   = fmt(0);
+    $('psTotalNet').textContent   = fmt(0);
     return;
   }
 
