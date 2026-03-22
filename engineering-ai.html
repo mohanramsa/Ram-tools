@@ -1037,6 +1037,15 @@ document.getElementById('promptInput').addEventListener('keydown', e => {
   };
 
 })();</script>
+<script>
+fetch("https://ram-ai.mohanramsa.workers.dev/github")
+  .then(res => res.json())
+  .then(data => {
+    const el = document.createElement("div");
+    el.innerHTML = "<h3 style='color:#1a237e'>GitHub: " + data.login + "</h3>";
+    document.body.appendChild(el);
+  });
+</script>
 </body>
 </html>
 <footer>
