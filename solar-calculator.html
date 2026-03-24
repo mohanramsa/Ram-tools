@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9NWVZHYXLH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9NWVZHYXLH');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar Panel System Calculator | RamTools</title>
+<meta name="description" content="Free Solar Panel System Calculator — calculate number of mono solar panels, battery bank size, MPPT controller, and inverter for any load. India & Middle East solar sizing.">
+<link rel="canonical" href="https://ramtools.in/solar-calculator.html">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2721210983880063" crossorigin="anonymous"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap');
+  :root {
+    --purple: #5b21b6;
+    --orange: #ea580c;
+    --solar: #d97706;
+    --solar-bg: #fffbeb;
+    --bg: #fffbeb;
+    --card: #ffffff;
+    --label: #92400e;
+    --border: #fde68a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: #fef9ee; color: #1e1b4b; }
+  nav { background: #d97706; padding: 10px 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; position: relative; z-index: 1000; }
+  .logo { color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .logo-icon { background: #92400e; color: #fff; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 1rem; }
+  nav a { color: #fef3c7; text-decoration: none; font-size: 0.85rem; white-space: nowrap; padding: 4px 0; transition: color .2s; }
+  nav a:hover, nav a.active { color: #fff; }
+  .menu { display: flex; gap: 15px; list-style: none; flex-wrap: wrap; }
+  .menu-toggle { margin-left: auto; }
+  main { max-width: 1100px; margin: 30px auto 2rem; padding: 0 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  h1 { font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--solar); margin-bottom: 0.5rem; }
+  .card { background: var(--card); border-radius: 14px; border: 2px solid #fbbf24; padding: 1.5rem; box-shadow: 0 2px 12px #d9770615; background: linear-gradient(135deg,#fffbeb 0%,#fff 60%); }
+  .card-title { font-family: 'Rajdhani', sans-serif; font-size: 1.35rem; color: var(--solar); font-weight: 700; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 8px; }
+  .card-sub { color: #6b7280; font-size: 0.85rem; margin-bottom: 1.1rem; }
+  .grid { display: grid; gap: 1rem; }
+  .g2 { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  label { font-size: 0.82rem; font-weight: 700; color: #92400e; display: block; margin-bottom: 4px; }
+  input, select { width: 100%; border: 1.5px solid #fbbf24; border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; font-family: inherit; outline: none; transition: border .2s; background: #fafafa; }
+  input:focus, select:focus { border-color: var(--solar); background: #fff; }
+  .btn { background: #d97706; color: #fff; border: none; border-radius: 9px; padding: 11px 28px; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .2s; align-self: flex-end; white-space: nowrap; }
+  .btn:hover { background: #b45309; }
+  .btn-row { display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+  .result { margin-top: 1rem; background: #fef3c7; border-radius: 10px; padding: 1rem 1.2rem; font-size: 0.95rem; color: #92400e; font-weight: 600; display: none; }
+  .result.show { display: block; }
+  .result .res-val { font-size: 1.35rem; font-family: 'Rajdhani', sans-serif; color: var(--solar); font-weight: 700; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .tab { padding: 6px 16px; border-radius: 20px; border: 1.5px solid #fbbf24; background: #fef3c7; font-size: 0.82rem; font-weight: 700; cursor: pointer; color: #92400e; transition: all .2s; }
+  .tab.active { background: #d97706; color: #fff; border-color: #d97706; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .note { background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 6px; padding: 0.8rem 1rem; font-size: 0.82rem; color: #78350f; margin-top: 1rem; line-height: 1.6; }
+  .note b { display: block; margin-bottom: 4px; color: #92400e; }
+  .section-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #9ca3af; letter-spacing: 1px; margin-bottom: 0.5rem; }
+  .hero { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; border-radius: 14px; padding: 2rem; margin-bottom: 0.5rem; }
+  .hero h1 { color: #fff; margin-bottom: 0.4rem; font-size: 2.2rem; }
+  .hero p { color: #fef3c7; font-size: 0.95rem; }
+  .page-nav { background: #fff; border: 1.5px solid #fbbf24; border-radius: 10px; padding: 0.8rem 1.2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .page-nav span { font-size: 0.82rem; font-weight: 700; color: #92400e; }
+  .page-nav a { font-size: 0.82rem; color: #5b21b6; text-decoration: none; font-weight: 700; padding: 4px 12px; border-radius: 20px; border: 1.5px solid #ddd6fe; background: #f5f3ff; transition: all .2s; }
+  .page-nav a:hover { background: #5b21b6; color: #fff; border-color: #5b21b6; }
+  @media (max-width: 768px) {
+    nav { flex-direction: column; align-items: flex-start; padding: 10px; }
+    .menu { display: none; flex-direction: column; width: 100%; gap: 0; }
+    .menu li { width: 100%; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+    .menu a { display: block; width: 100%; font-size: 16px; color: #ffffff; font-weight: 500; }
+    body { padding-left: 5px; padding-right: 5px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">
+    <div class="logo-icon">R</div> RamTools
+  </div>
+  <div class="menu-toggle" onclick="toggleMenu()" style="color:white;font-size:24px;cursor:pointer;">☰</div>
+  <ul class="menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="salary.html">SalaryPro</a></li>
+    <li><a href="electrical.html">Electrical Formulas</a></li>
+    <li><a href="solar-calculator.html" class="active">☀️ Solar Calculator</a></li>
+    <li><a href="relay-calculator.html">🛡️ Relay Testing</a></li>
+    <li><a href="engineering-ai.html">AI Formula Generator</a></li>
+    <li><a href="electrical-quiz.html">Electrical Quiz</a></li>
+    <li><a href="blog.html">Spiritual Blog</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+  <div class="hero">
+    <h1>☀️ Solar Panel System Calculator</h1>
+    <p>Professional solar sizing tool — calculate panels, battery bank, MPPT controller & inverter for any load. Ideal for India, Middle East, and global deployments.</p>
+  </div>
+
+  <div class="page-nav">
+    <span>🔗 Related Tools:</span>
+    <a href="electrical.html">⚡ Electrical Formulas</a>
+    <a href="relay-calculator.html">🛡️ Relay Testing</a>
+    <a href="engineering-ai.html">🤖 AI Formula Generator</a>
+  </div>
+
+  <section style="background:#fff;border:1.5px solid #fbbf24;border-radius:12px;padding:1.2rem 1.5rem;">
+    <h2 style="color:#d97706;font-family:'Rajdhani',sans-serif;font-size:1.3rem;margin-bottom:0.5rem;">What is a Solar Panel System Calculator?</h2>
+    <p style="color:#374151;font-size:0.9rem;line-height:1.7;">This free solar calculator helps homeowners, engineers, and solar installers accurately size a solar PV system. Enter your load requirement, peak sun hours, and system voltage — the tool instantly calculates the number of mono solar panels, battery bank size, MPPT charge controller rating, and inverter size required.</p>
+  </section>
+
+  <!-- Solar Panel Calculator Card -->
+  <div class="card">
+    <div class="card-title">☀️ Solar Panel System Calculator</div>
+    <div class="card-sub">Calculate number of mono solar panels needed based on system voltage and max load requirement.</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('sol','panels',this)">📐 Panel Count</div>
+      <div class="tab" onclick="switchTab('sol','battery',this)">🔋 Battery Bank</div>
+    </div>
+
+    <div class="tab-content active" id="sol-panels">
+      <div class="card-sub">Find the number of solar panels required for your system.</div>
+      <div class="grid g3">
+        <div>
+          <label>System Voltage (VDC)</label>
+          <select id="sol_volt" style="border-color:#fbbf24;">
+            <option value="12">12V DC</option>
+            <option value="24">24V DC</option>
+            <option value="48" selected>48V DC</option>
+          </select>
+        </div>
+        <div>
+          <label>Max Load Requirement (kW)</label>
+          <input id="sol_load" type="number" placeholder="e.g. 3.5" step="0.1">
+        </div>
+        <div>
+          <label>Peak Sun Hours / Day (hrs)</label>
+          <input id="sol_sun" type="number" placeholder="e.g. 5" step="0.5" value="5">
+          <div style="font-size:0.75rem;color:#6b7280;margin-top:4px">Typical: India 5–6h, Middle East 6–7h, UK 3–4h</div>
+        </div>
+        <div>
+          <label>System Efficiency Factor (%)</label>
+          <input id="sol_eff" type="number" placeholder="e.g. 80" value="80" min="50" max="100">
+          <div style="font-size:0.75rem;color:#6b7280;margin-top:4px">Accounts for inverter, wiring, dust losses (typically 75–85%)</div>
+        </div>
+        <div>
+          <label>Daily Usage Hours</label>
+          <input id="sol_hrs" type="number" placeholder="e.g. 8" value="8" step="0.5">
+        </div>
+        <div>
+          <label>Panel Wattage (W)</label>
+          <select id="sol_watt">
+            <option value="400">400W (Standard Mono)</option>
+            <option value="450">450W (High Power Mono)</option>
+            <option value="500" selected>500W (TOPCon Premium)</option>
+            <option value="550">550W (HJT / N-Type)</option>
+            <option value="600">600W (Bifacial N-Type)</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcSolar()">☀️ Calculate Panels</button></div>
+      <div class="result" id="sol_res"></div>
+    </div>
+
+    <div class="tab-content" id="sol-battery">
+      <div class="card-sub">Calculate battery bank size for solar storage.</div>
+      <div class="grid g3">
+        <div>
+          <label>System Voltage (VDC)</label>
+          <select id="solb_volt">
+            <option value="12">12V DC</option>
+            <option value="24">24V DC</option>
+            <option value="48" selected>48V DC</option>
+          </select>
+        </div>
+        <div>
+          <label>Daily Energy Needed (kWh)</label>
+          <input id="solb_kwh" type="number" placeholder="e.g. 10" step="0.1">
+        </div>
+        <div>
+          <label>Backup Days Required</label>
+          <input id="solb_days" type="number" placeholder="e.g. 1" value="1" step="0.5">
+        </div>
+        <div>
+          <label>Depth of Discharge % (DoD)</label>
+          <input id="solb_dod" type="number" placeholder="e.g. 80" value="80">
+          <div style="font-size:0.75rem;color:#6b7280;margin-top:4px">Lead-acid: 50% | LiFePO4: 80–90%</div>
+        </div>
+        <div>
+          <label>Battery Type</label>
+          <select id="solb_type">
+            <option value="lead">Lead-Acid (12V / 100–200Ah)</option>
+            <option value="li" selected>LiFePO4 (48V / 100Ah)</option>
+            <option value="gel">Gel / AGM (12V)</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcSolarBattery()">🔋 Calculate Battery Bank</button></div>
+      <div class="result" id="solb_res"></div>
+    </div>
+
+    <!-- Panel Recommendations -->
+    <div style="margin-top:1.5rem;">
+      <div class="section-label" style="display:flex;align-items:center;gap:8px;">
+        <span style="background:#FF9933;width:12px;height:12px;border-radius:2px;display:inline-block;"></span>
+        <span style="background:#fff;width:12px;height:12px;border-radius:2px;display:inline-block;border:1px solid #ddd;"></span>
+        <span style="background:#138808;width:12px;height:12px;border-radius:2px;display:inline-block;"></span>
+        &nbsp;🇮🇳 INDIAN BRANDS — Top Monocrystalline Panels (2024–2025)
+      </div>
+      <div style="display:grid;gap:0.8rem;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));margin-top:0.6rem;margin-bottom:1.2rem;">
+
+        <div style="background:linear-gradient(135deg,#fff7ed,#fff);border:1.5px solid #fb923c;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#FF9933;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🇮🇳 INDIA</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#c2410c;">🥇 Waaree Energies — Mono PERC</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> WS-540M (Mono PERC Half-Cut)<br>
+            <b>Power:</b> 540W | <b>Efficiency:</b> 21.2%<br>
+            <b>Type:</b> Mono PERC Half-Cut Cell | 144 Cells<br>
+            <b>Voc:</b> 49.6V | <b>Isc:</b> 13.98A<br>
+            <b>Temp Coeff:</b> −0.34%/°C<br>
+            <b>Warranty:</b> 10-Year Product | 27-Year Linear<br>
+            <b>Made in:</b> Surat, Gujarat | <b>Cert:</b> IEC, BIS<br>
+            <span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">🏆 India's #1 Solar Exporter</span>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,#f0fdf4,#fff);border:1.5px solid #4ade80;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#138808;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🇮🇳 INDIA</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#15803d;">🥈 Vikram Solar — Eldora Grand</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> VSP6M3-545HB (Bifacial PERC)<br>
+            <b>Power:</b> 545W | <b>Efficiency:</b> 21.0%<br>
+            <b>Type:</b> Mono PERC Bifacial Half-Cut | 144 Cells<br>
+            <b>Voc:</b> 49.8V | <b>Isc:</b> 13.80A<br>
+            <b>Temp Coeff:</b> −0.35%/°C<br>
+            <b>Warranty:</b> 12-Year Product | 30-Year Linear<br>
+            <b>Made in:</b> Kolkata, WB | <b>Cert:</b> IEC, UL, BIS<br>
+            <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">⚡ Bifacial — Extra 10–25% Rear Gain</span>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,#eff6ff,#fff);border:1.5px solid #60a5fa;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#1d4ed8;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🇮🇳 INDIA</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#1d4ed8;">🥉 Adani Solar — Jupiter N-TOPCon</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> AS-6MHZ-540W (N-Type TOPCon)<br>
+            <b>Power:</b> 540W | <b>Efficiency:</b> 21.5%<br>
+            <b>Type:</b> N-Type TOPCon Mono | 132 Half-Cut<br>
+            <b>Voc:</b> 50.2V | <b>Isc:</b> 13.65A<br>
+            <b>Temp Coeff:</b> −0.30%/°C<br>
+            <b>Warranty:</b> 12-Year Product | 30-Year Linear<br>
+            <b>Made in:</b> Mundra, Gujarat | <b>Cert:</b> IEC, ALMM<br>
+            <span style="background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">🆕 N-Type TOPCon — Best Indian Tech 2024</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:0.5rem;">🌍 INTERNATIONAL BRANDS — Premium Monocrystalline (2024–2025)</div>
+      <div style="display:grid;gap:0.8rem;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));margin-top:0.6rem;">
+
+        <div style="background:linear-gradient(135deg,#fdf4ff,#fff);border:1.5px solid #c084fc;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#7c3aed;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🌏 GLOBAL</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#7c3aed;">🥇 Jinko Solar — Tiger Neo N-Type</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> JKM580N-72HL4-V<br>
+            <b>Power:</b> 580W | <b>Efficiency:</b> 22.3%<br>
+            <b>Type:</b> N-Type TOPCon Mono Bifacial | 144 Cells<br>
+            <b>Voc:</b> 52.68V | <b>Isc:</b> 14.06A<br>
+            <b>Temp Coeff:</b> −0.29%/°C<br>
+            <b>Warranty:</b> 12-Year Product | 30-Year Linear<br>
+            <b>Origin:</b> China / Global | <b>Cert:</b> IEC, UL, CE, BIS<br>
+            <span style="background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">🌏 World's #1 Solar Manufacturer</span>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,#fff1f2,#fff);border:1.5px solid #f87171;border-radius:10px;padding:1rem;position:relative;">
+          <div style="position:absolute;top:10px;right:10px;background:#dc2626;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;">🌏 GLOBAL</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#dc2626;">🥈 LONGi Solar — Hi-MO X6 Explorer</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:6px;line-height:1.8">
+            <b>Model:</b> LR5-72HIH-565M<br>
+            <b>Power:</b> 565W | <b>Efficiency:</b> 22.0%<br>
+            <b>Type:</b> HPBC Mono | 144 Half-Cut Cells<br>
+            <b>Voc:</b> 52.20V | <b>Isc:</b> 13.72A<br>
+            <b>Temp Coeff:</b> −0.29%/°C<br>
+            <b>Warranty:</b> 12-Year Product | 30-Year Linear<br>
+            <b>Origin:</b> China / India Assembly | <b>Cert:</b> IEC, BIS, CE<br>
+            <span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;">🏅 Highest Efficiency HPBC Tech 2024</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:1rem;border-color:#fbbf24;background:#fffbeb;">
+      <b>📐 Solar Panel Count Formula</b>
+      Daily Energy (kWh) = Load (kW) × Usage Hours<br>
+      Required Array (kW) = Daily Energy / (Peak Sun Hours × Efficiency)<br>
+      No. of Panels = Required Array (W) / Panel Wattage — <b>always round up</b><br><br>
+      ⚡ <b>System Sizing Note:</b> 12V for loads up to ~1.5kW | 24V for 1.5–3kW | 48V for 3kW+ loads. Higher voltage = less current = thinner cables.
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <section style="background:#fff;border:1.5px solid #fbbf24;border-radius:12px;padding:1.2rem 1.5rem;">
+    <h2 style="color:#d97706;font-family:'Rajdhani',sans-serif;font-size:1.3rem;margin-bottom:0.8rem;">❓ How to Use This Solar Calculator</h2>
+    <ol style="color:#374151;font-size:0.9rem;line-height:2;padding-left:1.2rem;">
+      <li>Select your <b>system voltage</b> (12V, 24V, or 48V) based on your load size</li>
+      <li>Enter your <b>maximum load in kW</b> (total connected load)</li>
+      <li>Enter <b>peak sun hours</b> for your location (India: 5–6h, Middle East: 6–7h)</li>
+      <li>Set <b>system efficiency</b> (typically 75–85% for real-world losses)</li>
+      <li>Enter <b>daily usage hours</b> (how many hours per day the load runs)</li>
+      <li>Select <b>panel wattage</b> and click Calculate</li>
+    </ol>
+  </section>
+
+</main>
+
+<footer style="text-align:center;padding:1.5rem;background:#fffbeb;border-top:1px solid #fde68a;margin-top:2rem;">
+  <p style="color:#78350f;font-size:0.85rem;">© 2026 RamTools. All Rights Reserved.</p>
+  <p style="font-size:0.75rem;color:#92400e;margin-top:0.4rem;">
+    Disclaimer: Product names like Waaree, Vikram Solar, Adani, Jinko, LONGi are trademarks of their respective owners.
+    RamTools is not affiliated with or endorsed by any of these companies. All content is for educational reference only.
+  </p>
+</footer>
+
+<script>
+function showRes(id, html) {
+  const el = document.getElementById(id);
+  el.innerHTML = html;
+  el.classList.add('show');
+}
+
+function switchTab(group, name, el) {
+  document.querySelectorAll(`[id^="${group}-"]`).forEach(t => t.classList.remove('active'));
+  document.getElementById(`${group}-${name}`).classList.add('active');
+  el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function calcSolar() {
+  const volt = parseFloat(document.getElementById('sol_volt').value);
+  const loadKw = parseFloat(document.getElementById('sol_load').value);
+  const sunHrs = parseFloat(document.getElementById('sol_sun').value);
+  const effPct = parseFloat(document.getElementById('sol_eff').value);
+  const usageHrs = parseFloat(document.getElementById('sol_hrs').value);
+  const panelW = parseFloat(document.getElementById('sol_watt').value);
+  if (!loadKw || !sunHrs || !effPct || !usageHrs) {
+    showRes('sol_res','<span style="color:#dc2626">⚠️ Please fill in all fields.</span>'); return;
+  }
+  const eff = effPct / 100;
+  const dailyEnergyKwh = loadKw * usageHrs;
+  const requiredArrayKw = dailyEnergyKwh / (sunHrs * eff);
+  const vmp = 37;
+  const seriesPanels = Math.max(1, Math.round(volt / vmp));
+  const parallelStrings = Math.ceil((requiredArrayKw * 1000 / panelW) / seriesPanels);
+  const actualPanels = seriesPanels * parallelStrings;
+  const totalArrayKw = (actualPanels * panelW / 1000).toFixed(2);
+  const actualDailyKwh = (actualPanels * panelW / 1000 * sunHrs * eff).toFixed(1);
+  const Imp = (panelW / vmp).toFixed(2);
+  const totalCurrentA = (parallelStrings * parseFloat(Imp)).toFixed(2);
+  const mpptSize = Math.ceil(parseFloat(totalCurrentA) * 1.25 / 10) * 10;
+  const invKw = loadKw * 1.25;
+  const invRec = invKw<=1?'1kW':invKw<=2?'2kW':invKw<=3?'3kW':invKw<=5?'5kW':invKw<=8?'8kW':'10kW+';
+  showRes('sol_res', `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.8rem;margin-bottom:1rem">
+      <div style="background:#fff;border:1.5px solid #fbbf24;border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase">Panels Needed</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;color:#d97706;font-weight:700;line-height:1">${actualPanels}</div>
+        <div style="font-size:0.72rem;color:#6b7280">${panelW}W Mono Panels</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #fbbf24;border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase">Total Array</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;color:#d97706;font-weight:700;line-height:1">${totalArrayKw}</div>
+        <div style="font-size:0.72rem;color:#6b7280">kW Peak</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #fbbf24;border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase">Daily Energy</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;color:#d97706;font-weight:700;line-height:1">${actualDailyKwh}</div>
+        <div style="font-size:0.72rem;color:#6b7280">kWh / Day</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #fbbf24;border-radius:8px;padding:0.8rem;text-align:center">
+        <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase">MPPT Controller</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;color:#d97706;font-weight:700;line-height:1">${mpptSize}A</div>
+        <div style="font-size:0.72rem;color:#6b7280">${volt}V MPPT</div>
+      </div>
+    </div>
+    <table style="border-collapse:collapse;width:100%;font-size:0.85rem;margin-bottom:0.8rem">
+      <tr style="background:#fef3c7"><th style="padding:6px 10px;text-align:left;border:1px solid #fbbf24">Parameter</th><th style="padding:6px 10px;border:1px solid #fbbf24">Value</th></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">System Voltage</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${volt}V DC</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Daily Energy Required</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${dailyEnergyKwh.toFixed(2)} kWh</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Required Array Size</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${requiredArrayKw.toFixed(2)} kW</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Panel Configuration</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${seriesPanels}S × ${parallelStrings}P = ${actualPanels} panels</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">String Voltage (approx Vmp)</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${(seriesPanels * vmp).toFixed(0)}V</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Total Array Current (Imp)</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${totalCurrentA} A</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Recommended MPPT Charge Controller</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${mpptSize}A / ${volt}V MPPT</td></tr>
+      <tr><td style="padding:5px 10px;border:1px solid #fde68a">Recommended Inverter</td><td style="padding:5px 10px;border:1px solid #fde68a;font-weight:700">${invRec} Inverter (${volt}V input)</td></tr>
+    </table>
+    <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:0.6rem 1rem;border-radius:6px;font-size:0.82rem;color:#78350f">
+      ⚠️ <b>Wiring Note:</b> Use ${volt>=48?'4mm²':'6mm²'} DC cable for array wiring. Install DC disconnect switch and surge arrestor on both PV and battery sides. Add ${Math.ceil(parseFloat(totalArrayKw)*1.25)}A DC fuse per string.
+    </div>
+  `);
+}
+
+function calcSolarBattery() {
+  const volt = parseFloat(document.getElementById('solb_volt').value);
+  const dailyKwh = parseFloat(document.getElementById('solb_kwh').value);
+  const days = parseFloat(document.getElementById('solb_days').value);
+  const dod = parseFloat(document.getElementById('solb_dod').value);
+  const type = document.getElementById('solb_type').value;
+  if (!dailyKwh || !days || !dod) {
+    showRes('solb_res','<span style="color:#dc2626">⚠️ Please fill in all fields.</span>'); return;
+  }
+  const totalEnergyWh = dailyKwh * days * 1000;
+  const battCapacityWh = totalEnergyWh / (dod / 100);
+  const battCapacityAh = battCapacityWh / volt;
+  let recommend;
+  if (type==='li') {
+    const cnt = Math.ceil(battCapacityAh / 100);
+    recommend = `${cnt}× LiFePO4 ${volt}V 100Ah in parallel<br><b>Recommended:</b> Pylontech US3000C, BYD Battery-Box, CATL 48V 100Ah`;
+  } else if (type==='lead') {
+    const ser = volt/12, par = Math.ceil(battCapacityAh/150);
+    recommend = `${ser*par}× 12V 150Ah Lead-Acid (${ser}S × ${par}P)<br><b>Recommended:</b> Exide / Amaron Tubular Deep Cycle`;
+  } else {
+    const ser = volt/12, par = Math.ceil(battCapacityAh/100);
+    recommend = `${ser*par}× 12V 100Ah Gel/AGM (${ser}S × ${par}P)<br><b>Recommended:</b> Victron Energy AGM / VRLA Gel`;
+  }
+  showRes('solb_res', `
+    <div class="res-val" style="color:#d97706;font-size:1.4rem;margin-bottom:0.8rem">🔋 Battery Bank: ${battCapacityAh.toFixed(0)} Ah @ ${volt}V (${(battCapacityWh/1000).toFixed(2)} kWh)</div>
+    <div style="background:#fef3c7;border-left:4px solid #fbbf24;padding:0.7rem 1rem;border-radius:6px;font-size:0.85rem;color:#78350f;margin-bottom:0.7rem">${recommend}</div>
+    <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:0.6rem 1rem;border-radius:6px;font-size:0.82rem;color:#78350f">
+      💡 <b>Tip:</b> LiFePO4 recommended — lighter, 3000+ cycle life, 80–90% DoD vs 50% for lead-acid.
+    </div>
+  `);
+}
+
+function toggleMenu() {
+  let menu = document.querySelector('.menu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+</script>
+</body>
+</html>
