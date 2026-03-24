@@ -64,10 +64,33 @@ nav {
 
 .nav-links {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;       /* ✅ keep items in one line */
+  overflow-x: auto;        /* ✅ allow scroll if needed */
+  white-space: nowrap;     /* ✅ prevent breaking */
   gap: 0.1rem;
   list-style: none;
   align-items: center;
+}
+.nav-links li {
+  flex-shrink: 0;   /* prevents cutting like "Co" */
+}
+.nav-links::-webkit-scrollbar {
+  display: none;
+}
+.contact-btn {
+  color: #fff;
+  background: var(--accent);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+
+.contact-btn:hover {
+  background: #ff8f00;
 }
 
 .nav-links a {
@@ -75,7 +98,7 @@ nav {
   text-decoration: none;
   font-size: 0.8rem;
   font-weight: 500;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0.9rem;
   border-radius: 5px;
   transition: background 0.2s, color 0.2s;
   display: block;
