@@ -272,6 +272,123 @@ body.LM .tbtn.ON{color:#fff;}
 }
 .sync-status .ss-val{font-size:1.3rem;font-weight:700;font-family:'Rajdhani',sans-serif;}
 .sync-status .ss-lbl{font-size:.68rem;color:#7a9bbf;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ══════════════════════════════════════════
+   MOBILE TAB BAR
+══════════════════════════════════════════ */
+#mobileTabBar{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--nav);border-top:2px solid var(--border);
+  height:54px;z-index:1000;
+  grid-template-columns:repeat(3,1fr);
+}
+#mobileTabBar button{
+  background:none;border:none;color:var(--muted);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:.6rem;font-weight:700;font-family:'Nunito',sans-serif;
+  gap:2px;cursor:pointer;padding:4px 0;
+  border-top:3px solid transparent;transition:.15s;
+}
+#mobileTabBar button .mtab-icon{font-size:1.2rem;line-height:1;}
+#mobileTabBar button.active{color:var(--accent);border-top-color:var(--accent);}
+
+/* ══════════════════════════════════════════
+   MOBILE BREAKPOINT  ≤ 700px
+══════════════════════════════════════════ */
+@media(max-width:700px){
+
+  /* Nav compact */
+  #topnav{height:44px;padding:0 8px;gap:6px;}
+  .nav-title{font-size:.68rem;}
+  #themeBtn{padding:4px 8px;font-size:.7rem;}
+
+  /* Kill 3-col grid → single stack */
+  #main{
+    display:block;
+    height:calc(100vh - 44px - 54px); /* nav + tab bar */
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* All panels fill the same space, toggled by JS */
+  #leftPanel, #canvasWrap, #rightPanel{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    border:none;
+    transition:opacity .2s, transform .2s;
+  }
+
+  /* Default: hide left & right, show canvas */
+  #leftPanel{transform:translateX(-100%);opacity:0;pointer-events:none;z-index:2;}
+  #canvasWrap{z-index:1;display:block;}
+  #rightPanel{transform:translateX(100%);opacity:0;pointer-events:none;z-index:2;}
+
+  /* Active states toggled by JS */
+  #leftPanel.mob-active{transform:translateX(0);opacity:1;pointer-events:auto;}
+  #rightPanel.mob-active{transform:translateX(0);opacity:1;pointer-events:auto;}
+
+  /* Show tab bar */
+  #mobileTabBar{display:grid;}
+
+  /* Larger component items for touch */
+  .citem{
+    padding:10px 8px;margin-bottom:4px;
+    font-size:.82rem;
+  }
+  .citem svg{width:40px;height:24px;}
+  .citem-sub{font-size:.7rem;}
+  .cat{font-size:.8rem;padding:8px 6px 4px;}
+
+  /* Toolbar: scroll horizontally, bigger buttons */
+  #toolbar{
+    top:6px;left:0;right:0;
+    flex-wrap:nowrap;overflow-x:auto;
+    padding:0 6px;gap:4px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  #toolbar::-webkit-scrollbar{display:none;}
+  .tbtn{
+    padding:7px 12px;font-size:.78rem;
+    white-space:nowrap;flex-shrink:0;
+    min-height:36px;
+  }
+
+  /* Right panel: stack vertically, scrollable */
+  #rightPanel{overflow-y:auto;padding:10px;}
+  .rbtn{padding:12px;font-size:1rem;margin-bottom:8px;}
+  .qbtn{padding:10px 5px;font-size:.72rem;}
+  .qgrid{gap:5px;}
+  .mrow{padding:6px 0;font-size:.82rem;}
+
+  /* Hint text hidden on mobile (no room) */
+  .hint{display:none;}
+
+  /* Popup full width */
+  .pbox{min-width:unset;width:95%;max-width:unset;}
+
+  /* Educational modal full screen */
+  #eduBox{width:100vw;height:100vh;border-radius:0;}
+  #eduBody{grid-template-columns:1fr;grid-template-rows:1fr auto;}
+  #eduSide{border-left:none;border-top:1.5px solid #1e3a5f;max-height:40vh;}
+
+  /* Larger touch targets for quick-load spanning button */
+  .qbtn[style*="span 2"]{padding:12px 5px;}
+
+  /* Padding above everything for bottom tab bar */
+  #leftPanel,#rightPanel{padding-bottom:8px;}
+}
+
+/* ══════════════════════════════════════════
+   TABLET  701–900px — side panels narrower
+══════════════════════════════════════════ */
+@media(min-width:701px) and (max-width:900px){
+  #main{grid-template-columns:160px 1fr 200px;}
+  .citem{font-size:.7rem;padding:5px 4px;}
+  .qbtn{font-size:.64rem;padding:6px 3px;}
+  .rbtn{font-size:.88rem;}
+}
 </style>
 </head>
 <body>
@@ -492,6 +609,19 @@ body.LM .tbtn.ON{color:#fff;}
 </div>
 
 </div><!-- end main grid -->
+
+<!-- MOBILE TAB BAR -->
+<div id="mobileTabBar">
+  <button id="mtab-components" onclick="mobTab('components')" class="active">
+    <span class="mtab-icon">🔌</span>Components
+  </button>
+  <button id="mtab-canvas" onclick="mobTab('canvas')">
+    <span class="mtab-icon">🖥</span>Canvas
+  </button>
+  <button id="mtab-controls" onclick="mobTab('controls')">
+    <span class="mtab-icon">🎛</span>Controls
+  </button>
+</div>
 
 <!-- EDIT POPUP -->
 <div id="popup" onclick="if(event.target===this)closePopup()">
@@ -3467,6 +3597,134 @@ window.addEventListener('load',()=>{
   setTimeout(resize,100);
   setTimeout(render,200);
 });
+
+// ═══════════════════════════════════════════════
+// MOBILE: TAB SWITCHING
+// ═══════════════════════════════════════════════
+function mobTab(tab){
+  if(window.innerWidth > 700) return;
+  const lp = document.getElementById('leftPanel');
+  const rp = document.getElementById('rightPanel');
+  const tabs = document.querySelectorAll('#mobileTabBar button');
+
+  // Reset
+  lp.classList.remove('mob-active');
+  rp.classList.remove('mob-active');
+  tabs.forEach(b=>b.classList.remove('active'));
+
+  if(tab==='components'){
+    lp.classList.add('mob-active');
+    document.getElementById('mtab-components').classList.add('active');
+    // On mobile, tapping a component should switch to canvas tab
+    document.querySelectorAll('.citem').forEach(item=>{
+      item.ontouchend = ()=>{ mobTab('canvas'); };
+    });
+  } else if(tab==='canvas'){
+    document.getElementById('mtab-canvas').classList.add('active');
+    // Trigger resize so canvas fills correctly
+    setTimeout(resize, 50);
+  } else if(tab==='controls'){
+    rp.classList.add('mob-active');
+    document.getElementById('mtab-controls').classList.add('active');
+  }
+}
+
+// Start on components tab on mobile
+if(window.innerWidth <= 700){ mobTab('components'); }
+window.addEventListener('resize',()=>{
+  if(window.innerWidth > 700){
+    // Restore desktop layout — remove all mobile classes
+    document.getElementById('leftPanel').classList.remove('mob-active');
+    document.getElementById('rightPanel').classList.remove('mob-active');
+  } else {
+    // Re-apply components tab if no tab is active
+    const anyActive = document.querySelector('#mobileTabBar button.active');
+    if(!anyActive) mobTab('components');
+  }
+  resize();
+});
+
+// ═══════════════════════════════════════════════
+// MOBILE: TOUCH SUPPORT FOR CANVAS
+// ═══════════════════════════════════════════════
+function getTouchPos(canvas, touch){
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: touch.clientX - rect.left,
+    y: touch.clientY - rect.top
+  };
+}
+
+// Simulate mouse events from touch events on canvas
+CV.addEventListener('touchstart', e=>{
+  e.preventDefault();
+  const t = e.changedTouches[0];
+  const pos = getTouchPos(CV, t);
+  CV.dispatchEvent(new MouseEvent('mousedown',{clientX:t.clientX,clientY:t.clientY,bubbles:true}));
+}, {passive:false});
+
+CV.addEventListener('touchmove', e=>{
+  e.preventDefault();
+  const t = e.changedTouches[0];
+  CV.dispatchEvent(new MouseEvent('mousemove',{clientX:t.clientX,clientY:t.clientY,bubbles:true}));
+}, {passive:false});
+
+CV.addEventListener('touchend', e=>{
+  e.preventDefault();
+  const t = e.changedTouches[0];
+  CV.dispatchEvent(new MouseEvent('mouseup',{clientX:t.clientX,clientY:t.clientY,bubbles:true}));
+  // Double-tap → dblclick for switches/MCB
+  const now = Date.now();
+  if(CV._lastTap && now - CV._lastTap < 350){
+    CV.dispatchEvent(new MouseEvent('dblclick',{clientX:t.clientX,clientY:t.clientY,bubbles:true}));
+  }
+  CV._lastTap = now;
+}, {passive:false});
+
+// Touch drag from left panel component list → drop on canvas
+(function(){
+  let draggingType = null, ghost = null;
+
+  document.querySelectorAll('.citem').forEach(item=>{
+    item.addEventListener('touchstart', e=>{
+      draggingType = item.dataset.type;
+      ghost = document.createElement('div');
+      ghost.textContent = item.querySelector('.citem-label').textContent.trim().split('\n')[0];
+      ghost.style.cssText='position:fixed;background:var(--accent);color:#000;padding:6px 12px;border-radius:8px;font-size:.8rem;font-weight:700;pointer-events:none;z-index:9999;opacity:.9;';
+      document.body.appendChild(ghost);
+      e.preventDefault();
+    },{passive:false});
+
+    item.addEventListener('touchmove', e=>{
+      if(!ghost) return;
+      const t = e.touches[0];
+      ghost.style.left = (t.clientX-30)+'px';
+      ghost.style.top  = (t.clientY-20)+'px';
+      e.preventDefault();
+    },{passive:false});
+
+    item.addEventListener('touchend', e=>{
+      if(ghost){ ghost.remove(); ghost=null; }
+      if(!draggingType) return;
+      const t = e.changedTouches[0];
+      const canvasRect = CV.getBoundingClientRect();
+      // Only drop if finger lifted over the canvas area
+      if(t.clientX >= canvasRect.left && t.clientX <= canvasRect.right &&
+         t.clientY >= canvasRect.top  && t.clientY <= canvasRect.bottom){
+        const x = t.clientX - canvasRect.left;
+        const y = t.clientY - canvasRect.top;
+        // Use existing addComp function if available
+        if(typeof addComp === 'function'){
+          addComp(draggingType, x, y);
+          render();
+        }
+        // Switch to canvas tab so user sees the result
+        mobTab('canvas');
+      }
+      draggingType = null;
+    },{passive:false});
+  });
+})();
 </script>
 </body>
 </html>
