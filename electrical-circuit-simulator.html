@@ -316,17 +316,12 @@ body.LM .tbtn.ON{color:#fff;}
     position:absolute;inset:0;
     width:100%;height:100%;
     border:none;
-    transition:opacity .2s, transform .2s;
   }
 
-  /* Default: hide left & right, show canvas */
-  #leftPanel{transform:translateX(-100%);opacity:0;pointer-events:none;z-index:2;}
-  #canvasWrap{z-index:1;display:block;}
-  #rightPanel{transform:translateX(100%);opacity:0;pointer-events:none;z-index:2;}
-
-  /* Active states toggled by JS */
-  #leftPanel.mob-active{transform:translateX(0);opacity:1;pointer-events:auto;}
-  #rightPanel.mob-active{transform:translateX(0);opacity:1;pointer-events:auto;}
+  /* Default: hide left & right via display:none, show canvas */
+  #leftPanel{display:none;z-index:2;overflow-y:auto;}
+  #canvasWrap{display:block;z-index:1;}
+  #rightPanel{display:none;z-index:2;overflow-y:auto;}
 
   /* Show tab bar */
   #mobileTabBar{display:grid;}
@@ -3605,126 +3600,127 @@ function mobTab(tab){
   if(window.innerWidth > 700) return;
   const lp = document.getElementById('leftPanel');
   const rp = document.getElementById('rightPanel');
+  const cw = document.getElementById('canvasWrap');
   const tabs = document.querySelectorAll('#mobileTabBar button');
 
-  // Reset
+  // Reset all panels hidden
   lp.classList.remove('mob-active');
   rp.classList.remove('mob-active');
+  lp.style.display = 'none';
+  rp.style.display = 'none';
+  cw.style.display = 'none';
   tabs.forEach(b=>b.classList.remove('active'));
 
   if(tab==='components'){
+    lp.style.display = 'block';
     lp.classList.add('mob-active');
     document.getElementById('mtab-components').classList.add('active');
-    // On mobile, tapping a component should switch to canvas tab
-    document.querySelectorAll('.citem').forEach(item=>{
-      item.ontouchend = ()=>{ mobTab('canvas'); };
-    });
   } else if(tab==='canvas'){
+    cw.style.display = 'block';
     document.getElementById('mtab-canvas').classList.add('active');
-    // Trigger resize so canvas fills correctly
     setTimeout(resize, 50);
   } else if(tab==='controls'){
+    rp.style.display = 'block';
     rp.classList.add('mob-active');
     document.getElementById('mtab-controls').classList.add('active');
   }
 }
 
-// Start on components tab on mobile
-if(window.innerWidth <= 700){ mobTab('components'); }
+// Start on canvas tab on mobile so users see the board first
+if(window.innerWidth <= 700){ mobTab('canvas'); }
+
 window.addEventListener('resize',()=>{
+  const lp = document.getElementById('leftPanel');
+  const rp = document.getElementById('rightPanel');
+  const cw = document.getElementById('canvasWrap');
   if(window.innerWidth > 700){
-    // Restore desktop layout — remove all mobile classes
-    document.getElementById('leftPanel').classList.remove('mob-active');
-    document.getElementById('rightPanel').classList.remove('mob-active');
+    // Restore desktop — remove all mobile overrides
+    lp.style.display=''; rp.style.display=''; cw.style.display='';
+    lp.classList.remove('mob-active'); rp.classList.remove('mob-active');
   } else {
-    // Re-apply components tab if no tab is active
-    const anyActive = document.querySelector('#mobileTabBar button.active');
-    if(!anyActive) mobTab('components');
+    const active = document.querySelector('#mobileTabBar button.active');
+    if(!active) mobTab('canvas');
   }
   resize();
 });
 
 // ═══════════════════════════════════════════════
-// MOBILE: TOUCH SUPPORT FOR CANVAS
+// MOBILE: TOUCH → MOUSE ON CANVAS
 // ═══════════════════════════════════════════════
-function getTouchPos(canvas, touch){
-  const rect = canvas.getBoundingClientRect();
-  return {
-    x: touch.clientX - rect.left,
-    y: touch.clientY - rect.top
-  };
-}
-
-// Simulate mouse events from touch events on canvas
 CV.addEventListener('touchstart', e=>{
   e.preventDefault();
   const t = e.changedTouches[0];
-  const pos = getTouchPos(CV, t);
-  CV.dispatchEvent(new MouseEvent('mousedown',{clientX:t.clientX,clientY:t.clientY,bubbles:true}));
-}, {passive:false});
+  CV.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
+},{passive:false});
 
 CV.addEventListener('touchmove', e=>{
   e.preventDefault();
   const t = e.changedTouches[0];
-  CV.dispatchEvent(new MouseEvent('mousemove',{clientX:t.clientX,clientY:t.clientY,bubbles:true}));
-}, {passive:false});
+  CV.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
+},{passive:false});
 
 CV.addEventListener('touchend', e=>{
   e.preventDefault();
   const t = e.changedTouches[0];
-  CV.dispatchEvent(new MouseEvent('mouseup',{clientX:t.clientX,clientY:t.clientY,bubbles:true}));
-  // Double-tap → dblclick for switches/MCB
+  CV.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
+  CV.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
+  // Double-tap → dblclick
   const now = Date.now();
   if(CV._lastTap && now - CV._lastTap < 350){
-    CV.dispatchEvent(new MouseEvent('dblclick',{clientX:t.clientX,clientY:t.clientY,bubbles:true}));
+    CV.dispatchEvent(new MouseEvent('dblclick',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
   }
   CV._lastTap = now;
-}, {passive:false});
+},{passive:false});
 
-// Touch drag from left panel component list → drop on canvas
-(function(){
-  let draggingType = null, ghost = null;
+// ═══════════════════════════════════════════════
+// MOBILE: TAP-TO-PLACE COMPONENTS (no drag needed)
+// Tap a component in the list → it gets selected
+// Then tap on canvas → it places there
+// ═══════════════════════════════════════════════
+let mobPendingType = null;
 
-  document.querySelectorAll('.citem').forEach(item=>{
-    item.addEventListener('touchstart', e=>{
-      draggingType = item.dataset.type;
-      ghost = document.createElement('div');
-      ghost.textContent = item.querySelector('.citem-label').textContent.trim().split('\n')[0];
-      ghost.style.cssText='position:fixed;background:var(--accent);color:#000;padding:6px 12px;border-radius:8px;font-size:.8rem;font-weight:700;pointer-events:none;z-index:9999;opacity:.9;';
-      document.body.appendChild(ghost);
-      e.preventDefault();
-    },{passive:false});
-
-    item.addEventListener('touchmove', e=>{
-      if(!ghost) return;
-      const t = e.touches[0];
-      ghost.style.left = (t.clientX-30)+'px';
-      ghost.style.top  = (t.clientY-20)+'px';
-      e.preventDefault();
-    },{passive:false});
-
-    item.addEventListener('touchend', e=>{
-      if(ghost){ ghost.remove(); ghost=null; }
-      if(!draggingType) return;
-      const t = e.changedTouches[0];
-      const canvasRect = CV.getBoundingClientRect();
-      // Only drop if finger lifted over the canvas area
-      if(t.clientX >= canvasRect.left && t.clientX <= canvasRect.right &&
-         t.clientY >= canvasRect.top  && t.clientY <= canvasRect.bottom){
-        const x = t.clientX - canvasRect.left;
-        const y = t.clientY - canvasRect.top;
-        // Use existing addComp function if available
-        if(typeof addComp === 'function'){
-          addComp(draggingType, x, y);
-          render();
-        }
-        // Switch to canvas tab so user sees the result
-        mobTab('canvas');
-      }
-      draggingType = null;
-    },{passive:false});
+document.querySelectorAll('.citem').forEach(item=>{
+  item.addEventListener('click', e=>{
+    // Highlight selected component
+    document.querySelectorAll('.citem').forEach(i=>i.style.background='');
+    item.style.background = 'var(--panel2)';
+    item.style.borderColor = 'var(--accent)';
+    mobPendingType = item.dataset.type;
+    // Switch to canvas and show hint
+    mobTab('canvas');
+    // Show a toast telling user to tap canvas
+    let toast = document.getElementById('mobToast');
+    if(!toast){
+      toast = document.createElement('div');
+      toast.id = 'mobToast';
+      toast.style.cssText='position:fixed;top:56px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;padding:8px 18px;border-radius:20px;font-size:.82rem;font-weight:700;z-index:5000;pointer-events:none;';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = '👆 Tap canvas to place ' + (item.querySelector('.citem-label').childNodes[0].textContent.trim());
+    toast.style.display='block';
+    clearTimeout(toast._t);
+    toast._t = setTimeout(()=>toast.style.display='none', 2500);
   });
-})();
+});
+
+// When user taps canvas with a pending component → place it
+CV.addEventListener('click', e=>{
+  if(!mobPendingType) return;
+  if(window.innerWidth > 700){ mobPendingType=null; return; } // desktop uses drag
+  const r = CV.getBoundingClientRect();
+  const x = e.clientX - r.left - (SIZES[mobPendingType]?.w||64)/2;
+  const y = e.clientY - r.top  - (SIZES[mobPendingType]?.h||44)/2;
+  pushH();
+  const c = mkC(mobPendingType, x, y);
+  comps.push(c); sel=c;
+  showProp(c); render();
+  // Clear selection highlight
+  document.querySelectorAll('.citem').forEach(i=>{ i.style.background=''; i.style.borderColor=''; });
+  mobPendingType = null;
+  // Hide toast
+  const toast = document.getElementById('mobToast');
+  if(toast) toast.style.display='none';
+});
 </script>
 </body>
 </html>
