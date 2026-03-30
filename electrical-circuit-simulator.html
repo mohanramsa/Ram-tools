@@ -324,37 +324,60 @@ body.LM .tbtn.ON{color:#fff;}
   #leftPanel{display:none;z-index:2;overflow-y:auto;}
   #rightPanel{display:none;z-index:2;overflow-y:auto;}
 
-  /* canvasWrap: fixed position, toolbar stays top, inner div scrolls */
+  /* canvasWrap: flex column — toolbar fixed, scroll area fills rest */
   #canvasWrap{
-    display:flex;
-    flex-direction:column;
+    display:flex !important;
+    flex-direction:column !important;
     z-index:1;
     overflow:hidden !important;
+    background:var(--canvas);
   }
 
-  /* Inner scrollable area — this is what the user swipes */
+  /* Toolbar: stays at top, never scrolls */
+  #toolbar{
+    position:relative !important;
+    top:auto !important; left:auto !important;
+    flex-shrink:0;
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space:nowrap;
+    background:rgba(10,15,30,0.95);
+    border-bottom:1px solid var(--border);
+    padding:6px !important;
+    gap:5px !important;
+    flex-wrap:nowrap !important;
+    scrollbar-width:none;
+    z-index:200;
+  }
+  #toolbar::-webkit-scrollbar{display:none;}
+
+  /* Pan hint: sits between toolbar and canvas */
+  #mobPanHint{
+    flex-shrink:0;
+    text-align:center;
+    font-size:.67rem;color:var(--muted);
+    pointer-events:none;
+    background:rgba(0,0,0,.55);
+    padding:3px 0;letter-spacing:.02em;
+  }
+
+  /* Scrollable canvas area — fills all remaining height */
   #canvasScroll{
-    flex:1;
-    overflow-x:scroll;
-    overflow-y:scroll;
+    flex:1 1 auto;
+    overflow-x:scroll !important;
+    overflow-y:scroll !important;
     -webkit-overflow-scrolling:touch;
     overscroll-behavior:contain;
+    min-height:0;
   }
-  /* Canvas fixed large size inside scroll area */
+
+  /* Canvas: static block, large fixed size inside scroll area */
   #simCanvas{
-    display:block;
+    display:block !important;
     position:static !important;
     width:1000px !important;
     height:700px !important;
     touch-action:pan-x pan-y;
-  }
-  /* Pan hint below toolbar */
-  #mobPanHint{
-    text-align:center;
-    font-size:.68rem;color:var(--muted);
-    pointer-events:none;z-index:300;
-    background:rgba(0,0,0,.5);
-    padding:4px 0;letter-spacing:.02em;
     flex-shrink:0;
   }
 
@@ -1018,6 +1041,8 @@ function runSim(){
   document.getElementById('simBadge').innerHTML='<span class="dot"></span> Running';
   document.getElementById('btnStop').style.display='block';
   timer=setInterval(()=>{frame++;simulate();render();},80);
+  // On mobile: switch to canvas tab so user sees simulation
+  if(window.innerWidth<=700) setTimeout(()=>mobTab('canvas'),150);
 }
 
 function stopSim(){
@@ -1589,7 +1614,19 @@ function loadQ(type){
   };
 
   // Safety: wait for W/H to be set
-  const cx=W>100?W/2:400, cy=H>100?H/2:250;
+  // On mobile: anchor circuit near left so user scrolls right to see full width
+  const isMob = window.innerWidth <= 700;
+  const cx = isMob ? 320 : (W>100 ? W/2 : 400);
+  const cy = isMob ? 200 : (H>100 ? H/2 : 250);
+
+  // After loading, switch to canvas on mobile and scroll to start
+  if(window.innerWidth <= 700){
+    setTimeout(()=>{
+      mobTab('canvas');
+      const cs = document.getElementById('canvasScroll');
+      if(cs){ cs.scrollLeft=0; cs.scrollTop=0; }
+    }, 100);
+  }
 
   switch(type){
     case 'led_switch':{
