@@ -325,15 +325,20 @@ body.LM .tbtn.ON{color:#fff;}
   /* Canvas wrap: scrollable/pannable in BOTH directions */
   #canvasWrap{
     display:block;z-index:1;
-    overflow:scroll !important;
+    overflow-x:scroll !important;
+    overflow-y:scroll !important;
     -webkit-overflow-scrolling:touch;
+    scroll-behavior:auto;
   }
-  /* Canvas itself is bigger than screen so user can scroll/pan to see full circuit */
+  /* Canvas itself bigger than screen — wrap scrolls around it */
   #simCanvas{
     position:relative !important;
     display:block;
+    width:1000px !important;
+    height:700px !important;
     min-width:1000px !important;
     min-height:700px !important;
+    touch-action:pan-x pan-y; /* tell browser: panning allowed */
   }
   /* Pan hint strip shown below toolbar */
   #mobPanHint{
@@ -3653,6 +3658,9 @@ function mobTab(tab){
     // Show pan hint briefly then fade
     const ph = document.getElementById('mobPanHint');
     if(ph){ ph.style.display='block'; clearTimeout(ph._t); ph._t=setTimeout(()=>ph.style.display='none',3500); }
+    // Ensure canvasWrap allows scroll
+    const cw2 = document.getElementById('canvasWrap');
+    cw2.style.overflowX='scroll'; cw2.style.overflowY='scroll';
   } else if(tab==='controls'){
     rp.style.display = 'block';
     rp.classList.add('mob-active');
@@ -3679,32 +3687,50 @@ window.addEventListener('resize',()=>{
 });
 
 // ═══════════════════════════════════════════════
-// MOBILE: TOUCH → MOUSE ON CANVAS
+// MOBILE: TOUCH ON CANVAS
+// Strategy: passive listeners so canvasWrap can
+// scroll freely. Only fire mouse events on TAP
+// (touchstart + touchend with minimal movement).
+// This lets native scroll work AND lets taps
+// select / place components.
 // ═══════════════════════════════════════════════
-CV.addEventListener('touchstart', e=>{
-  e.preventDefault();
-  const t = e.changedTouches[0];
-  CV.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
-},{passive:false});
+(function(){
+  if(window.innerWidth > 700) return; // desktop uses mouse events natively
 
-CV.addEventListener('touchmove', e=>{
-  e.preventDefault();
-  const t = e.changedTouches[0];
-  CV.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
-},{passive:false});
+  let tStartX=0, tStartY=0, tStartTime=0, moved=false;
 
-CV.addEventListener('touchend', e=>{
-  e.preventDefault();
-  const t = e.changedTouches[0];
-  CV.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
-  CV.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
-  // Double-tap → dblclick
-  const now = Date.now();
-  if(CV._lastTap && now - CV._lastTap < 350){
-    CV.dispatchEvent(new MouseEvent('dblclick',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
-  }
-  CV._lastTap = now;
-},{passive:false});
+  CV.addEventListener('touchstart', e=>{
+    const t = e.touches[0];
+    tStartX = t.clientX; tStartY = t.clientY;
+    tStartTime = Date.now(); moved = false;
+    // Do NOT preventDefault — let canvasWrap scroll
+  }, {passive:true});
+
+  CV.addEventListener('touchmove', e=>{
+    const t = e.touches[0];
+    const dx = Math.abs(t.clientX - tStartX);
+    const dy = Math.abs(t.clientY - tStartY);
+    if(dx > 6 || dy > 6) moved = true;
+    // Do NOT preventDefault — native scroll handles panning
+  }, {passive:true});
+
+  CV.addEventListener('touchend', e=>{
+    if(moved) return; // was a scroll/pan — ignore
+    const elapsed = Date.now() - tStartTime;
+    if(elapsed > 600) return; // long press — ignore
+    const t = e.changedTouches[0];
+    // Fire click so tap-to-place and tap-to-select work
+    CV.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
+    // Double-tap → dblclick (for toggling switches)
+    const now = Date.now();
+    if(CV._lastTap && now - CV._lastTap < 400){
+      CV.dispatchEvent(new MouseEvent('dblclick',{bubbles:true,clientX:t.clientX,clientY:t.clientY}));
+      CV._lastTap = 0;
+    } else {
+      CV._lastTap = now;
+    }
+  }, {passive:true});
+})();
 
 // ═══════════════════════════════════════════════
 // MOBILE: TAP-TO-PLACE COMPONENTS (no drag needed)
