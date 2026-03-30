@@ -230,10 +230,16 @@ body.LM .tbtn.ON{color:#fff;}
   width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:1rem;line-height:1;}
 #eduClose:hover{border-color:#ff4444;color:#ff4444;}
 #eduBody{flex:1;display:grid;grid-template-columns:1fr 340px;overflow:hidden;}
-#eduCanvas{width:100%;height:100%;display:block;}
+#eduCanvas{display:block;}
+/* eduCanvasWrap: desktop = transparent, just holds canvas */
+#eduCanvasWrap{
+  flex:1;overflow:hidden;display:flex;
+  background:#060d1a;
+}
 #eduSide{
   background:#0a1525;border-left:1.5px solid #1e3a5f;
   overflow-y:auto;padding:14px 12px;
+  flex-shrink:0;
 }
 #eduSide::-webkit-scrollbar{width:4px;}
 #eduSide::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:2px;}
@@ -421,10 +427,44 @@ body.LM .tbtn.ON{color:#fff;}
   /* Popup full width */
   .pbox{min-width:unset;width:95%;max-width:unset;}
 
-  /* Educational modal full screen */
-  #eduBox{width:100vw;height:100vh;border-radius:0;}
-  #eduBody{grid-template-columns:1fr;grid-template-rows:1fr auto;}
-  #eduSide{border-left:none;border-top:1.5px solid #1e3a5f;max-height:40vh;}
+  /* Educational modal: full screen, vertical stack */
+  #eduBox{
+    width:100vw;height:100vh;
+    border-radius:0;border:none;
+    display:flex;flex-direction:column;
+  }
+  #eduHeader{padding:8px 12px;}
+  #eduTitle{font-size:.92rem;}
+  /* eduBody: flex column — canvas on top, side scrolls below */
+  #eduBody{
+    display:flex !important;
+    flex-direction:column !important;
+    grid-template-columns:unset !important;
+    flex:1;overflow:hidden;
+  }
+  /* Canvas area: scrollable in BOTH directions */
+  #eduCanvasWrap{
+    flex:1;
+    overflow-x:scroll;
+    overflow-y:scroll;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    min-height:0;
+    background:#060d1a;
+  }
+  #eduCanvas{
+    display:block;
+    /* width/height set by JS per-mode for mobile */
+    touch-action:pan-x pan-y;
+  }
+  /* Side info panel: fixed height, scrollable */
+  #eduSide{
+    flex-shrink:0;
+    height:38vh;
+    border-left:none;
+    border-top:1.5px solid #1e3a5f;
+    overflow-y:auto;
+  }
 
   /* Larger touch targets for quick-load spanning button */
   .qbtn[style*="span 2"]{padding:12px 5px;}
@@ -702,7 +742,9 @@ body.LM .tbtn.ON{color:#fff;}
       <button id="eduClose" onclick="closeEdu()">✕</button>
     </div>
     <div id="eduBody">
-      <canvas id="eduCanvas"></canvas>
+      <div id="eduCanvasWrap">
+        <canvas id="eduCanvas"></canvas>
+      </div>
       <div id="eduSide">
         <div id="eduSideContent"></div>
       </div>
@@ -1824,8 +1866,19 @@ function openEdu(type){
   const EC=document.getElementById('eduCanvas');
   const wrap=document.getElementById('eduBody');
   setTimeout(()=>{
-    EC.width=Math.floor(wrap.getBoundingClientRect().width)-340;
-    EC.height=Math.floor(wrap.getBoundingClientRect().height);
+    const isMob = window.innerWidth <= 700;
+    if(isMob){
+      // On mobile: large fixed canvas inside scrollable wrap
+      // Width based on content type — wide for rectifiers/synchroscope
+      const needsWide = ['hwr','fwr','sync','house','solar'].includes(type);
+      EC.width  = needsWide ? 900 : 700;
+      EC.height = needsWide ? 600 : 550;
+    } else {
+      const cw = document.getElementById('eduCanvasWrap');
+      const cr = cw.getBoundingClientRect();
+      EC.width  = Math.max(100, Math.floor(cr.width));
+      EC.height = Math.max(100, Math.floor(cr.height));
+    }
     cancelAnimationFrame(eduRAF);
     eduLoop();
   },30);
