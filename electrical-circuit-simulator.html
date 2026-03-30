@@ -320,8 +320,31 @@ body.LM .tbtn.ON{color:#fff;}
 
   /* Default: hide left & right via display:none, show canvas */
   #leftPanel{display:none;z-index:2;overflow-y:auto;}
-  #canvasWrap{display:block;z-index:1;}
   #rightPanel{display:none;z-index:2;overflow-y:auto;}
+
+  /* Canvas wrap: scrollable/pannable in BOTH directions */
+  #canvasWrap{
+    display:block;z-index:1;
+    overflow:scroll !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  /* Canvas itself is bigger than screen so user can scroll/pan to see full circuit */
+  #simCanvas{
+    position:relative !important;
+    display:block;
+    min-width:1000px !important;
+    min-height:700px !important;
+  }
+  /* Pan hint strip shown below toolbar */
+  #mobPanHint{
+    position:absolute;
+    top:50px;left:0;right:0;
+    text-align:center;
+    font-size:.67rem;color:var(--muted);
+    pointer-events:none;z-index:300;
+    background:rgba(0,0,0,.45);
+    padding:3px 0;letter-spacing:.02em;
+  }
 
   /* Show tab bar */
   #mobileTabBar{display:grid;}
@@ -531,6 +554,7 @@ body.LM .tbtn.ON{color:#fff;}
     <button class="tbtn" onclick="undoAct()">↩ Undo</button>
     <button class="tbtn" onclick="clearCanvas()">🗑 Clear</button>
   </div>
+  <div id="mobPanHint">👆 Tap to place • Scroll/slide to pan full canvas</div>
   <canvas id="simCanvas"></canvas>
   <div class="hint">Drag from left panel • Wire tool to connect terminals • Click component to edit values • Dbl-click switches to toggle</div>
 </div>
@@ -668,9 +692,16 @@ let lightMode=false;
 // ═══════════════════════════════════════════════
 function resize(){
   const wrap=document.getElementById('canvasWrap');
-  const r=wrap.getBoundingClientRect();
-  W=CV.width=Math.floor(r.width);
-  H=CV.height=Math.floor(r.height);
+  const isMob = window.innerWidth <= 700;
+  if(isMob){
+    // On mobile: canvas is large fixed size — wrap scrolls to pan
+    W = CV.width  = 1000;
+    H = CV.height = 700;
+  } else {
+    const r=wrap.getBoundingClientRect();
+    W=CV.width=Math.floor(r.width);
+    H=CV.height=Math.floor(r.height);
+  }
   CV.style.width=W+'px';
   CV.style.height=H+'px';
   const ov=document.getElementById('overlayCanvas');
@@ -3619,6 +3650,9 @@ function mobTab(tab){
     cw.style.display = 'block';
     document.getElementById('mtab-canvas').classList.add('active');
     setTimeout(resize, 50);
+    // Show pan hint briefly then fade
+    const ph = document.getElementById('mobPanHint');
+    if(ph){ ph.style.display='block'; clearTimeout(ph._t); ph._t=setTimeout(()=>ph.style.display='none',3500); }
   } else if(tab==='controls'){
     rp.style.display = 'block';
     rp.classList.add('mob-active');
