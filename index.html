@@ -50,6 +50,16 @@
   flex-wrap: wrap;
 }
 </style>
+<script>
+if (window.location.protocol !== "file:") {
+  if (window.location.pathname.endsWith("index.html")) {
+    window.location.replace("/");
+  }
+}
+</script>
+
+
+
 </head>
 <body>
 
@@ -208,7 +218,7 @@ Unlike many websites that only provide calculators, RamTools combines practical 
 
 <footer>
   <div class="footer-links">
-    <a href="index.html">Home</a>
+    <a href="/">Home</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
     <a href="privacy.html">Privacy Policy</a>
