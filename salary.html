@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9NWVZHYXLH"></script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SalaryPro — Professional Salary Calculator | RamTools</title>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2721210983880063"
      crossorigin="anonymous"></script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f2540'/%3E%3Crect x='6' y='9' width='20' height='3' rx='1.5' fill='white'/%3E%3Crect x='6' y='14.5' width='20' height='3' rx='1.5' fill='white'/%3E%3Crect x='6' y='20' width='20' height='3' rx='1.5' fill='white'/%3E%3C/svg%3E">
 <link rel="canonical" href="https://ramtools.in/salary.html">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -40,9 +42,14 @@ nav{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justif
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .nav-logo img{height:38px;width:auto;}
 .nav-logo span{color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;letter-spacing:-.5px;}
-.nav-links{display:flex;gap:1.5rem;list-style:none;}
-.nav-links a{color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color .2s;}
-.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-hamburger{background:none;border:none;color:#fff;font-size:26px;cursor:pointer;padding:6px 10px;line-height:1;border-radius:6px;transition:background .2s;flex-shrink:0;}
+.nav-hamburger:hover{background:rgba(255,255,255,0.15);}
+.nav-links{display:none;position:absolute;top:56px;right:0;left:0;list-style:none;background:#0a1e38;flex-direction:column;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.nav-links.show{display:flex;}
+.nav-links li{border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav-links li:last-child{border-bottom:none;}
+.nav-links a{color:rgba(255,255,255,0.85);text-decoration:none;font-size:0.95rem;font-weight:500;display:block;padding:14px 22px;transition:background .2s,color .2s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,0.1);}
 
 /* CURRENCY SELECTOR */
 .currency-select-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
@@ -374,7 +381,6 @@ footer a:hover{color:#fff;}
 
   /* Nav */
   nav{padding:0 .75rem;height:50px;}
-  .nav-links{display:none;}
   .currency-select-wrap label{display:block;font-size:.58rem;}
   #currencySelect{font-size:.72rem;padding:.2rem .35rem;max-width:150px;}
 
@@ -653,7 +659,29 @@ footer a:hover{color:#fff;}
     <div style="display:none;width:34px;height:34px;background:#5dade2;border-radius:8px;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;color:#fff;font-size:1rem;">R</div>
     <span>RamTools</span>
   </a>
-  <ul class="nav-links">
+  <div style="display:flex;align-items:center;gap:.5rem;margin-left:auto;">
+    <div class="currency-select-wrap">
+      <label for="currencySelect">💱 Choose Currency</label>
+      <div class="currency-select-inner">
+        <select id="currencySelect" onchange="setCurrency(this.value)">
+          <option value="INR">🇮🇳 INR — ₹ Indian Rupee</option>
+          <option value="USD">🇺🇸 USD — $ US Dollar</option>
+          <option value="EUR">🇪🇺 EUR — € Euro</option>
+          <option value="GBP">🇬🇧 GBP — £ British Pound</option>
+          <option value="AED">🇦🇪 AED — د.إ UAE Dirham</option>
+          <option value="SGD">🇸🇬 SGD — S$ Singapore Dollar</option>
+          <option value="AUD">🇦🇺 AUD — A$ Australian Dollar</option>
+          <option value="CAD">🇨🇦 CAD — C$ Canadian Dollar</option>
+          <option value="JPY">🇯🇵 JPY — ¥ Japanese Yen</option>
+          <option value="MYR">🇲🇾 MYR — RM Malaysian Ringgit</option>
+          <option value="SAR">🇸🇦 SAR — ﷼ Saudi Riyal</option>
+          <option value="ZAR">🇿🇦 ZAR — R South African Rand</option>
+        </select>
+      </div>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" onclick="toggleSalaryMenu()" aria-label="Toggle menu">☰</button>
+  </div>
+  <ul class="nav-links" id="salaryNavMenu">
     <li><a href="index.html">Home</a></li>
     <li><a href="salary.html" class="active">SalaryPro</a></li>
     <li><a href="electrical.html">Electrical</a></li>
@@ -662,25 +690,6 @@ footer a:hover{color:#fff;}
     <li><a href="engineering-ai.html">AI Generator</a></li>
     <li><a href="blog.html">Blog</a></li>
   </ul>
-  <div class="currency-select-wrap">
-    <label for="currencySelect">💱 Choose Currency</label>
-    <div class="currency-select-inner">
-      <select id="currencySelect" onchange="setCurrency(this.value)">
-        <option value="INR">🇮🇳 INR — ₹ Indian Rupee</option>
-        <option value="USD">🇺🇸 USD — $ US Dollar</option>
-        <option value="EUR">🇪🇺 EUR — € Euro</option>
-        <option value="GBP">🇬🇧 GBP — £ British Pound</option>
-        <option value="AED">🇦🇪 AED — د.إ UAE Dirham</option>
-        <option value="SGD">🇸🇬 SGD — S$ Singapore Dollar</option>
-        <option value="AUD">🇦🇺 AUD — A$ Australian Dollar</option>
-        <option value="CAD">🇨🇦 CAD — C$ Canadian Dollar</option>
-        <option value="JPY">🇯🇵 JPY — ¥ Japanese Yen</option>
-        <option value="MYR">🇲🇾 MYR — RM Malaysian Ringgit</option>
-        <option value="SAR">🇸🇦 SAR — ﷼ Saudi Riyal</option>
-        <option value="ZAR">🇿🇦 ZAR — R South African Rand</option>
-      </select>
-    </div>
-  </div>
 </nav>
 
 <div class="hero">
@@ -1968,5 +1977,10 @@ function closeErrModal(event) {
 }
 </script>
 
+<script>
+function toggleSalaryMenu(){
+  document.getElementById('salaryNavMenu').classList.toggle('show');
+}
+</script>
 </body>
 </html>
