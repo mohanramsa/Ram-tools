@@ -28,13 +28,17 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Nunito', sans-serif; background: #fef9ee; color: #1e1b4b; }
-  nav { background: #d97706; padding: 10px 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; position: relative; z-index: 1000; }
+  nav { background: #d97706; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: relative; z-index: 1000; }
   .logo { color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-  .logo-icon { background: #92400e; color: #fff; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 1rem; }
-  nav a { color: #fef3c7; text-decoration: none; font-size: 0.85rem; white-space: nowrap; padding: 4px 0; transition: color .2s; }
-  nav a:hover, nav a.active { color: #fff; }
-  .menu { display: flex; gap: 15px; list-style: none; flex-wrap: wrap; }
-  .menu-toggle { margin-left: auto; }
+  .logo-icon { background: #92400e; color: #fff; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+  .menu-toggle { background: none; border: none; color: #fff; font-size: 26px; cursor: pointer; padding: 6px 8px; line-height: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: background .2s; }
+  .menu-toggle:hover { background: rgba(255,255,255,0.15); }
+  .menu { display: none; position: absolute; top: 56px; right: 0; left: 0; background: #b45309; list-style: none; flex-direction: column; z-index: 999; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+  .menu.show { display: flex; }
+  .menu li { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.15); }
+  .menu li:last-child { border-bottom: none; }
+  nav a { color: #fef3c7; text-decoration: none; font-size: 0.95rem; white-space: nowrap; display: block; padding: 14px 20px; transition: background .2s, color .2s; }
+  nav a:hover, nav a.active { color: #fff; background: rgba(255,255,255,0.15); }
   main { max-width: 1100px; margin: 30px auto 2rem; padding: 0 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
   h1 { font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--solar); margin-bottom: 0.5rem; }
   .card { background: var(--card); border-radius: 14px; border: 2px solid #fbbf24; padding: 1.5rem; box-shadow: 0 2px 12px #d9770615; background: linear-gradient(135deg,#fffbeb 0%,#fff 60%); }
@@ -68,10 +72,6 @@
   .page-nav a { font-size: 0.82rem; color: #5b21b6; text-decoration: none; font-weight: 700; padding: 4px 12px; border-radius: 20px; border: 1.5px solid #ddd6fe; background: #f5f3ff; transition: all .2s; }
   .page-nav a:hover { background: #5b21b6; color: #fff; border-color: #5b21b6; }
   @media (max-width: 768px) {
-    nav { flex-direction: column; align-items: flex-start; padding: 10px; }
-    .menu { display: none; flex-direction: column; width: 100%; gap: 0; }
-    .menu li { width: 100%; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.2); }
-    .menu a { display: block; width: 100%; font-size: 16px; color: #ffffff; font-weight: 500; }
     body { padding-left: 5px; padding-right: 5px; }
   }
 </style>
@@ -81,7 +81,7 @@
   <div class="logo">
     <div class="logo-icon">R</div> RamTools
   </div>
-  <div class="menu-toggle" onclick="toggleMenu()" style="color:white;font-size:24px;cursor:pointer;">☰</div>
+  <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
   <ul class="menu">
     <li><a href="index.html">Home</a></li>
     <li><a href="salary.html">SalaryPro</a></li>
