@@ -26,13 +26,17 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Nunito', sans-serif; background: var(--bg); color: #1e1b4b; }
-  nav { background: var(--purple); padding: 10px 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; position: relative; z-index: 1000; }
+  nav { background: var(--purple); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: relative; z-index: 1000; }
   .logo { color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-  .logo-icon { background: #ea580c; color: #fff; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 1rem; }
-  nav a { color: #c4b5fd; text-decoration: none; font-size: 0.85rem; white-space: nowrap; padding: 4px 0; transition: color .2s; }
-  nav a:hover, nav a.active { color: #fff; }
-  .menu { display: flex; gap: 15px; list-style: none; flex-wrap: wrap; }
-  .menu-toggle { margin-left: auto; }
+  .logo-icon { background: #ea580c; color: #fff; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+  .menu-toggle { background: none; border: none; color: #fff; font-size: 26px; cursor: pointer; padding: 6px 8px; line-height: 1; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: background .2s; }
+  .menu-toggle:hover { background: rgba(255,255,255,0.15); }
+  .menu { display: none; position: absolute; top: 56px; right: 0; left: 0; background: #4c1d95; list-style: none; flex-direction: column; z-index: 999; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+  .menu.show { display: flex; }
+  .menu li { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .menu li:last-child { border-bottom: none; }
+  nav a { color: #c4b5fd; text-decoration: none; font-size: 0.95rem; white-space: nowrap; display: block; padding: 14px 20px; transition: background .2s, color .2s; }
+  nav a:hover, nav a.active { color: #fff; background: rgba(255,255,255,0.1); }
   main { max-width: 1100px; margin: 30px auto 2rem; padding: 0 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
   h1 { font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: var(--purple); margin-bottom: 0.5rem; }
   .card { background: var(--card); border-radius: 14px; border: 1px solid var(--border); padding: 1.5rem; box-shadow: 0 2px 8px #5b21b608; }
@@ -66,12 +70,9 @@
   .guide-section p, .guide-section li { color: #374151; font-size: 0.9rem; line-height: 1.7; }
   .guide-section ul { padding-left: 1.2rem; }
   @media (max-width: 768px) {
-    nav { flex-direction: column; align-items: flex-start; padding: 10px; }
-    .menu { display: none; flex-direction: column; width: 100%; gap: 0; }
-    .menu li { width: 100%; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.2); }
-    .menu a { display: block; width: 100%; font-size: 16px; color: #ffffff; font-weight: 500; }
     body { padding-left: 5px; padding-right: 5px; }
   }
+
 </style>
 </head>
 <body>
@@ -79,7 +80,7 @@
   <div class="logo">
     <div class="logo-icon">R</div> RamTools
   </div>
-  
+  <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
   <ul class="menu">
     <li><a href="index.html">Home</a></li>
     <li><a href="salary.html">SalaryPro</a></li>
@@ -2323,4 +2324,12 @@ function calcSEF() {
 }
 
 </script>
+<script>
+function toggleMenu() {
+  var menu = document.querySelector(".menu");
+  menu.classList.toggle("show");
+}
+</script>
+
+
 </body>
