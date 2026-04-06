@@ -12,7 +12,17 @@
 
 /* ── RESET ── */
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;height:100%;}
+/* html/body scroll naturally — simulator-wrapper locks to 100vh */
+html{width:100%;}
+body{width:100%;}
+
+/* ── SIMULATOR WRAPPER locks exactly to viewport so SEO scrolls below ── */
+#simulator-wrapper{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
 
 /* ── THEME VARIABLES ── */
 :root{
@@ -29,7 +39,8 @@ body.LM{
 }
 
 /* ── LAYOUT ── */
-body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;display:flex;flex-direction:column;}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;}
+#simulator-wrapper{background:var(--bg);}
 
 /* NAV */
 #topnav{
@@ -310,6 +321,7 @@ body.LM .tbtn.ON{color:#fff;}
   #themeBtn{padding:4px 8px;font-size:.7rem;}
 
   /* Kill 3-col grid → single stack */
+  #simulator-wrapper{height:100vh;overflow:hidden;}
   #main{
     display:block;
     height:calc(100vh - 44px - 54px); /* nav + tab bar */
@@ -486,13 +498,24 @@ body.LM .tbtn.ON{color:#fff;}
 </head>
 <body>
 
+<!-- ══════════════════════════════════════════
+     SIMULATOR WRAPPER — locks to full viewport
+     SEO content sits naturally below it
+══════════════════════════════════════════ -->
+<div id="simulator-wrapper">
+
 <!-- NAV -->
 <nav id="topnav">
   <a class="logo" href="index.html"><div class="logo-icon">R</div><span>RamTools</span></a>
   <span class="nav-title">⚡ Electrical Circuit Simulator</span>
   <div class="nav-spacer"></div>
   <button id="themeBtn" onclick="toggleTheme()">☀️ Light Mode</button>
-  <a href="index.html" style="color:var(--accent);text-decoration:none;border:1px solid var(--accent);padding:4px 10px;border-radius:20px;font-size:.78rem;margin-left:4px;">← Home</a>
+  <button id="howToUseBtn"
+    onclick="document.getElementById('how-to-use').scrollIntoView({behavior:'smooth'})"
+    style="background:var(--orange);color:#fff;border:none;padding:5px 13px;border-radius:20px;
+    font-size:.78rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;
+    margin-left:4px;white-space:nowrap;flex-shrink:0;">📖 How to Use ↓</button>
+  <a href="index.html" style="color:var(--accent);text-decoration:none;border:1px solid var(--accent);padding:4px 10px;border-radius:20px;font-size:.78rem;margin-left:4px;white-space:nowrap;">← Home</a>
 </nav>
 
 <!-- 3-COLUMN MAIN -->
@@ -628,6 +651,10 @@ body.LM .tbtn.ON{color:#fff;}
     <button class="tbtn" onclick="rotSel()">↻ Rotate</button>
     <button class="tbtn" onclick="undoAct()">↩ Undo</button>
     <button class="tbtn" onclick="clearCanvas()">🗑 Clear</button>
+    <button class="tbtn" id="tbRunStop" onclick="toggleSim()"
+      style="background:var(--green);color:#000;border-color:var(--green);font-weight:800;">
+      ▶ RUN
+    </button>
   </div>
   <div id="mobPanHint">👆 Tap to place • Swipe to scroll canvas</div>
   <div id="canvasScroll">
@@ -642,8 +669,8 @@ body.LM .tbtn.ON{color:#fff;}
 
   <div id="simBadge" class="sbadge OFF"><span class="dot"></span> Simulation OFF</div><br>
 
-  <button class="rbtn BRUN" onclick="runSim()">▶ RUN SIMULATION</button>
-  <button class="rbtn BSTOP" id="btnStop" style="display:none" onclick="stopSim()">⏹ STOP</button>
+  <!-- Single always-visible RUN/STOP toggle button -->
+  <button class="rbtn BRUN" id="btnRunStop" onclick="toggleSim()">▶ RUN SIMULATION</button>
   <button class="rbtn BCLEAR" onclick="clearCanvas()">🗑 Clear Canvas</button>
 
   <div class="qtitle">⚡ Quick Load Circuits</div>
@@ -718,6 +745,8 @@ body.LM .tbtn.ON{color:#fff;}
     <span class="mtab-icon">🎛</span>Controls
   </button>
 </div>
+
+</div><!-- end simulator-wrapper -->
 
 <!-- EDIT POPUP -->
 <div id="popup" onclick="if(event.target===this)closePopup()">
@@ -1076,12 +1105,26 @@ function pushH(){
 // ═══════════════════════════════════════════════
 // SIMULATION
 // ═══════════════════════════════════════════════
+function toggleSim(){
+  if(running) stopSim(); else runSim();
+}
+
 function runSim(){
   if(running) return;
   running=true;
+  // Update badge
   document.getElementById('simBadge').className='sbadge ON2';
   document.getElementById('simBadge').innerHTML='<span class="dot"></span> Running';
-  document.getElementById('btnStop').style.display='block';
+  // Update right-panel toggle button → STOP
+  const rBtn = document.getElementById('btnRunStop');
+  rBtn.textContent='⏹ STOP SIMULATION';
+  rBtn.className='rbtn BSTOP';
+  // Update toolbar toggle button → STOP
+  const tBtn = document.getElementById('tbRunStop');
+  tBtn.textContent='⏹ STOP';
+  tBtn.style.background='var(--red)';
+  tBtn.style.color='#fff';
+  tBtn.style.borderColor='var(--red)';
   timer=setInterval(()=>{frame++;simulate();render();},80);
   // On mobile: switch to canvas tab so user sees simulation
   if(window.innerWidth<=700) setTimeout(()=>mobTab('canvas'),150);
@@ -1090,9 +1133,19 @@ function runSim(){
 function stopSim(){
   running=false;
   clearInterval(timer);
+  // Update badge
   document.getElementById('simBadge').className='sbadge OFF';
   document.getElementById('simBadge').innerHTML='<span class="dot"></span> Simulation OFF';
-  document.getElementById('btnStop').style.display='none';
+  // Update right-panel toggle button → RUN
+  const rBtn = document.getElementById('btnRunStop');
+  rBtn.textContent='▶ RUN SIMULATION';
+  rBtn.className='rbtn BRUN';
+  // Update toolbar toggle button → RUN
+  const tBtn = document.getElementById('tbRunStop');
+  tBtn.textContent='▶ RUN';
+  tBtn.style.background='var(--green)';
+  tBtn.style.color='#000';
+  tBtn.style.borderColor='var(--green)';
   comps.forEach(c=>{c.energized=false;if('speed' in c)c.speed=0;if('reading' in c)c.reading=0;});
   ['mV','mA','mW','mF','mRPM','mTX'].forEach(id=>document.getElementById(id).textContent='--');
   render();
@@ -3875,7 +3928,554 @@ CV.addEventListener('click', e=>{
   if(toast) toast.style.display='none';
 });
 </script>
+
+<!-- ═══════════════════════════════════════════
+     SEO CONTENT SECTION
+═══════════════════════════════════════════ -->
+<style>
+/* ── SEO SECTION — scoped, won't affect simulator ── */
+#seo-section {
+  background: #f7f8fc;
+  color: #1e293b;
+  font-family: 'Nunito', sans-serif;
+}
+#seo-section *{box-sizing:border-box;}
+
+/* HERO BANNER */
+.seo-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1a3a6e 100%);
+  color: #fff;
+  padding: 3rem 1.5rem 3.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.seo-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(14,165,233,0.18) 0%, transparent 60%),
+              radial-gradient(ellipse at 20% 80%, rgba(99,102,241,0.15) 0%, transparent 55%);
+  pointer-events: none;
+}
+.seo-hero-badge {
+  display: inline-block;
+  background: rgba(14,165,233,0.18);
+  border: 1px solid rgba(14,165,233,0.4);
+  color: #7dd3fc;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  font-family: monospace;
+}
+.seo-hero h2 {
+  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 0.9rem;
+  letter-spacing: -0.02em;
+  border: none !important;
+  padding: 0 !important;
+  color: #fff !important;
+}
+.seo-hero h2 span { color: #38bdf8; }
+.seo-hero p {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* ARTICLE */
+.seo-article {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3.5rem;
+}
+
+/* HEADINGS */
+.seo-article h2 {
+  font-size: 1.45rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 2.5rem 0 0.9rem !important;
+  letter-spacing: -0.02em;
+  border-left: 4px solid #0ea5e9 !important;
+  padding-left: 0.8rem !important;
+  background: none !important;
+  line-height: 1.3;
+}
+.seo-article h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #3730a3;
+  margin: 1.6rem 0 0.5rem;
+}
+.seo-article p {
+  margin-bottom: 0.9rem;
+  color: #334155;
+  line-height: 1.75;
+  font-size: 0.97rem;
+}
+
+/* INFO CARDS */
+.seo-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.3rem 0 1.8rem;
+}
+.seo-info-card {
+  background: #fff;
+  border: 1px solid #e2e8f4;
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 2px 10px rgba(15,23,42,0.05);
+}
+.seo-info-card .ic-icon { font-size: 1.7rem; margin-bottom: 0.5rem; }
+.seo-info-card h4 { font-size: 0.92rem; font-weight: 700; color: #0f172a; margin-bottom: 0.25rem; }
+.seo-info-card p { font-size: 0.83rem; color: #64748b; margin: 0; }
+
+/* STEPS */
+.seo-steps { list-style: none; margin: 1.1rem 0 1.8rem; padding: 0; }
+.seo-steps li {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  margin-bottom: 0.9rem;
+  background: #fff;
+  border: 1px solid #e2e8f4;
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+}
+.seo-step-num {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #0ea5e9, #3730a3);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.82rem;
+  font-family: monospace;
+}
+.seo-step-body strong { display: block; font-size: 0.93rem; color: #0f172a; margin-bottom: 0.2rem; font-weight: 700; }
+.seo-step-body span { font-size: 0.86rem; color: #64748b; line-height: 1.65; }
+
+/* DEVICE BOX */
+.seo-device-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.3rem 0;
+}
+@media(max-width: 560px){ .seo-device-box { grid-template-columns: 1fr; } }
+.seo-device-card {
+  border-radius: 14px;
+  padding: 1.1rem;
+  border: 1px solid;
+}
+.seo-device-card.seo-pc { background: #f0f9ff; border-color: #bae6fd; }
+.seo-device-card.seo-mob { background: #fff7ed; border-color: #fed7aa; }
+.seo-device-card h4 { font-size: 0.93rem; font-weight: 700; margin-bottom: 0.55rem; }
+.seo-device-card.seo-pc h4 { color: #0369a1; }
+.seo-device-card.seo-mob h4 { color: #c2410c; }
+.seo-device-card ul { list-style: none; padding: 0; margin: 0; }
+.seo-device-card ul li {
+  font-size: 0.83rem;
+  color: #64748b;
+  padding: 3px 0;
+  display: flex; gap: 6px; align-items: flex-start;
+}
+.seo-device-card ul li::before { content: '→'; font-weight: 700; flex-shrink: 0; }
+.seo-device-card.seo-pc ul li::before { color: #0ea5e9; }
+.seo-device-card.seo-mob ul li::before { color: #f97316; }
+
+/* NOTE BOX */
+.seo-note {
+  background: #fefce8;
+  border: 1px solid #fde047;
+  border-left: 4px solid #eab308;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  font-size: 0.86rem;
+  color: #713f12;
+  margin: 0.9rem 0 1.3rem;
+}
+.seo-note strong { color: #92400e; }
+
+/* BENEFITS */
+.seo-benefits { list-style: none; padding: 0; margin: 0.9rem 0 1.8rem; }
+.seo-benefits li {
+  display: flex; gap: 0.65rem; align-items: flex-start;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f4;
+  font-size: 0.91rem;
+  color: #334155;
+}
+.seo-benefits li:last-child { border-bottom: none; }
+.seo-benefits li::before {
+  content: '✓';
+  color: #10b981;
+  font-weight: 800;
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* USE CASES */
+.seo-uc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1.1rem 0 1.8rem;
+}
+.seo-uc-card {
+  background: #fff;
+  border: 1px solid #e2e8f4;
+  border-radius: 14px;
+  padding: 1.1rem;
+}
+.seo-uc-card .uc-icon { font-size: 1.5rem; margin-bottom: 0.45rem; }
+.seo-uc-card h4 { font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-bottom: 0.25rem; }
+.seo-uc-card p { font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.6; }
+
+/* FAQ */
+.seo-faq { margin: 1.1rem 0 1.8rem; }
+.seo-faq details {
+  background: #fff;
+  border: 1px solid #e2e8f4;
+  border-radius: 12px;
+  margin-bottom: 0.65rem;
+  overflow: hidden;
+}
+.seo-faq summary {
+  padding: 0.95rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.93rem;
+  cursor: pointer;
+  color: #0f172a;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Nunito', sans-serif;
+}
+.seo-faq summary::-webkit-details-marker { display: none; }
+.seo-faq summary::after { content: '+'; font-size: 1.25rem; font-weight: 300; color: #0ea5e9; flex-shrink: 0; }
+.seo-faq details[open] summary::after { content: '−'; }
+.seo-faq details[open] summary { color: #3730a3; border-bottom: 1px solid #e2e8f4; }
+.seo-faq .faq-ans {
+  padding: 0.85rem 1.1rem;
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.72;
+}
+
+/* CONCLUSION */
+.seo-conclusion {
+  background: linear-gradient(135deg, #0f172a, #1e3a5f);
+  color: #fff;
+  border-radius: 18px;
+  padding: 2rem 1.8rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+.seo-conclusion h2 {
+  color: #fff !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 1.35rem !important;
+  margin: 0 0 0.7rem !important;
+}
+.seo-conclusion p { color: #94a3b8; margin: 0 0 1.4rem; font-size: 0.95rem; }
+.seo-conclusion a {
+  display: inline-block;
+  background: #f97316;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.75rem 1.9rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+/* FOOTER */
+.seo-footer {
+  background: #0f172a;
+  color: #64748b;
+  text-align: center;
+  padding: 1.3rem;
+  font-size: 0.82rem;
+}
+.seo-footer a { color: #38bdf8; text-decoration: none; }
+
+/* RESPONSIVE */
+@media(max-width: 600px){
+  .seo-hero { padding: 2rem 1rem 2.5rem; }
+  .seo-article { padding: 1.8rem 1rem 2.5rem; }
+  .seo-article h2 { font-size: 1.2rem !important; }
+  .seo-steps li { flex-direction: column; gap: 0.5rem; }
+}
+</style>
+
+<section id="seo-section">
+
+  <!-- ANCHOR for How to Use nav button + Back to Simulator button -->
+  <div id="how-to-use" style="background:#0f172a;padding:0.9rem 1rem;text-align:center;">
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+      style="background:transparent;color:#38bdf8;border:1.5px solid #1e3a5f;
+      padding:7px 22px;border-radius:30px;font-size:.83rem;font-weight:700;
+      cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;
+      align-items:center;gap:7px;transition:border-color .2s;"
+      onmouseover="this.style.borderColor='#38bdf8'" onmouseout="this.style.borderColor='#1e3a5f'">
+      ↑ Back to Simulator
+    </button>
+  </div>
+
+  <!-- HERO -->
+  <div class="seo-hero">
+    <div class="seo-hero-badge">🔌 RamTools — Free Engineering Tool</div>
+    <h2>Free Online <span>Electrical Circuit Simulator</span><br/>Build, Visualize & Learn Circuits</h2>
+    <p>No download. No sign-up. Drag and drop components, run simulations, and see real-time current and voltage — right in your browser.</p>
+  </div>
+
+  <div class="seo-article">
+
+    <!-- INTRODUCTION -->
+    <h2>What Is the RamTools Circuit Simulator?</h2>
+    <p>The <strong>RamTools Electrical Circuit Simulator</strong> is a free, browser-based tool that lets you build and test electrical circuits online — no software installation required. Whether you are a student learning about Ohm's Law for the first time, or an experienced engineer quickly prototyping a circuit idea, this tool makes circuit simulation fast and accessible.</p>
+    <p>You can add components like resistors, capacitors, inductors, voltage sources, switches, LEDs, and diodes directly onto an interactive canvas. Once your circuit is ready, run the simulation and watch how current flows and how voltage distributes across components — all in real time.</p>
+
+    <!-- WHY USEFUL -->
+    <h2>Why Is This Tool Useful?</h2>
+    <p>Traditional circuit simulation software requires a full installation and has a steep learning curve. The RamTools simulator removes that friction entirely. It runs directly in your browser on both desktop and mobile devices, making it a genuinely useful companion for classrooms, labs, self-study, and quick engineering checks.</p>
+
+    <div class="seo-info-grid">
+      <div class="seo-info-card">
+        <div class="ic-icon">🖥️</div>
+        <h4>Works on Any Device</h4>
+        <p>No app needed. Open it on your laptop, tablet, or smartphone instantly.</p>
+      </div>
+      <div class="seo-info-card">
+        <div class="ic-icon">🎯</div>
+        <h4>Beginner-Friendly</h4>
+        <p>Clean interface with clearly labeled components and instant feedback.</p>
+      </div>
+      <div class="seo-info-card">
+        <div class="ic-icon">⚡</div>
+        <h4>Real-Time Results</h4>
+        <p>See current flow and voltage live as you place and adjust components.</p>
+      </div>
+      <div class="seo-info-card">
+        <div class="ic-icon">🌙</div>
+        <h4>Dark & Light Mode</h4>
+        <p>Switch themes for comfortable viewing in any lighting condition.</p>
+      </div>
+    </div>
+
+    <!-- HOW TO USE -->
+    <h2>How to Use the Circuit Simulator — Step by Step</h2>
+    <p>Getting started takes less than a minute. Follow these steps to build your first circuit:</p>
+
+    <ol class="seo-steps">
+      <li>
+        <div class="seo-step-num">1</div>
+        <div class="seo-step-body">
+          <strong>Open the Tool</strong>
+          <span>The simulator is already loaded above. It opens instantly — no login or download needed. Scroll back up to start using it.</span>
+        </div>
+      </li>
+      <li>
+        <div class="seo-step-num">2</div>
+        <div class="seo-step-body">
+          <strong>Pick a Component from the Left Panel</strong>
+          <span>On the left side you will find component categories: Sources, Switches, Passive, Loads, Motors, Transformers, Protection, Instruments, and Diodes. Browse and select the part you need.</span>
+        </div>
+      </li>
+      <li>
+        <div class="seo-step-num">3</div>
+        <div class="seo-step-body">
+          <strong>Place It on the Canvas</strong>
+          <span><strong>PC:</strong> Drag the component from the left panel and drop it anywhere on the central canvas. <strong>Mobile:</strong> Tap a component in the Components tab — it gets highlighted in blue. The app switches to Canvas tab automatically. Then tap where you want to place it. A toast message will guide you.</span>
+        </div>
+      </li>
+      <li>
+        <div class="seo-step-num">4</div>
+        <div class="seo-step-body">
+          <strong>Connect Components with Wires</strong>
+          <span>Click the <em>〰 Wire</em> button in the toolbar, then click on one component terminal and drag to another to draw a wire. Wires snap to the grid automatically for a clean layout.</span>
+        </div>
+      </li>
+      <li>
+        <div class="seo-step-num">5</div>
+        <div class="seo-step-body">
+          <strong>Edit Component Values</strong>
+          <span>Click any placed component to select it. A popup appears where you can edit resistance (Ω), capacitance (µF), inductance (mH), voltage (V), or frequency. Adjust and click Done.</span>
+        </div>
+      </li>
+      <li>
+        <div class="seo-step-num">6</div>
+        <div class="seo-step-body">
+          <strong>Run the Simulation</strong>
+          <span>Click the green <strong>▶ RUN SIMULATION</strong> button in the right panel — or the <strong>▶ RUN</strong> button in the canvas toolbar. Current flow is animated on the wires and live measurements update in the panel. The button instantly changes to <strong>⏹ STOP SIMULATION</strong> (red) — click it again at any time to stop. You can also use Quick Load Circuits (LED+Switch, AC Lamp, Star-Delta, House Wiring, Solar System, etc.) to jump-start common configurations.</span>
+        </div>
+      </li>
+      <li>
+        <div class="seo-step-num">7</div>
+        <div class="seo-step-body">
+          <strong>Stop, Adjust, and Repeat</strong>
+          <span>Click the red <strong>⏹ STOP SIMULATION</strong> button to pause — it's the same button that said RUN (it toggles automatically). The STOP button is visible in <em>both</em> the canvas toolbar and the Controls panel, so you can stop from any tab on mobile. Modify values or the circuit layout, then press RUN again. Use <strong>🗑 Clear</strong> to reset the canvas. Use <strong>↩ Undo</strong> in the toolbar to step back through edits.</span>
+        </div>
+      </li>
+    </ol>
+
+    <!-- DEVICE NOTES -->
+    <h2>Operating Notes — PC vs Mobile</h2>
+    <p>The simulator is fully optimized for both desktop and mobile. Here are device-specific tips to get the best experience:</p>
+
+    <div class="seo-device-box">
+      <div class="seo-device-card seo-pc">
+        <h4>🖥️ PC / Desktop / Laptop</h4>
+        <ul>
+          <li>Drag-and-drop components from the left panel onto the canvas directly.</li>
+          <li>Use the toolbar buttons (Select, Wire, Delete, Rotate, Undo, Clear) for full control.</li>
+          <li>Scroll the mouse wheel to zoom in/out on the canvas for precise wiring.</li>
+          <li>Click the ☀️ Light Mode button (top-right) to toggle between dark and light theme.</li>
+          <li>Double-click any Switch or MCB component to toggle it ON/OFF instantly.</li>
+          <li>Click a component and press Delete key to remove it.</li>
+        </ul>
+      </div>
+      <div class="seo-device-card seo-mob">
+        <h4>📱 Mobile / Tablet</h4>
+        <ul>
+          <li>Three tabs appear at the bottom: <strong>🔌 Components</strong>, <strong>🖥 Canvas</strong>, <strong>🎛 Controls</strong>.</li>
+          <li>To place a component: tap Components tab → tap your part → app switches to Canvas → tap where to place it.</li>
+          <li>A blue toast message ("Tap canvas to place Resistor") guides you during placement.</li>
+          <li>Pan/scroll the canvas by swiping with one finger in any direction.</li>
+          <li>Double-tap a switch on canvas to toggle it ON/OFF.</li>
+          <li>Use the Controls tab to run the simulation and view live measurements.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="seo-note">
+      <strong>⚠️ Mobile Tip:</strong> The simulator opens on the Canvas tab on mobile so you see the board first. Always go to the <strong>Components</strong> tab first if you want to add new parts — then come back to Canvas to place them. The toolbar on mobile scrolls horizontally — swipe it left to find more buttons.
+    </div>
+
+    <!-- FEATURES / BENEFITS -->
+    <h2>Key Features and Benefits</h2>
+    <ul class="seo-benefits">
+      <li><strong>20+ Components Available</strong> — Resistors, capacitors, inductors, DC/AC voltage sources, switches, LEDs, lamps, motors, transformers, relays, contactors, diodes, fuses, and more.</li>
+      <li><strong>Live Current Visualization</strong> — Animated orange wires show exactly where current is flowing and in which direction during simulation.</li>
+      <li><strong>Instant Live Measurements</strong> — Voltage, Current, Power, Frequency, Motor RPM, and TX Secondary values update in real time in the right panel.</li>
+      <li><strong>Quick Load Preset Circuits</strong> — One-click presets: LED+Switch, AC Lamp, Motor 1Ph, Motor 3Ph, TX 1-Phase, Relay Control, Star-Delta, RC Circuit, House Wiring, Solar+MPPT, Thevenin, and more.</li>
+      <li><strong>Thevenin Analysis</strong> — Load the Thevenin preset to automatically compute Vth, Rth, Isc, and Maximum Power.</li>
+      <li><strong>Educational Mode</strong> — Some presets open an in-depth educational panel with theory, formulas, and animated circuit explanation side by side.</li>
+      <li><strong>Dark Mode & Light Mode</strong> — Toggle between the dark engineering theme and a bright light theme with one click.</li>
+      <li><strong>Undo / Redo Support</strong> — Step back through edits without fear using the ↩ Undo toolbar button.</li>
+      <li><strong>Mobile Tab Layout</strong> — Three-tab design on mobile ensures a smooth, non-cluttered experience on small screens.</li>
+      <li><strong>100% Free, No Account Required</strong> — Open and use immediately without registration or payment.</li>
+    </ul>
+
+    <!-- REAL-WORLD USE CASES -->
+    <h2>Real-World Use Cases</h2>
+    <div class="seo-uc-grid">
+      <div class="seo-uc-card">
+        <div class="uc-icon">🎓</div>
+        <h4>Students Learning Electronics</h4>
+        <p>Verify circuit theory homework, test Ohm's Law, or explore how Kirchhoff's laws apply — without physical components.</p>
+      </div>
+      <div class="seo-uc-card">
+        <div class="uc-icon">🧑‍🏫</div>
+        <h4>Teachers & Educators</h4>
+        <p>Use as a live classroom demo for series vs parallel circuits, motor control, or RC charging behaviour.</p>
+      </div>
+      <div class="seo-uc-card">
+        <div class="uc-icon">⚙️</div>
+        <h4>Electrical Engineers</h4>
+        <p>Quickly prototype a circuit idea during a design review without spinning up heavy simulation software.</p>
+      </div>
+      <div class="seo-uc-card">
+        <div class="uc-icon">🛠️</div>
+        <h4>Hobbyists & Makers</h4>
+        <p>Test LED current-limiting resistor calculations or motor starter circuits before wiring on a real panel.</p>
+      </div>
+      <div class="seo-uc-card">
+        <div class="uc-icon">📋</div>
+        <h4>Exam Preparation</h4>
+        <p>Visualize circuit problems from textbooks to build intuition for GATE, JE, AE, and other engineering exams.</p>
+      </div>
+      <div class="seo-uc-card">
+        <div class="uc-icon">🔬</div>
+        <h4>Lab Pre-Work</h4>
+        <p>Simulate expected results before entering a physical lab — saves time and reduces measurement errors.</p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <h2>Frequently Asked Questions (FAQ)</h2>
+    <div class="seo-faq">
+
+      <details>
+        <summary>Do I need to install anything to use this circuit simulator?</summary>
+        <div class="faq-ans">No, absolutely nothing. The RamTools Circuit Simulator runs entirely in your web browser. Just open the page and it is ready to use — on Windows, macOS, Linux, Android, or iOS. No software download, no plugin, no account required.</div>
+      </details>
+
+      <details>
+        <summary>How do I place components on mobile without drag-and-drop?</summary>
+        <div class="faq-ans">On mobile, drag-and-drop is replaced by a tap-to-place system. Go to the <strong>Components</strong> tab (bottom tab bar) and tap the component you want. The app automatically switches to the <strong>Canvas</strong> tab and shows a blue toast message like "Tap canvas to place Resistor." Tap anywhere on the canvas to drop the component there.</div>
+      </details>
+
+      <details>
+        <summary>How do I connect two components with a wire?</summary>
+        <div class="faq-ans">Click the <strong>〰 Wire</strong> button in the top toolbar of the canvas. Then click on the terminal (small dot or endpoint) of one component and drag to the terminal of another. Release to complete the connection. The wire snaps to the grid automatically for clean routing.</div>
+      </details>
+
+      <details>
+        <summary>Can I use preset circuits to get started quickly?</summary>
+        <div class="faq-ans">Yes. In the right panel (Controls tab on mobile), there is a <em>Quick Load Circuits</em> section with preset buttons. Options include LED+Switch, AC Lamp, Motor 1Ph, Motor 3Ph, Star-Delta, RC Circuit, House Wiring (1-Phase), Solar+MPPT+Inverter, Thévenin, and more. Clicking one of these loads a ready-to-run circuit on the canvas instantly.</div>
+      </details>
+
+      <details>
+        <summary>What happens if I make a mistake? Can I undo it?</summary>
+        <div class="faq-ans">Yes. Use the <strong>↩ Undo</strong> button in the toolbar to step back through your recent actions. You can also use <strong>🗑 Clear</strong> in the right panel to reset the canvas completely and start from scratch.</div>
+      </details>
+
+      <details>
+        <summary>How do I toggle a switch or MCB in the simulation?</summary>
+        <div class="faq-ans">Double-click any Switch (SPST) or MCB/MCCB component on the canvas to toggle it between ON and OFF. On mobile, double-tap the switch component on the canvas. When the switch is ON, current flows through it; when OFF, it breaks the circuit at that point.</div>
+      </details>
+
+      <details>
+        <summary>Is this simulator accurate enough for real engineering use?</summary>
+        <div class="faq-ans">The simulator is ideal for conceptual prototyping, educational exploration, and quick sanity checks. For production-grade precision simulation with complex SPICE models, professional tools are recommended. RamTools is perfect for learning, teaching, and fast idea validation.</div>
+      </details>
+
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="seo-conclusion">
+      <h2>Start Simulating Circuits — 100% Free</h2>
+      <p>No downloads. No sign-up. Just scroll up, pick your components, and start building. Whether you are a student, teacher, engineer, or curious learner — RamTools Circuit Simulator makes electronics accessible and visual for everyone.</p>
+      <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        style="background:#f97316;color:#fff;border:none;font-weight:700;
+        padding:0.75rem 1.9rem;border-radius:50px;font-size:0.95rem;
+        cursor:pointer;font-family:'Nunito',sans-serif;">
+        ⚡ Back to Simulator ↑
+      </button>
+    </div>
+
+  </div><!-- end seo-article -->
+
+</section><!-- end seo-section -->
+
+<div class="seo-footer">
+  <p>© 2026 RamTools. All Rights Reserved. | <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms</a> | <a href="index.html">← Home</a></p>
+</div>
+
 </body>
 </html>
-<footer>
-<p style="text-align:center;">© 2026 RamTools. All Rights Reserved.</p></footer>
