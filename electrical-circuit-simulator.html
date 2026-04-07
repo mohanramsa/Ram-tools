@@ -694,8 +694,8 @@ body.LM .tbtn.ON{color:#fff;}
     <button class="tbtn" id="btnWire" onclick="setTool('wire')">〰 Wire</button>
     <button class="tbtn" id="btnDel" onclick="setTool('delete')">✕ Delete</button>
     <button class="tbtn" onclick="rotSel()">↻ Rotate</button>
-    <button class="tbtn" id="btnUndo" onclick="undoAct()" title="Undo (Ctrl+Z)" style="opacity:0.4;" disabled>↩ Undo</button>
-    <button class="tbtn" id="btnRedo" onclick="redoAct()" title="Redo (Ctrl+Y)" style="opacity:0.4;" disabled>↪ Redo</button>
+    <button class="tbtn" id="btnUndo" onclick="undoAct()" title="Undo (Ctrl+Z)" style="opacity:1;filter:brightness(1.2); color:#ccc;" disabled>↩ Undo</button>
+    <button class="tbtn" id="btnRedo" onclick="redoAct()" title="Redo (Ctrl+Y)" style="opacity:1;filter:brightness(1.2); color:#ccc;" disabled>↪ Redo</button>
     <button class="tbtn" onclick="clearCanvas()">🗑 Clear</button>
     <button class="tbtn" onclick="zoom=Math.min(ZOOM_MAX,zoom*1.25);render()" title="Zoom In (Ctrl++)">🔍+</button>
     <button class="tbtn" onclick="zoom=Math.max(ZOOM_MIN,zoom/1.25);render()" title="Zoom Out (Ctrl+-)">🔍−</button>
