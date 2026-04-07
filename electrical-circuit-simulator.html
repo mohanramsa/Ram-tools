@@ -55,9 +55,24 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;}
 #themeBtn{
   background:var(--panel2);border:1.5px solid var(--border);color:var(--text);
   padding:5px 14px;border-radius:20px;cursor:pointer;font-size:.78rem;
-  font-weight:700;font-family:'Nunito',sans-serif;
+  font-weight:700;font-family:'Nunito',sans-serif;white-space:nowrap;flex-shrink:0;
 }
 #themeBtn:hover{border-color:var(--accent);color:var(--accent);}
+
+#howToUseBtn{
+  background:var(--orange);color:#fff;border:none;
+  padding:5px 13px;border-radius:20px;cursor:pointer;
+  font-size:.78rem;font-weight:700;font-family:'Nunito',sans-serif;
+  white-space:nowrap;flex-shrink:0;
+}
+#howToUseBtn:hover{filter:brightness(1.1);}
+
+#homeBtn{
+  color:var(--accent);text-decoration:none;
+  border:1px solid var(--accent);padding:4px 10px;
+  border-radius:20px;font-size:.78rem;
+  white-space:nowrap;flex-shrink:0;
+}
 
 /* MAIN 3-COL GRID */
 #main{
@@ -315,18 +330,60 @@ body.LM .tbtn.ON{color:#fff;}
 ══════════════════════════════════════════ */
 @media(max-width:700px){
 
-  /* Nav compact */
-  #topnav{height:44px;padding:0 8px;gap:6px;}
-  .nav-title{font-size:.68rem;}
-  #themeBtn{padding:4px 8px;font-size:.7rem;}
+  /* ── NAV: two-row layout on mobile ── */
+  #topnav{
+    height:auto;
+    min-height:44px;
+    padding:5px 8px;
+    gap:5px;
+    flex-wrap:wrap;           /* allow wrapping into 2 rows if needed */
+    align-items:center;
+  }
 
-  /* Kill 3-col grid → single stack */
-  #simulator-wrapper{height:100vh;overflow:hidden;}
+  /* Logo always row 1 — shrink RamTools text */
+  .logo{ font-size:.9rem; gap:5px; flex-shrink:0; }
+  .logo-icon{ width:24px; height:24px; font-size:.85rem; }
+  .logo span{ display:inline; } /* keep RamTools text */
+
+  /* Title: hide on mobile — saves space */
+  #navTitle{ display:none !important; }
+
+  /* Spacer pushes buttons right on same row */
+  .nav-spacer{ flex:1; min-width:4px; }
+
+  /* All nav buttons compact */
+  #themeBtn{
+    padding:4px 7px;
+    font-size:.68rem;
+    border-radius:14px;
+  }
+  #howToUseBtn{
+    padding:4px 8px;
+    font-size:.68rem;
+    border-radius:14px;
+  }
+  #homeBtn{
+    padding:3px 8px;
+    font-size:.68rem;
+    border-radius:14px;
+  }
+
+  /* ── SIMULATOR WRAPPER: exactly full viewport ── */
+  #simulator-wrapper{
+    height:100dvh;    /* use dvh for accurate mobile viewport */
+    height:100vh;     /* fallback */
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ── MAIN: fills all space between nav and tab bar ── */
   #main{
     display:block;
-    height:calc(100vh - 44px - 54px); /* nav + tab bar */
+    flex:1;
     overflow:hidden;
     position:relative;
+    min-height:0;
   }
 
   /* All panels fill the same space, toggled by JS */
@@ -338,11 +395,11 @@ body.LM .tbtn.ON{color:#fff;}
     box-sizing:border-box;
   }
 
-  /* Default: hide left & right via display:none, show canvas */
+  /* Default: hide left & right, show canvas */
   #leftPanel{display:none;z-index:2;overflow-y:auto;}
   #rightPanel{display:none;z-index:2;overflow-y:auto;}
 
-  /* canvasWrap: flex column — toolbar fixed, scroll area fills rest */
+  /* canvasWrap: flex column — toolbar then scroll area */
   #canvasWrap{
     display:flex !important;
     flex-direction:column !important;
@@ -351,7 +408,7 @@ body.LM .tbtn.ON{color:#fff;}
     background:var(--canvas);
   }
 
-  /* Toolbar: stays at top, never scrolls */
+  /* Toolbar: fixed at top of canvas, scrolls horizontally */
   #toolbar{
     position:relative !important;
     top:auto !important; left:auto !important;
@@ -359,27 +416,36 @@ body.LM .tbtn.ON{color:#fff;}
     overflow-x:auto;
     overflow-y:hidden;
     white-space:nowrap;
-    background:rgba(10,15,30,0.95);
+    background:rgba(10,15,30,0.97);
     border-bottom:1px solid var(--border);
-    padding:6px !important;
-    gap:5px !important;
+    padding:5px 6px !important;
+    gap:4px !important;
     flex-wrap:nowrap !important;
     scrollbar-width:none;
     z-index:200;
+    -webkit-overflow-scrolling:touch;
   }
   #toolbar::-webkit-scrollbar{display:none;}
+  .tbtn{
+    padding:6px 10px;
+    font-size:.73rem;
+    white-space:nowrap;
+    flex-shrink:0;
+    min-height:34px;
+    border-radius:6px;
+  }
 
-  /* Pan hint: sits between toolbar and canvas */
+  /* Pan hint */
   #mobPanHint{
     flex-shrink:0;
     text-align:center;
-    font-size:.67rem;color:var(--muted);
+    font-size:.62rem;color:var(--muted);
     pointer-events:none;
-    background:rgba(0,0,0,.55);
-    padding:3px 0;letter-spacing:.02em;
+    background:rgba(0,0,0,.5);
+    padding:2px 0;letter-spacing:.02em;
   }
 
-  /* Scrollable canvas area — fills all remaining height */
+  /* Scrollable canvas area */
   #canvasScroll{
     flex:1 1 auto;
     overflow-x:scroll !important;
@@ -389,7 +455,7 @@ body.LM .tbtn.ON{color:#fff;}
     min-height:0;
   }
 
-  /* Canvas: static block, large fixed size inside scroll area */
+  /* Canvas: large fixed size inside scroll area */
   #simCanvas{
     display:block !important;
     position:static !important;
@@ -399,47 +465,45 @@ body.LM .tbtn.ON{color:#fff;}
     flex-shrink:0;
   }
 
-  /* Show tab bar */
-  #mobileTabBar{display:grid;}
+  /* ── MOBILE TAB BAR: always fully visible at bottom ── */
+  #mobileTabBar{
+    display:grid !important;
+    grid-template-columns:repeat(3,1fr);
+    flex-shrink:0;          /* never squish */
+    height:52px;
+    background:var(--nav);
+    border-top:2px solid var(--border);
+    position:relative;      /* not fixed — inside flex wrapper */
+    z-index:1000;
+    width:100%;
+  }
+  #mobileTabBar button{
+    font-size:.58rem;
+    padding:4px 0;
+    min-height:52px;
+  }
+  #mobileTabBar button .mtab-icon{ font-size:1.1rem; }
 
   /* Larger component items for touch */
-  .citem{
-    padding:10px 8px;margin-bottom:4px;
-    font-size:.82rem;
-  }
-  .citem svg{width:40px;height:24px;}
-  .citem-sub{font-size:.7rem;}
-  .cat{font-size:.8rem;padding:8px 6px 4px;}
+  .citem{ padding:10px 8px;margin-bottom:4px;font-size:.82rem; }
+  .citem svg{ width:40px;height:24px; }
+  .citem-sub{ font-size:.7rem; }
+  .cat{ font-size:.8rem;padding:8px 6px 4px; }
 
-  /* Toolbar: scroll horizontally, bigger buttons */
-  #toolbar{
-    top:6px;left:0;right:0;
-    flex-wrap:nowrap;overflow-x:auto;
-    padding:0 6px;gap:4px;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-  }
-  #toolbar::-webkit-scrollbar{display:none;}
-  .tbtn{
-    padding:7px 12px;font-size:.78rem;
-    white-space:nowrap;flex-shrink:0;
-    min-height:36px;
-  }
-
-  /* Right panel: stack vertically, scrollable */
+  /* Right panel scrollable */
   #rightPanel{overflow-y:auto;padding:10px;}
   .rbtn{padding:12px;font-size:1rem;margin-bottom:8px;}
   .qbtn{padding:10px 5px;font-size:.72rem;}
   .qgrid{gap:5px;}
   .mrow{padding:6px 0;font-size:.82rem;}
 
-  /* Hint text hidden on mobile (no room) */
+  /* Hint text hidden on mobile */
   .hint{display:none;}
 
   /* Popup full width */
   .pbox{min-width:unset;width:95%;max-width:unset;}
 
-  /* Educational modal: full screen, vertical stack */
+  /* Educational modal: full screen */
   #eduBox{
     width:100vw;height:100vh;
     border-radius:0;border:none;
@@ -447,41 +511,25 @@ body.LM .tbtn.ON{color:#fff;}
   }
   #eduHeader{padding:8px 12px;}
   #eduTitle{font-size:.92rem;}
-  /* eduBody: flex column — canvas on top, side scrolls below */
   #eduBody{
     display:flex !important;
     flex-direction:column !important;
     grid-template-columns:unset !important;
     flex:1;overflow:hidden;
   }
-  /* Canvas area: scrollable in BOTH directions */
   #eduCanvasWrap{
-    flex:1;
-    overflow-x:scroll;
-    overflow-y:scroll;
+    flex:1;overflow-x:scroll;overflow-y:scroll;
     -webkit-overflow-scrolling:touch;
     overscroll-behavior:contain;
-    min-height:0;
-    background:#060d1a;
+    min-height:0;background:#060d1a;
   }
-  #eduCanvas{
-    display:block;
-    /* width/height set by JS per-mode for mobile */
-    touch-action:pan-x pan-y;
-  }
-  /* Side info panel: fixed height, scrollable */
+  #eduCanvas{ display:block;touch-action:pan-x pan-y; }
   #eduSide{
-    flex-shrink:0;
-    height:38vh;
-    border-left:none;
-    border-top:1.5px solid #1e3a5f;
-    overflow-y:auto;
+    flex-shrink:0;height:38vh;
+    border-left:none;border-top:1.5px solid #1e3a5f;overflow-y:auto;
   }
 
-  /* Larger touch targets for quick-load spanning button */
   .qbtn[style*="span 2"]{padding:12px 5px;}
-
-  /* Padding above everything for bottom tab bar */
   #leftPanel,#rightPanel{padding-bottom:8px;}
 }
 
@@ -507,15 +555,12 @@ body.LM .tbtn.ON{color:#fff;}
 <!-- NAV -->
 <nav id="topnav">
   <a class="logo" href="index.html"><div class="logo-icon">R</div><span>RamTools</span></a>
-  <span class="nav-title">⚡ Electrical Circuit Simulator</span>
+  <span class="nav-title" id="navTitle">⚡ Electrical Circuit Simulator</span>
   <div class="nav-spacer"></div>
   <button id="themeBtn" onclick="toggleTheme()">☀️ Light Mode</button>
   <button id="howToUseBtn"
-    onclick="document.getElementById('how-to-use').scrollIntoView({behavior:'smooth'})"
-    style="background:var(--orange);color:#fff;border:none;padding:5px 13px;border-radius:20px;
-    font-size:.78rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;
-    margin-left:4px;white-space:nowrap;flex-shrink:0;">📖 How to Use ↓</button>
-  <a href="index.html" style="color:var(--accent);text-decoration:none;border:1px solid var(--accent);padding:4px 10px;border-radius:20px;font-size:.78rem;margin-left:4px;white-space:nowrap;">← Home</a>
+    onclick="document.getElementById('how-to-use').scrollIntoView({behavior:'smooth'})">📖 How to Use ↓</button>
+  <a id="homeBtn" href="index.html">← Home</a>
 </nav>
 
 <!-- 3-COLUMN MAIN -->
@@ -649,8 +694,12 @@ body.LM .tbtn.ON{color:#fff;}
     <button class="tbtn" id="btnWire" onclick="setTool('wire')">〰 Wire</button>
     <button class="tbtn" id="btnDel" onclick="setTool('delete')">✕ Delete</button>
     <button class="tbtn" onclick="rotSel()">↻ Rotate</button>
-    <button class="tbtn" onclick="undoAct()">↩ Undo</button>
+    <button class="tbtn" id="btnUndo" onclick="undoAct()" title="Undo (Ctrl+Z)" style="opacity:0.4;" disabled>↩ Undo</button>
+    <button class="tbtn" id="btnRedo" onclick="redoAct()" title="Redo (Ctrl+Y)" style="opacity:0.4;" disabled>↪ Redo</button>
     <button class="tbtn" onclick="clearCanvas()">🗑 Clear</button>
+    <button class="tbtn" onclick="zoom=Math.min(ZOOM_MAX,zoom*1.25);render()" title="Zoom In (Ctrl++)">🔍+</button>
+    <button class="tbtn" onclick="zoom=Math.max(ZOOM_MIN,zoom/1.25);render()" title="Zoom Out (Ctrl+-)">🔍−</button>
+    <button class="tbtn" onclick="zoom=1;panX=0;panY=0;render()" title="Reset View (Ctrl+0)">⊙ Reset</button>
     <button class="tbtn" id="tbRunStop" onclick="toggleSim()"
       style="background:var(--green);color:#000;border-color:var(--green);font-weight:800;">
       ▶ RUN
@@ -792,8 +841,18 @@ let comps=[], wires=[], sel=null, tool='select';
 let running=false, timer=null, frame=0;
 let dragC=null, dox=0, doy=0, startX=0, startY=0;
 let wireFrom=null, wirePts=[];
-let hist=[], dropType=null, mx=0, my=0;
+let hist=[], redoStack=[], dropType=null, mx=0, my=0;
 let lightMode=false;
+
+// ── ZOOM & PAN STATE ──
+let zoom=1, panX=0, panY=0;
+let isPanning=false, panStartX=0, panStartY=0, panOriginX=0, panOriginY=0;
+const ZOOM_MIN=0.25, ZOOM_MAX=4;
+
+// Convert screen px → world coords (accounting for zoom+pan)
+function toWorld(sx,sy){ return {x:(sx-panX)/zoom, y:(sy-panY)/zoom}; }
+// Convert world → screen
+function toScreen(wx,wy){ return {x:wx*zoom+panX, y:wy*zoom+panY}; }
 
 // ═══════════════════════════════════════════════
 // RESIZE
@@ -928,8 +987,10 @@ document.getElementById('canvasWrap').addEventListener('drop',e=>{
   const type=dropType||e.dataTransfer.getData('text/plain');
   if(!type)return;
   const r=CV.getBoundingClientRect();
-  const x=e.clientX-r.left-(SIZES[type]?.w||64)/2;
-  const y=e.clientY-r.top-(SIZES[type]?.h||44)/2;
+  const sx=e.clientX-r.left, sy=e.clientY-r.top;
+  const w=toWorld(sx,sy);
+  const x=w.x-(SIZES[type]?.w||64)/2;
+  const y=w.y-(SIZES[type]?.h||44)/2;
   pushH();
   const c=mkC(type,x,y);
   comps.push(c);sel=c;
@@ -943,8 +1004,16 @@ CV.addEventListener('mousedown',e=>{
   // only handle if popup closed
   if(document.getElementById('popup').classList.contains('show')) return;
   const r=CV.getBoundingClientRect();
-  const px=e.clientX-r.left, py=e.clientY-r.top;
+  const sx=e.clientX-r.left, sy=e.clientY-r.top;
+  const {x:px,y:py}=toWorld(sx,sy);
   mx=px; my=py;
+
+  // Middle-button or Space+drag = pan
+  if(e.button===1||(e.button===0&&e.altKey)){
+    isPanning=true; panStartX=sx; panStartY=sy;
+    panOriginX=panX; panOriginY=panY;
+    CV.style.cursor='grabbing'; e.preventDefault(); return;
+  }
 
   if(tool==='select'){
     let hit=null;
@@ -963,7 +1032,7 @@ CV.addEventListener('mousedown',e=>{
   }
 
   if(tool==='wire'){
-    const t=nearTerm(px,py,30);
+    const t=nearTerm(px,py,30/zoom);
     if(t){
       if(!wireFrom){
         wireFrom=t; wirePts=[{x:t.x,y:t.y}];
@@ -994,7 +1063,17 @@ CV.addEventListener('mousedown',e=>{
 
 CV.addEventListener('mousemove',e=>{
   const r=CV.getBoundingClientRect();
-  mx=e.clientX-r.left; my=e.clientY-r.top;
+  const sx=e.clientX-r.left, sy=e.clientY-r.top;
+
+  // Handle pan drag
+  if(isPanning){
+    panX=panOriginX+(sx-panStartX);
+    panY=panOriginY+(sy-panStartY);
+    render(); return;
+  }
+
+  const {x,y}=toWorld(sx,sy);
+  mx=x; my=y;
   if(dragC&&tool==='select'){
     dragC.x=mx-dox; dragC.y=my-doy;
     syncWires(); render();
@@ -1003,6 +1082,7 @@ CV.addEventListener('mousemove',e=>{
 });
 
 CV.addEventListener('mouseup',e=>{
+  if(isPanning){ isPanning=false; CV.style.cursor=tool==='wire'?'crosshair':tool==='delete'?'not-allowed':'default'; return; }
   if(dragC){
     const moved=Math.hypot(dragC.x-startX, dragC.y-startY);
     if(moved<5){
@@ -1017,7 +1097,7 @@ CV.addEventListener('mouseup',e=>{
 
 CV.addEventListener('dblclick',e=>{
   const r=CV.getBoundingClientRect();
-  const px=e.clientX-r.left, py=e.clientY-r.top;
+  const {x:px,y:py}=toWorld(e.clientX-r.left, e.clientY-r.top);
   const c=comps.find(c=>px>=c.x&&px<=c.x+c.w&&py>=c.y&&py<=c.y+c.h);
   if(!c) return;
   const toggleTypes=['switch_spst','mcb','relay','contactor','fuse','push_button'];
@@ -1032,9 +1112,32 @@ CV.addEventListener('dblclick',e=>{
   }
 });
 
+// ── MOUSE WHEEL ZOOM ── (zoom toward cursor position)
+CV.addEventListener('wheel', e=>{
+  e.preventDefault();
+  const r=CV.getBoundingClientRect();
+  const sx=e.clientX-r.left, sy=e.clientY-r.top;
+  const factor = e.deltaY<0 ? 1.12 : 1/1.12;
+  const newZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, zoom*factor));
+  if(newZoom===zoom) return;
+  // Zoom toward the mouse cursor position
+  panX = sx - (sx-panX)*(newZoom/zoom);
+  panY = sy - (sy-panY)*(newZoom/zoom);
+  zoom = newZoom;
+  render();
+}, {passive:false});
+
+// Prevent middle-click scroll
+CV.addEventListener('mousedown', e=>{ if(e.button===1) e.preventDefault(); }, {passive:false});
+
+// Keyboard zoom: Ctrl++ / Ctrl+- / Ctrl+0
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){wireFrom=null;wirePts=[];render();}
+  if(e.key==='Escape'){wireFrom=null;wirePts=[];isPanning=false;render();}
   if(e.key==='r'||e.key==='R') rotSel();
+  // Ctrl+Z = Undo
+  if(e.ctrlKey&&e.key==='z'&&!e.shiftKey){e.preventDefault();undoAct();return;}
+  // Ctrl+Y or Ctrl+Shift+Z = Redo
+  if((e.ctrlKey&&e.key==='y')||(e.ctrlKey&&e.shiftKey&&e.key==='Z')){e.preventDefault();redoAct();return;}
   if((e.key==='Delete'||e.key==='Backspace')&&sel&&!isInputFocused()){
     pushH();
     const id=sel.id;
@@ -1042,6 +1145,10 @@ document.addEventListener('keydown',e=>{
     wires=wires.filter(w=>w.from.cid!==id&&w.to.cid!==id);
     sel=null; clearProp(); render();
   }
+  // Ctrl+= zoom in, Ctrl+- zoom out, Ctrl+0 reset
+  if(e.ctrlKey&&(e.key==='='||e.key==='+')){e.preventDefault();zoom=Math.min(ZOOM_MAX,zoom*1.2);render();}
+  if(e.ctrlKey&&e.key==='-'){e.preventDefault();zoom=Math.max(ZOOM_MIN,zoom/1.2);render();}
+  if(e.ctrlKey&&e.key==='0'){e.preventDefault();zoom=1;panX=0;panY=0;render();}
 });
 
 function isInputFocused(){
@@ -1082,8 +1189,37 @@ function rotSel(){
 
 function undoAct(){
   if(!hist.length) return;
+  // Save current state to redo stack before undoing
+  redoStack.push({comps:JSON.parse(JSON.stringify(comps)),wires:JSON.parse(JSON.stringify(wires))});
+  if(redoStack.length>30) redoStack.shift();
   const h=hist.pop();
-  comps=h.comps; wires=h.wires; sel=null; clearProp(); render();
+  comps=h.comps; wires=h.wires; sel=null; clearProp();
+  updateUndoRedoBtns(); render();
+}
+
+function redoAct(){
+  if(!redoStack.length) return;
+  // Save current state to undo stack before redoing
+  hist.push({comps:JSON.parse(JSON.stringify(comps)),wires:JSON.parse(JSON.stringify(wires))});
+  if(hist.length>30) hist.shift();
+  const h=redoStack.pop();
+  comps=h.comps; wires=h.wires; sel=null; clearProp();
+  updateUndoRedoBtns(); render();
+}
+
+function pushH(){
+  hist.push({comps:JSON.parse(JSON.stringify(comps)),wires:JSON.parse(JSON.stringify(wires))});
+  if(hist.length>30) hist.shift();
+  // Any new action clears the redo stack
+  redoStack=[];
+  updateUndoRedoBtns();
+}
+
+function updateUndoRedoBtns(){
+  const uBtn=document.getElementById('btnUndo');
+  const rBtn=document.getElementById('btnRedo');
+  if(uBtn){ uBtn.disabled=!hist.length; uBtn.style.opacity=hist.length?'1':'0.4'; }
+  if(rBtn){ rBtn.disabled=!redoStack.length; rBtn.style.opacity=redoStack.length?'1':'0.4'; }
 }
 
 function clearCanvas(){
@@ -1095,11 +1231,6 @@ function clearCanvas(){
   clearTimeout(window._syncTimer);
   document.getElementById('thevBox').style.display='none';
   render();
-}
-
-function pushH(){
-  hist.push({comps:JSON.parse(JSON.stringify(comps)),wires:JSON.parse(JSON.stringify(wires))});
-  if(hist.length>30) hist.shift();
 }
 
 // ═══════════════════════════════════════════════
@@ -1204,12 +1335,21 @@ function simulate(){
 // ═══════════════════════════════════════════════
 function render(){
   CX.clearRect(0,0,W,H);
-  // bg
+  // bg always fills full canvas regardless of zoom
   CX.fillStyle=C('#0c1420','#f5f8fc'); CX.fillRect(0,0,W,H);
-  // grid
-  CX.strokeStyle=C('rgba(30,58,95,0.3)','rgba(80,120,200,0.18)'); CX.lineWidth=0.5;
-  for(let x=0;x<W;x+=20){CX.beginPath();CX.moveTo(x,0);CX.lineTo(x,H);CX.stroke();}
-  for(let y=0;y<H;y+=20){CX.beginPath();CX.moveTo(0,y);CX.lineTo(W,y);CX.stroke();}
+
+  // Apply zoom + pan transform for all world-space drawing
+  CX.save();
+  CX.translate(panX, panY);
+  CX.scale(zoom, zoom);
+
+  // grid (in world space)
+  CX.strokeStyle=C('rgba(30,58,95,0.3)','rgba(80,120,200,0.18)'); CX.lineWidth=0.5/zoom;
+  const gStep=20;
+  const x0=Math.floor(-panX/zoom/gStep)*gStep, x1=(W-panX)/zoom;
+  const y0=Math.floor(-panY/zoom/gStep)*gStep, y1=(H-panY)/zoom;
+  for(let x=x0;x<x1;x+=gStep){CX.beginPath();CX.moveTo(x,y0);CX.lineTo(x,y1);CX.stroke();}
+  for(let y=y0;y<y1;y+=gStep){CX.beginPath();CX.moveTo(x0,y);CX.lineTo(x1,y);CX.stroke();}
 
   // wires
   wires.forEach(w=>{
@@ -1273,10 +1413,20 @@ function render(){
   // selection box
   if(sel){
     CX.strokeStyle=C('#00d4ff','#0066cc');
-    CX.lineWidth=2; CX.setLineDash([5,3]);
+    CX.lineWidth=2/zoom; CX.setLineDash([5/zoom,3/zoom]);
     CX.strokeRect(sel.x-4,sel.y-4,sel.w+8,sel.h+8);
     CX.setLineDash([]);
   }
+
+  // End zoom/pan transform
+  CX.restore();
+
+  // ── ZOOM INDICATOR (screen-space overlay, not zoomed) ──
+  const zPct=Math.round(zoom*100)+'%';
+  CX.fillStyle='rgba(0,0,0,0.45)';
+  CX.beginPath(); CX.roundRect(W-70,H-28,64,22,6); CX.fill();
+  CX.fillStyle='#00d4ff'; CX.font='bold 11px monospace'; CX.textAlign='center';
+  CX.fillText('🔍 '+zPct, W-38, H-13);
 }
 
 // ═══════════════════════════════════════════════
@@ -3791,7 +3941,7 @@ function mobTab(tab){
   const cw = document.getElementById('canvasWrap');
   const tabs = document.querySelectorAll('#mobileTabBar button');
 
-  // Reset all panels hidden
+  // Reset all panels
   lp.classList.remove('mob-active');
   rp.classList.remove('mob-active');
   lp.style.display = 'none';
@@ -3804,7 +3954,7 @@ function mobTab(tab){
     lp.classList.add('mob-active');
     document.getElementById('mtab-components').classList.add('active');
   } else if(tab==='canvas'){
-    cw.style.display = 'block';
+    cw.style.display = 'flex';   // must be flex for toolbar+canvasScroll layout
     document.getElementById('mtab-canvas').classList.add('active');
     setTimeout(resize, 50);
     // Show pan hint briefly then fade
@@ -3914,8 +4064,11 @@ CV.addEventListener('click', e=>{
   if(!mobPendingType) return;
   if(window.innerWidth > 700){ mobPendingType=null; return; } // desktop uses drag
   const r = CV.getBoundingClientRect();
-  const x = e.clientX - r.left - (SIZES[mobPendingType]?.w||64)/2;
-  const y = e.clientY - r.top  - (SIZES[mobPendingType]?.h||44)/2;
+  const sx = e.clientX - r.left;
+  const sy = e.clientY - r.top;
+  const w = toWorld(sx, sy);
+  const x = w.x - (SIZES[mobPendingType]?.w||64)/2;
+  const y = w.y - (SIZES[mobPendingType]?.h||44)/2;
   pushH();
   const c = mkC(mobPendingType, x, y);
   comps.push(c); sel=c;
@@ -4328,7 +4481,7 @@ CV.addEventListener('click', e=>{
         <div class="seo-step-num">7</div>
         <div class="seo-step-body">
           <strong>Stop, Adjust, and Repeat</strong>
-          <span>Click the red <strong>⏹ STOP SIMULATION</strong> button to pause — it's the same button that said RUN (it toggles automatically). The STOP button is visible in <em>both</em> the canvas toolbar and the Controls panel, so you can stop from any tab on mobile. Modify values or the circuit layout, then press RUN again. Use <strong>🗑 Clear</strong> to reset the canvas. Use <strong>↩ Undo</strong> in the toolbar to step back through edits.</span>
+          <span>Click the red <strong>⏹ STOP SIMULATION</strong> button to pause — it's the same button that said RUN (it toggles automatically). The STOP button is visible in <em>both</em> the canvas toolbar and the Controls panel, so you can stop from any tab on mobile. Modify values or the circuit layout, then press RUN again. Use <strong>↩ Undo</strong> to step back and <strong>↪ Redo</strong> to step forward — both in the toolbar with keyboard shortcuts Ctrl+Z / Ctrl+Y. Use <strong>🗑 Clear</strong> to reset the canvas entirely.</span>
         </div>
       </li>
     </ol>
@@ -4343,7 +4496,9 @@ CV.addEventListener('click', e=>{
         <ul>
           <li>Drag-and-drop components from the left panel onto the canvas directly.</li>
           <li>Use the toolbar buttons (Select, Wire, Delete, Rotate, Undo, Clear) for full control.</li>
-          <li>Scroll the mouse wheel to zoom in/out on the canvas for precise wiring.</li>
+          <li><strong>Scroll the mouse wheel to zoom in/out</strong> toward the cursor position for precise wiring. A 🔍 zoom % indicator shows in the bottom-right corner of the canvas.</li>
+          <li>Use toolbar <strong>🔍+ / 🔍−</strong> buttons to zoom, or <strong>⊙ Reset</strong> to return to 100% view. Keyboard shortcuts: <strong>Ctrl++ / Ctrl+− / Ctrl+0</strong>.</li>
+          <li>Hold <strong>Alt + drag</strong> or press <strong>middle mouse button + drag</strong> to pan the canvas freely.</li>
           <li>Click the ☀️ Light Mode button (top-right) to toggle between dark and light theme.</li>
           <li>Double-click any Switch or MCB component to toggle it ON/OFF instantly.</li>
           <li>Click a component and press Delete key to remove it.</li>
@@ -4363,7 +4518,7 @@ CV.addEventListener('click', e=>{
     </div>
 
     <div class="seo-note">
-      <strong>⚠️ Mobile Tip:</strong> The simulator opens on the Canvas tab on mobile so you see the board first. Always go to the <strong>Components</strong> tab first if you want to add new parts — then come back to Canvas to place them. The toolbar on mobile scrolls horizontally — swipe it left to find more buttons.
+      <strong>⚠️ Mobile Tip:</strong> On mobile, the nav shows <strong>RamTools logo</strong>, <strong>☀️ Light Mode</strong>, <strong>📖 How to Use ↓</strong>, and <strong>← Home</strong> — all on one row. The "Electrical Circuit Simulator" title is hidden on mobile to save space. The simulator opens on the <strong>Canvas</strong> tab so you see the board first. Go to the <strong>🔌 Components</strong> tab to add parts, then tap Canvas to place them. The toolbar scrolls horizontally — swipe left to find Undo, Clear, 🔍+, 🔍−, and RUN.
     </div>
 
     <!-- FEATURES / BENEFITS -->
@@ -4372,11 +4527,11 @@ CV.addEventListener('click', e=>{
       <li><strong>20+ Components Available</strong> — Resistors, capacitors, inductors, DC/AC voltage sources, switches, LEDs, lamps, motors, transformers, relays, contactors, diodes, fuses, and more.</li>
       <li><strong>Live Current Visualization</strong> — Animated orange wires show exactly where current is flowing and in which direction during simulation.</li>
       <li><strong>Instant Live Measurements</strong> — Voltage, Current, Power, Frequency, Motor RPM, and TX Secondary values update in real time in the right panel.</li>
-      <li><strong>Quick Load Preset Circuits</strong> — One-click presets: LED+Switch, AC Lamp, Motor 1Ph, Motor 3Ph, TX 1-Phase, Relay Control, Star-Delta, RC Circuit, House Wiring, Solar+MPPT, Thevenin, and more.</li>
-      <li><strong>Thevenin Analysis</strong> — Load the Thevenin preset to automatically compute Vth, Rth, Isc, and Maximum Power.</li>
+      <li><strong>Quick Load Preset Circuits</strong> — One-click presets: LED+Switch, AC Lamp, Motor 1Ph, Motor 3Ph, TX 1-Phase, Relay Control, Star-Delta, RC Circuit, House Wiring, Solar+MPPT, Thévenin, and more.</li>
+      <li><strong>Thévenin Analysis</strong> — Load the Thévenin preset to automatically compute Vth, Rth, Isc, and Maximum Power.</li>
       <li><strong>Educational Mode</strong> — Some presets open an in-depth educational panel with theory, formulas, and animated circuit explanation side by side.</li>
       <li><strong>Dark Mode & Light Mode</strong> — Toggle between the dark engineering theme and a bright light theme with one click.</li>
-      <li><strong>Undo / Redo Support</strong> — Step back through edits without fear using the ↩ Undo toolbar button.</li>
+      <li><strong>Undo & Redo Support</strong> — Step back with ↩ Undo and step forward with ↪ Redo. Both buttons dim when unavailable and light up when active. Keyboard shortcuts: <strong>Ctrl+Z</strong> to undo, <strong>Ctrl+Y</strong> or <strong>Ctrl+Shift+Z</strong> to redo.</li>
       <li><strong>Mobile Tab Layout</strong> — Three-tab design on mobile ensures a smooth, non-cluttered experience on small screens.</li>
       <li><strong>100% Free, No Account Required</strong> — Open and use immediately without registration or payment.</li>
     </ul>
@@ -4442,7 +4597,7 @@ CV.addEventListener('click', e=>{
 
       <details>
         <summary>What happens if I make a mistake? Can I undo it?</summary>
-        <div class="faq-ans">Yes. Use the <strong>↩ Undo</strong> button in the toolbar to step back through your recent actions. You can also use <strong>🗑 Clear</strong> in the right panel to reset the canvas completely and start from scratch.</div>
+        <div class="faq-ans">Yes. Use the <strong>↩ Undo</strong> button in the toolbar to step back through recent actions — or press <strong>Ctrl+Z</strong>. Changed your mind about undoing? Use <strong>↪ Redo</strong> (next to Undo in the toolbar) or press <strong>Ctrl+Y</strong> / <strong>Ctrl+Shift+Z</strong> to move forward again. Both buttons appear dimmed (greyed out) when they have no actions available, and light up when they do. Any new action (placing a component, drawing a wire, etc.) clears the redo history. You can also use <strong>🗑 Clear</strong> to reset the canvas completely.</div>
       </details>
 
       <details>
@@ -4452,7 +4607,7 @@ CV.addEventListener('click', e=>{
 
       <details>
         <summary>Is this simulator accurate enough for real engineering use?</summary>
-        <div class="faq-ans">The simulator is ideal for conceptual prototyping, educational exploration, and quick sanity checks. For production-grade precision simulation with complex SPICE models, professional tools are recommended. RamTools is perfect for learning, teaching, and fast idea validation.</div>
+        <div class="faq-ans">The simulator is ideal for conceptual prototyping, educational exploration, and quick sanity checks. For production-grade precision simulation with complex SPICE models, professional tools like LTspice or Multisim are recommended. RamTools is perfect for learning, teaching, and fast idea validation.</div>
       </details>
 
     </div>
