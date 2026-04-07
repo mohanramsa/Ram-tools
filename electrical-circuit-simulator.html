@@ -18,7 +18,7 @@ body{width:100%;}
 
 /* ── SIMULATOR WRAPPER locks exactly to viewport so SEO scrolls below ── */
 #simulator-wrapper{
-  height:100vh;
+  height:var(--app-height);
   display:flex;
   flex-direction:column;
   overflow:hidden;
@@ -371,7 +371,7 @@ body.LM .tbtn.ON{color:#fff;}
   /* ── SIMULATOR WRAPPER: exactly full viewport ── */
   #simulator-wrapper{
     height:100dvh;    /* use dvh for accurate mobile viewport */
-    height:100vh;     /* fallback */
+       
     overflow:hidden;
     display:flex;
     flex-direction:column;
@@ -831,6 +831,25 @@ body.LM .tbtn.ON{color:#fff;}
 </div>
 
 <script>
+
+  // Fix mobile viewport height issue
+function setAppHeight(){
+  document.documentElement.style.setProperty(
+    '--app-height',
+    window.innerHeight + 'px'
+  );
+}
+window.addEventListener('resize', setAppHeight);
+setAppHeight();
+// 🔧 Debounce resize (prevents mobile flicker)
+let resizeTimeout;
+
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    resize();
+  }, 200);
+});
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
