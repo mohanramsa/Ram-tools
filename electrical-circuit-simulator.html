@@ -330,85 +330,76 @@ body.LM .tbtn.ON{color:#fff;}
 ══════════════════════════════════════════ */
 @media(max-width:700px){
 
-  /* ── SIMULATOR WRAPPER: strict full-viewport flex column ── */
-  #simulator-wrapper{
-    position:fixed;          /* lock to screen — never scroll with page */
-    top:0; left:0; right:0; bottom:0;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-    z-index:1;
-  }
-
-  /* ── NAV: SINGLE ROW — no wrapping ever ── */
+  /* ── NAV: two-row layout on mobile ── */
   #topnav{
-    flex-shrink:0;
-    height:48px;
-    min-height:48px;
-    max-height:48px;
-    padding:0 8px;
-    gap:6px;
-    flex-wrap:nowrap;        /* HARD: no wrapping */
-    overflow:hidden;
+    height:auto;
+    min-height:44px;
+    padding:5px 8px;
+    gap:5px;
+    flex-wrap:wrap;           /* allow wrapping into 2 rows if needed */
     align-items:center;
   }
 
-  /* Logo: shrink text on tiny screens */
-  .logo{ font-size:.85rem; gap:4px; flex-shrink:0; }
-  .logo-icon{ width:24px; height:24px; font-size:.82rem; flex-shrink:0; }
-  .logo span{ display:inline; }
+  /* Logo always row 1 — shrink RamTools text */
+  .logo{ font-size:.9rem; gap:5px; flex-shrink:0; }
+  .logo-icon{ width:24px; height:24px; font-size:.85rem; }
+  .logo span{ display:inline; } /* keep RamTools text */
 
-  /* Title: always hidden on mobile */
+  /* Title: hide on mobile — saves space */
   #navTitle{ display:none !important; }
 
-  /* Spacer */
-  .nav-spacer{ flex:1; min-width:2px; }
+  /* Spacer pushes buttons right on same row */
+  .nav-spacer{ flex:1; min-width:4px; }
 
-  /* All nav buttons — very compact, never wrap */
+  /* All nav buttons compact */
   #themeBtn{
-    padding:3px 7px;
-    font-size:.65rem;
-    border-radius:12px;
-    flex-shrink:0;
-    white-space:nowrap;
+    padding:4px 7px;
+    font-size:.68rem;
+    border-radius:14px;
   }
   #howToUseBtn{
-    padding:3px 7px;
-    font-size:.65rem;
-    border-radius:12px;
-    flex-shrink:0;
-    white-space:nowrap;
+    padding:4px 8px;
+    font-size:.68rem;
+    border-radius:14px;
   }
   #homeBtn{
-    padding:3px 7px;
-    font-size:.65rem;
-    border-radius:12px;
-    flex-shrink:0;
-    white-space:nowrap;
+    padding:3px 8px;
+    font-size:.68rem;
+    border-radius:14px;
   }
 
-  /* ── MAIN: takes ALL remaining space between nav and tab bar ── */
+  /* ── SIMULATOR WRAPPER: exactly full viewport ── */
+  #simulator-wrapper{
+    height:100dvh;    /* use dvh for accurate mobile viewport */
+    height:100vh;     /* fallback */
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ── MAIN: fills all space between nav and tab bar ── */
   #main{
-    flex:1 1 0;
-    min-height:0;
     display:block;
+    flex:1;
     overflow:hidden;
     position:relative;
+    min-height:0;
   }
 
-  /* All panels fill parent exactly */
+  /* All panels fill the same space, toggled by JS */
   #leftPanel, #canvasWrap, #rightPanel{
     position:absolute;
-    top:0; left:0; right:0; bottom:0;
-    width:100%; height:100%;
+    top:0;left:0;right:0;bottom:0;
+    width:100%;height:100%;
     border:none;
     box-sizing:border-box;
   }
-  #leftPanel{ display:none; z-index:2; overflow-y:auto; overflow-x:hidden; }
-  #rightPanel{ display:none; z-index:2; overflow-y:auto; overflow-x:hidden; }
 
-  /* canvasWrap: vertical flex — toolbar strip then scrollable canvas */
+  /* Default: hide left & right, show canvas */
+  #leftPanel{display:none;z-index:2;overflow-y:auto;}
+  #rightPanel{display:none;z-index:2;overflow-y:auto;}
+
+  /* canvasWrap: flex column — toolbar then scroll area */
   #canvasWrap{
     display:flex !important;
     flex-direction:column !important;
@@ -417,57 +408,54 @@ body.LM .tbtn.ON{color:#fff;}
     background:var(--canvas);
   }
 
-  /* Toolbar: compact, horizontally scrollable */
+  /* Toolbar: fixed at top of canvas, scrolls horizontally */
   #toolbar{
     position:relative !important;
     top:auto !important; left:auto !important;
     flex-shrink:0;
-    height:40px;
     overflow-x:auto;
     overflow-y:hidden;
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    align-items:center;
-    gap:4px !important;
-    padding:4px 6px !important;
-    background:rgba(8,13,28,0.98);
+    white-space:nowrap;
+    background:rgba(10,15,30,0.97);
     border-bottom:1px solid var(--border);
+    padding:5px 6px !important;
+    gap:4px !important;
+    flex-wrap:nowrap !important;
     scrollbar-width:none;
-    -webkit-overflow-scrolling:touch;
     z-index:200;
+    -webkit-overflow-scrolling:touch;
   }
-  #toolbar::-webkit-scrollbar{ display:none; }
+  #toolbar::-webkit-scrollbar{display:none;}
   .tbtn{
-    padding:5px 9px;
-    font-size:.7rem;
+    padding:6px 10px;
+    font-size:.73rem;
     white-space:nowrap;
     flex-shrink:0;
-    height:30px;
-    border-radius:5px;
+    min-height:34px;
+    border-radius:6px;
   }
 
   /* Pan hint */
   #mobPanHint{
     flex-shrink:0;
     text-align:center;
-    font-size:.6rem;
-    color:var(--muted);
+    font-size:.62rem;color:var(--muted);
     pointer-events:none;
     background:rgba(0,0,0,.5);
-    padding:2px 0;
+    padding:2px 0;letter-spacing:.02em;
   }
 
-  /* Canvas scroll area — fills rest of canvasWrap */
+  /* Scrollable canvas area */
   #canvasScroll{
-    flex:1 1 0;
-    min-height:0;
+    flex:1 1 auto;
     overflow-x:scroll !important;
     overflow-y:scroll !important;
     -webkit-overflow-scrolling:touch;
     overscroll-behavior:contain;
+    min-height:0;
   }
 
-  /* Canvas: large fixed size so user can scroll around */
+  /* Canvas: large fixed size inside scroll area */
   #simCanvas{
     display:block !important;
     position:static !important;
@@ -477,61 +465,72 @@ body.LM .tbtn.ON{color:#fff;}
     flex-shrink:0;
   }
 
-  /* ── MOBILE TAB BAR: always at bottom, never cut off ── */
+  /* ── MOBILE TAB BAR: always fully visible at bottom ── */
   #mobileTabBar{
-    flex-shrink:0;
     display:grid !important;
     grid-template-columns:repeat(3,1fr);
+    flex-shrink:0;          /* never squish */
     height:52px;
-    min-height:52px;
     background:var(--nav);
     border-top:2px solid var(--border);
-    position:relative;
+    position:relative;      /* not fixed — inside flex wrapper */
     z-index:1000;
     width:100%;
   }
   #mobileTabBar button{
     font-size:.58rem;
-    padding:3px 0;
+    padding:4px 0;
     min-height:52px;
-    border-top:3px solid transparent;
   }
   #mobileTabBar button .mtab-icon{ font-size:1.1rem; }
-  #mobileTabBar button.active{
-    color:var(--accent);
-    border-top-color:var(--accent);
+
+  /* Larger component items for touch */
+  .citem{ padding:10px 8px;margin-bottom:4px;font-size:.82rem; }
+  .citem svg{ width:40px;height:24px; }
+  .citem-sub{ font-size:.7rem; }
+  .cat{ font-size:.8rem;padding:8px 6px 4px; }
+
+  /* Right panel scrollable */
+  #rightPanel{overflow-y:auto;padding:10px;}
+  .rbtn{padding:12px;font-size:1rem;margin-bottom:8px;}
+  .qbtn{padding:10px 5px;font-size:.72rem;}
+  .qgrid{gap:5px;}
+  .mrow{padding:6px 0;font-size:.82rem;}
+
+  /* Hint text hidden on mobile */
+  .hint{display:none;}
+
+  /* Popup full width */
+  .pbox{min-width:unset;width:95%;max-width:unset;}
+
+  /* Educational modal: full screen */
+  #eduBox{
+    width:100vw;height:100vh;
+    border-radius:0;border:none;
+    display:flex;flex-direction:column;
+  }
+  #eduHeader{padding:8px 12px;}
+  #eduTitle{font-size:.92rem;}
+  #eduBody{
+    display:flex !important;
+    flex-direction:column !important;
+    grid-template-columns:unset !important;
+    flex:1;overflow:hidden;
+  }
+  #eduCanvasWrap{
+    flex:1;overflow-x:scroll;overflow-y:scroll;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    min-height:0;background:#060d1a;
+  }
+  #eduCanvas{ display:block;touch-action:pan-x pan-y; }
+  #eduSide{
+    flex-shrink:0;height:38vh;
+    border-left:none;border-top:1.5px solid #1e3a5f;overflow-y:auto;
   }
 
-  /* Component list */
-  .citem{ padding:10px 8px; margin-bottom:3px; font-size:.82rem; }
-  .citem svg{ width:40px; height:24px; }
-  .citem-sub{ font-size:.7rem; }
-  .cat{ font-size:.8rem; padding:8px 6px 4px; }
-
-  /* Right panel */
-  #rightPanel{ padding:10px; }
-  .rbtn{ padding:11px; font-size:.95rem; margin-bottom:7px; }
-  .qbtn{ padding:9px 4px; font-size:.7rem; }
-  .qgrid{ gap:4px; }
-  .mrow{ padding:5px 0; font-size:.8rem; }
-
-  /* Hide desktop hint */
-  .hint{ display:none; }
-
-  /* Popup */
-  .pbox{ min-width:unset; width:95%; max-width:unset; }
-
-  /* Educational modal */
-  #eduBox{ width:100vw; height:100vh; border-radius:0; border:none; display:flex; flex-direction:column; }
-  #eduHeader{ padding:8px 12px; }
-  #eduTitle{ font-size:.9rem; }
-  #eduBody{ display:flex !important; flex-direction:column !important; grid-template-columns:unset !important; flex:1; overflow:hidden; }
-  #eduCanvasWrap{ flex:1; overflow-x:scroll; overflow-y:scroll; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; min-height:0; background:#060d1a; }
-  #eduCanvas{ display:block; touch-action:pan-x pan-y; }
-  #eduSide{ flex-shrink:0; height:36vh; border-left:none; border-top:1.5px solid #1e3a5f; overflow-y:auto; }
-
-  .qbtn[style*="span 2"]{ padding:11px 4px; }
-  #leftPanel,#rightPanel{ padding-bottom:6px; }
+  .qbtn[style*="span 2"]{padding:12px 5px;}
+  #leftPanel,#rightPanel{padding-bottom:8px;}
 }
 
 /* ══════════════════════════════════════════
@@ -3974,14 +3973,6 @@ function mobTab(tab){
 // Start on canvas tab on mobile so users see the board first
 if(window.innerWidth <= 700){ mobTab('canvas'); }
 
-// Show/hide mob-spacer so SEO section scrolls correctly on mobile
-function updateMobSpacer(){
-  const spacer = document.getElementById('mob-spacer');
-  if(!spacer) return;
-  spacer.style.display = window.innerWidth <= 700 ? 'block' : 'none';
-}
-updateMobSpacer();
-
 window.addEventListener('resize',()=>{
   const lp = document.getElementById('leftPanel');
   const rp = document.getElementById('rightPanel');
@@ -3994,7 +3985,6 @@ window.addEventListener('resize',()=>{
     const active = document.querySelector('#mobileTabBar button.active');
     if(!active) mobTab('canvas');
   }
-  updateMobSpacer();
   resize();
 });
 
@@ -4384,10 +4374,6 @@ CV.addEventListener('click', e=>{
   .seo-steps li { flex-direction: column; gap: 0.5rem; }
 }
 </style>
-
-<!-- Mobile spacer: simulator-wrapper is position:fixed on mobile,
-     so body needs a top padding to push SEO content below the fixed area -->
-<div id="mob-spacer" style="display:none;height:100vh;"></div>
 
 <section id="seo-section">
 
