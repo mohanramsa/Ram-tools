@@ -616,6 +616,277 @@ This tool is useful for electrical engineers, diploma students, maintenance tech
   </div>
 
 
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TRANSFORMER FORMULAS & CALCULATOR
+  ═══════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-title">🔄 Transformer — Formulas & Calculator</div>
+    <div class="card-sub">Voltage ratio, current ratio, EMF equation, efficiency — all in one place for students &amp; engineers.</div>
+
+    <!-- Formula Reference -->
+    <div style="background:#f5f3ff;border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;">
+      <div class="section-label">📐 Key Formulas</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.8rem;">
+
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Voltage Ratio</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--purple);font-weight:700">V₁ / V₂ = N₁ / N₂</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">Primary voltage / Secondary voltage = Primary turns / Secondary turns</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Current Ratio</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--purple);font-weight:700">I₁ / I₂ = N₂ / N₁</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">Current is inversely proportional to turns ratio. High voltage side → low current.</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Power (Ideal TX)</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--purple);font-weight:700">P = V × I</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">Input power = Output power (ideal). In practice: P_out = η × P_in.</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Efficiency</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--purple);font-weight:700">η = (P_out / P_in) × 100</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">Typical power transformers: 95–99%. Distribution: 97–98.5%.</div>
+        </div>
+
+        <div style="background:#fff;border:2px solid var(--orange);border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#ea580c;text-transform:uppercase;margin-bottom:4px">EMF Equation</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:#ea580c;font-weight:700">E = 4.44 × f × N × Φₘ</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">E = induced EMF (V), f = frequency (Hz), N = turns, Φₘ = max flux (Wb)</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Turns Ratio (a)</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--purple);font-weight:700">a = N₁ / N₂ = V₁ / V₂</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">a &gt; 1 → Step-down transformer. a &lt; 1 → Step-up transformer.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Transformer Calculator Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('tx','vr',this)">⚡ Voltage / Turns</div>
+      <div class="tab" onclick="switchTab('tx','emf',this)">📐 EMF Equation</div>
+      <div class="tab" onclick="switchTab('tx','eff',this)">📊 Efficiency</div>
+    </div>
+
+    <!-- Tab 1: Voltage & Turns -->
+    <div class="tab-content active" id="tx-vr">
+      <div class="card-sub" style="margin-bottom:0.8rem">Calculate secondary voltage or turns from known values using V₁/V₂ = N₁/N₂</div>
+      <div class="grid g3">
+        <div><label>Primary Voltage V₁ (Volts)</label><input id="tx_v1" type="number" placeholder="e.g. 11000"></div>
+        <div><label>Primary Turns N₁</label><input id="tx_n1" type="number" placeholder="e.g. 1000"></div>
+        <div><label>Secondary Turns N₂</label><input id="tx_n2" type="number" placeholder="e.g. 100"></div>
+        <div><label>Primary Current I₁ (A) — optional</label><input id="tx_i1" type="number" placeholder="e.g. 10"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcTxVR()">⚡ Calculate</button></div>
+      <div class="result" id="tx_vr_res"></div>
+      <div class="note" style="margin-top:1rem;">
+        <b>📘 Concept: Voltage Ratio</b>
+        A transformer works on the principle of electromagnetic induction. When an AC voltage is applied to the primary winding (N₁ turns), it creates a changing magnetic flux in the core. This flux links with the secondary winding (N₂ turns) and induces a voltage. The ratio V₁/V₂ = N₁/N₂ is the fundamental transformer law. If N₂ &gt; N₁ → voltage steps up. If N₂ &lt; N₁ → voltage steps down.
+      </div>
+    </div>
+
+    <!-- Tab 2: EMF Equation -->
+    <div class="tab-content" id="tx-emf">
+      <div class="card-sub" style="margin-bottom:0.8rem">Calculate induced EMF using E = 4.44 × f × N × Φₘ</div>
+      <div class="grid g3">
+        <div><label>Frequency f (Hz)</label><input id="tx_ef" type="number" placeholder="e.g. 50" value="50"></div>
+        <div><label>Number of Turns N</label><input id="tx_en" type="number" placeholder="e.g. 500"></div>
+        <div><label>Maximum Flux Φₘ (Weber)</label><input id="tx_ephi" type="number" placeholder="e.g. 0.05" step="0.001"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcTxEMF()">📐 Calculate EMF</button></div>
+      <div class="result" id="tx_emf_res"></div>
+      <div class="note" style="margin-top:1rem;">
+        <b>📘 Concept: EMF Equation</b>
+        The EMF equation of a transformer is derived from Faraday's law of electromagnetic induction. The constant 4.44 comes from 2π/√2 ≈ 4.44 (the RMS form factor for a sinusoidal wave). For a 50 Hz transformer with 500 turns and a peak flux of 0.05 Wb: E = 4.44 × 50 × 500 × 0.05 = 5550 V. This equation is essential for transformer design and understanding iron core sizing.
+      </div>
+    </div>
+
+    <!-- Tab 3: Efficiency -->
+    <div class="tab-content" id="tx-eff">
+      <div class="card-sub" style="margin-bottom:0.8rem">Calculate transformer efficiency η = (Output / Input) × 100</div>
+      <div class="grid g3">
+        <div><label>Output Power P_out (Watts or kVA)</label><input id="tx_pout" type="number" placeholder="e.g. 9500"></div>
+        <div><label>Iron (Core) Losses Pᵢ (Watts)</label><input id="tx_pi" type="number" placeholder="e.g. 200"></div>
+        <div><label>Copper Losses Pcu (Watts)</label><input id="tx_pcu" type="number" placeholder="e.g. 300"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcTxEff()">📊 Calculate Efficiency</button></div>
+      <div class="result" id="tx_eff_res"></div>
+      <div class="note" style="margin-top:1rem;">
+        <b>📘 Concept: Transformer Losses</b>
+        A real transformer has two types of losses: <br>
+        1. <strong>Iron (Core) Losses</strong> — caused by hysteresis and eddy currents in the core. They are <em>constant</em> regardless of load (also called no-load losses).<br>
+        2. <strong>Copper Losses</strong> — caused by resistance of the windings (I²R). They <em>vary with load</em> (also called load losses).<br>
+        At maximum efficiency: Iron losses = Copper losses. η_max occurs when Pᵢ = Pcu.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MOTOR FORMULAS & CALCULATOR
+  ═══════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-title">⚙️ Electric Motor — Formulas & Calculator</div>
+    <div class="card-sub">DC motor, induction motor, synchronous speed, slip, torque, and efficiency formulas with interactive calculators.</div>
+
+    <!-- Formula Reference -->
+    <div style="background:#fff7ed;border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem;">
+      <div class="section-label">📐 Key Motor Formulas</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.8rem;">
+
+        <div style="background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Synchronous Speed</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:#ea580c;font-weight:700">Ns = 120 × f / P</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">f = frequency (Hz), P = number of poles. For 50 Hz, 4-pole: Ns = 1500 RPM</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Slip</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:#ea580c;font-weight:700">s = (Ns − Nr) / Ns</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">Nr = actual rotor speed (RPM). Typical induction motor slip: 2–8%</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Torque</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:#ea580c;font-weight:700">T = P × 60 / (2π × N)</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">T = torque (N·m), P = power (W), N = speed (RPM)</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Motor Efficiency</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:#ea580c;font-weight:700">η = P_out / P_in × 100</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">P_out = shaft power (W), P_in = electrical input power (W)</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Back EMF (DC Motor)</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:#ea580c;font-weight:700">Eb = V − Ia × Ra</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">V = supply voltage, Ia = armature current, Ra = armature resistance</div>
+        </div>
+
+        <div style="background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:0.8rem 1rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:4px">Full Load Current</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:#ea580c;font-weight:700">I = P / (√3 × V × pf × η)</div>
+          <div style="font-size:0.78rem;color:#6b7280;margin-top:4px">Three-phase FLC formula for induction motor sizing</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Motor Calculator Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('mot2','speed',this)">🔄 Synchronous Speed &amp; Slip</div>
+      <div class="tab" onclick="switchTab('mot2','torque',this)">⚙️ Torque</div>
+      <div class="tab" onclick="switchTab('mot2','backemf',this)">⚡ Back EMF (DC)</div>
+    </div>
+
+    <!-- Tab 1: Sync Speed & Slip -->
+    <div class="tab-content active" id="mot2-speed">
+      <div class="card-sub" style="margin-bottom:0.8rem">Calculate synchronous speed and slip for induction motors. Ns = 120f/P, s = (Ns−Nr)/Ns</div>
+      <div class="grid g3">
+        <div><label>Supply Frequency f (Hz)</label><input id="ms_f" type="number" placeholder="e.g. 50" value="50"></div>
+        <div>
+          <label>Number of Poles P</label>
+          <select id="ms_p">
+            <option value="2">2-pole (3000 RPM @ 50Hz)</option>
+            <option value="4" selected>4-pole (1500 RPM @ 50Hz)</option>
+            <option value="6">6-pole (1000 RPM @ 50Hz)</option>
+            <option value="8">8-pole (750 RPM @ 50Hz)</option>
+            <option value="10">10-pole (600 RPM @ 50Hz)</option>
+            <option value="12">12-pole (500 RPM @ 50Hz)</option>
+          </select>
+        </div>
+        <div><label>Actual Rotor Speed Nr (RPM) — for slip</label><input id="ms_nr" type="number" placeholder="e.g. 1440"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcMotSpeed()">🔄 Calculate</button></div>
+      <div class="result" id="ms_res"></div>
+      <div class="note" style="margin-top:1rem;">
+        <b>📘 Concept: Synchronous Speed &amp; Slip</b>
+        The synchronous speed (Ns) is the speed of the rotating magnetic field produced by the stator. An induction motor rotor always runs slightly slower than Ns — this difference is called slip. Without slip, there would be no relative motion between the rotor and the magnetic field, so no torque would be produced. A typical 4-pole, 50 Hz motor has Ns = 1500 RPM and runs at ~1440 RPM (4% slip) at full load.
+      </div>
+    </div>
+
+    <!-- Tab 2: Torque -->
+    <div class="tab-content" id="mot2-torque">
+      <div class="card-sub" style="margin-bottom:0.8rem">Calculate motor torque from power and speed. T = P × 60 / (2π × N)</div>
+      <div class="grid g3">
+        <div><label>Shaft Power (Watts or HP)</label><input id="mt_p" type="number" placeholder="e.g. 3730 or 5 HP"></div>
+        <div>
+          <label>Input Unit</label>
+          <select id="mt_unit">
+            <option value="w">Watts (W)</option>
+            <option value="kw">Kilowatts (kW)</option>
+            <option value="hp">Horsepower (HP) — 1 HP = 746 W</option>
+          </select>
+        </div>
+        <div><label>Speed N (RPM)</label><input id="mt_n" type="number" placeholder="e.g. 1440"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcMotTorque()">⚙️ Calculate Torque</button></div>
+      <div class="result" id="mt_res"></div>
+      <div class="note" style="margin-top:1rem;">
+        <b>📘 Concept: Motor Torque</b>
+        Torque is the rotational force a motor produces at its shaft. It is directly proportional to power and inversely proportional to speed. A 5 HP (3730 W) motor running at 1440 RPM produces approximately 24.7 N·m of torque. Torque is critical for selecting motors for conveyor belts, pumps, compressors, and lifting applications.
+      </div>
+    </div>
+
+    <!-- Tab 3: Back EMF -->
+    <div class="tab-content" id="mot2-backemf">
+      <div class="card-sub" style="margin-bottom:0.8rem">Calculate back EMF of a DC motor. Eb = V − Ia × Ra</div>
+      <div class="grid g3">
+        <div><label>Supply Voltage V (Volts)</label><input id="be_v" type="number" placeholder="e.g. 220"></div>
+        <div><label>Armature Current Ia (Amperes)</label><input id="be_ia" type="number" placeholder="e.g. 15"></div>
+        <div><label>Armature Resistance Ra (Ohms)</label><input id="be_ra" type="number" placeholder="e.g. 0.5" step="0.01"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcBackEMF()">⚡ Calculate Back EMF</button></div>
+      <div class="result" id="be_res"></div>
+      <div class="note" style="margin-top:1rem;">
+        <b>📘 Concept: Back EMF in DC Motors</b>
+        When a DC motor rotates, its armature conductors cut through the magnetic field and generate a voltage that opposes the supply voltage. This is called Back EMF (Eb). The motor draws current I = (V − Eb) / Ra. As speed increases, Eb increases and current drops — this is the self-regulating mechanism of a DC motor. At startup, Eb = 0 so a starting resistor is needed to limit the high initial current.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FORMULA QUICK REFERENCE TABLE
+  ═══════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-title">📋 Electrical Formula Quick Reference</div>
+    <div class="card-sub">Complete table of core electrical engineering formulas — bookmark this for exams and site work.</div>
+    <div style="overflow-x:auto;">
+      <table style="border-collapse:collapse;width:100%;font-size:0.85rem;min-width:600px;">
+        <thead>
+          <tr style="background:var(--purple);color:#fff;">
+            <th style="padding:9px 12px;text-align:left;border:1px solid #7c3aed;">Formula / Concept</th>
+            <th style="padding:9px 12px;border:1px solid #7c3aed;">Expression</th>
+            <th style="padding:9px 12px;border:1px solid #7c3aed;">Variables</th>
+            <th style="padding:9px 12px;border:1px solid #7c3aed;">Used For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#fff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Ohm's Law</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">V = I × R</td><td style="padding:7px 12px;border:1px solid var(--border)">V=Volts, I=Amps, R=Ohms</td><td style="padding:7px 12px;border:1px solid var(--border)">Basic circuit analysis</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Power (DC)</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">P = V × I</td><td style="padding:7px 12px;border:1px solid var(--border)">P=Watts, V=Volts, I=Amps</td><td style="padding:7px 12px;border:1px solid var(--border)">Load sizing</td></tr>
+          <tr style="background:#fff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Single Phase Power</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">P = V × I × cosφ</td><td style="padding:7px 12px;border:1px solid var(--border)">cosφ = power factor</td><td style="padding:7px 12px;border:1px solid var(--border)">1-phase motor/load</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Three Phase Power</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">P = √3 × V × I × cosφ</td><td style="padding:7px 12px;border:1px solid var(--border)">√3 = 1.732</td><td style="padding:7px 12px;border:1px solid var(--border)">3-phase systems</td></tr>
+          <tr style="background:#fff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:#ea580c">TX Voltage Ratio</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">V₁/V₂ = N₁/N₂</td><td style="padding:7px 12px;border:1px solid var(--border)">N = number of turns</td><td style="padding:7px 12px;border:1px solid var(--border)">Transformer design</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:#ea580c">TX Current Ratio</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">I₁/I₂ = N₂/N₁</td><td style="padding:7px 12px;border:1px solid var(--border)">Inverse of turns ratio</td><td style="padding:7px 12px;border:1px solid var(--border)">CT ratio, cable sizing</td></tr>
+          <tr style="background:#fff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:#ea580c">EMF Equation</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">E = 4.44 × f × N × Φₘ</td><td style="padding:7px 12px;border:1px solid var(--border)">Φₘ = max flux (Wb)</td><td style="padding:7px 12px;border:1px solid var(--border)">Transformer core design</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Sync Speed</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">Ns = 120f / P</td><td style="padding:7px 12px;border:1px solid var(--border)">f=Hz, P=poles</td><td style="padding:7px 12px;border:1px solid var(--border)">Motor speed selection</td></tr>
+          <tr style="background:#fff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Slip</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">s = (Ns − Nr) / Ns</td><td style="padding:7px 12px;border:1px solid var(--border)">Nr = rotor RPM</td><td style="padding:7px 12px;border:1px solid var(--border)">Induction motor analysis</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Motor Torque</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">T = P×60 / (2π×N)</td><td style="padding:7px 12px;border:1px solid var(--border)">T=N·m, P=W, N=RPM</td><td style="padding:7px 12px;border:1px solid var(--border)">Load matching</td></tr>
+          <tr style="background:#fff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Efficiency</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">η = (P_out/P_in) × 100</td><td style="padding:7px 12px;border:1px solid var(--border)">η = eta (%), output/input</td><td style="padding:7px 12px;border:1px solid var(--border)">TX & motor efficiency</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:7px 12px;border:1px solid var(--border);font-weight:700;color:var(--purple)">Back EMF (DC)</td><td style="padding:7px 12px;border:1px solid var(--border);text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">Eb = V − Ia × Ra</td><td style="padding:7px 12px;border:1px solid var(--border)">Ia=armature current</td><td style="padding:7px 12px;border:1px solid var(--border)">DC motor design</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Relay Testing Promo Banner -->
   <a href="relay-calculator.html" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid #7c3aed;border-radius:14px;padding:1.2rem 1.6rem;text-decoration:none;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 6px 20px #5b21b640'" onmouseout="this.style.boxShadow=''">
     <span style="font-size:2.5rem;">🛡️</span>
@@ -1116,6 +1387,110 @@ function switchTab(group, name, el) {
   document.getElementById(`${group}-${name}`).classList.add('active');
   el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
+}
+
+// ─── TRANSFORMER CALCULATORS ───────────────────────────
+
+function calcTxVR() {
+  const v1 = parseFloat(document.getElementById('tx_v1').value);
+  const n1 = parseFloat(document.getElementById('tx_n1').value);
+  const n2 = parseFloat(document.getElementById('tx_n2').value);
+  const i1 = parseFloat(document.getElementById('tx_i1').value);
+  if (isNaN(v1)||isNaN(n1)||isNaN(n2)) return err('tx_vr_res','Enter V₁, N₁ and N₂.');
+  const v2 = (v1 * n2 / n1).toFixed(2);
+  const ratio = (n1/n2).toFixed(3);
+  const type = n2 > n1 ? '⬆️ Step-Up Transformer' : n2 < n1 ? '⬇️ Step-Down Transformer' : '↔️ Isolation Transformer (1:1)';
+  let i2html = '';
+  if (!isNaN(i1)) {
+    const i2 = (i1 * n1 / n2).toFixed(3);
+    i2html = `<br><br>🔌 <b>Current Ratio:</b> I₂ = I₁ × N₁/N₂ = ${i1} × ${n1}/${n2} = <span style="color:var(--orange)">${i2} A</span>`;
+  }
+  showRes('tx_vr_res', `
+    <div class="res-val">V₂ = ${v2} V</div>
+    V₂ = V₁ × N₂/N₁ = ${v1} × ${n2}/${n1}<br>
+    Turns Ratio a = N₁/N₂ = <b>${ratio}</b> &nbsp;|&nbsp; ${type}
+    ${i2html}
+  `);
+}
+
+function calcTxEMF() {
+  const f   = parseFloat(document.getElementById('tx_ef').value);
+  const n   = parseFloat(document.getElementById('tx_en').value);
+  const phi = parseFloat(document.getElementById('tx_ephi').value);
+  if ([f,n,phi].some(isNaN)) return err('tx_emf_res','Enter all three values.');
+  const emf = (4.44 * f * n * phi).toFixed(2);
+  showRes('tx_emf_res', `
+    <div class="res-val">E = ${emf} V</div>
+    E = 4.44 × f × N × Φₘ = 4.44 × ${f} × ${n} × ${phi}<br>
+    Induced EMF = <b>${emf} Volts</b>
+  `);
+}
+
+function calcTxEff() {
+  const pout = parseFloat(document.getElementById('tx_pout').value);
+  const pi   = parseFloat(document.getElementById('tx_pi').value);
+  const pcu  = parseFloat(document.getElementById('tx_pcu').value);
+  if ([pout,pi,pcu].some(isNaN)) return err('tx_eff_res','Enter all three values.');
+  const pin = pout + pi + pcu;
+  const eta = (pout / pin * 100).toFixed(2);
+  const atMax = pi === pcu ? '✅ At maximum efficiency point (Iron losses = Copper losses)' : pi < pcu ? '⚠️ Below max efficiency point (increase load slightly)' : '⚠️ Above max efficiency point (operating beyond optimal load)';
+  showRes('tx_eff_res', `
+    <div class="res-val">η = ${eta}%</div>
+    P_in = P_out + P_iron + P_copper = ${pout} + ${pi} + ${pcu} = <b>${pin} W</b><br>
+    η = ${pout} / ${pin} × 100 = <b>${eta}%</b><br><br>
+    ${atMax}
+  `);
+}
+
+// ─── MOTOR CALCULATORS ─────────────────────────────────
+
+function calcMotSpeed() {
+  const f  = parseFloat(document.getElementById('ms_f').value);
+  const p  = parseFloat(document.getElementById('ms_p').value);
+  const nr = parseFloat(document.getElementById('ms_nr').value);
+  if (isNaN(f)||isNaN(p)) return err('ms_res','Enter frequency and poles.');
+  const ns = (120 * f / p).toFixed(0);
+  let slipHtml = '';
+  if (!isNaN(nr)) {
+    const slip = ((ns - nr) / ns * 100).toFixed(2);
+    const slipStatus = slip < 0 ? '⚠️ Negative slip — motor acting as generator' : slip < 1 ? '✅ Very light load' : slip <= 5 ? '✅ Normal operating range' : slip <= 8 ? '⚠️ High slip — check load or motor rating' : '❌ Abnormal slip — motor may be overloaded';
+    slipHtml = `<br><br>📊 <b>Slip:</b> s = (${ns} − ${nr}) / ${ns} = <span style="color:var(--orange)">${slip}%</span> &nbsp;|&nbsp; ${slipStatus}`;
+  }
+  showRes('ms_res', `
+    <div class="res-val">Ns = ${ns} RPM</div>
+    Ns = 120 × f / P = 120 × ${f} / ${p}
+    ${slipHtml}
+  `);
+}
+
+function calcMotTorque() {
+  let p = parseFloat(document.getElementById('mt_p').value);
+  const unit = document.getElementById('mt_unit').value;
+  const n = parseFloat(document.getElementById('mt_n').value);
+  if (isNaN(p)||isNaN(n)||n<=0) return err('mt_res','Enter valid power and speed.');
+  const pW = unit==='kw' ? p*1000 : unit==='hp' ? p*746 : p;
+  const t = (pW * 60 / (2 * Math.PI * n)).toFixed(3);
+  showRes('mt_res', `
+    <div class="res-val">T = ${t} N·m</div>
+    T = P × 60 / (2π × N) = ${pW.toFixed(0)} × 60 / (6.2832 × ${n})<br>
+    Torque = <b>${t} Newton-metres</b>
+  `);
+}
+
+function calcBackEMF() {
+  const v  = parseFloat(document.getElementById('be_v').value);
+  const ia = parseFloat(document.getElementById('be_ia').value);
+  const ra = parseFloat(document.getElementById('be_ra').value);
+  if ([v,ia,ra].some(isNaN)) return err('be_res','Enter all three values.');
+  const eb = (v - ia * ra).toFixed(3);
+  const drop = (ia * ra).toFixed(3);
+  const ratio = ((eb/v)*100).toFixed(1);
+  showRes('be_res', `
+    <div class="res-val">Eb = ${eb} V</div>
+    Eb = V − (Ia × Ra) = ${v} − (${ia} × ${ra})<br>
+    Armature voltage drop = ${drop} V &nbsp;|&nbsp; Back EMF = <b>${ratio}%</b> of supply<br>
+    ${ratio < 80 ? '⚠️ Low back EMF — motor may be running at low speed or underloaded' : '✅ Normal back EMF ratio'}
+  `);
 }
 </script>
 <script>
