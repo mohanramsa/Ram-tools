@@ -293,6 +293,661 @@ nav { display: none !important; }
 })();
 </script>
 <main>
+<!-- ═══════════════════════════════════════════════════════════
+     ELECTRICAL FORMULAS DASHBOARD — Topic Selector System
+═══════════════════════════════════════════════════════════ -->
+<style>
+.ef-dashboard{background:linear-gradient(135deg,#3b0fa0 0%,#5b21b6 60%,#7c3aed 100%);border-radius:16px;padding:1.8rem 1.5rem 1.4rem;margin-bottom:0.5rem;color:#fff}
+.ef-dashboard h2{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:0.3rem;color:#fff}
+.ef-dashboard p{font-size:0.87rem;color:#c4b5fd;margin-bottom:1.3rem}
+.ef-topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.75rem}
+.ef-topic-btn{background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.25);border-radius:12px;padding:1rem 0.8rem;cursor:pointer;text-align:center;color:#fff;font-family:'Nunito',sans-serif;font-size:0.86rem;font-weight:700;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:7px}
+.ef-topic-btn:hover{background:rgba(255,255,255,0.22);border-color:rgba(255,255,255,0.55);transform:translateY(-2px)}
+.ef-topic-btn.active{background:#fff;color:#5b21b6;border-color:#fff;box-shadow:0 4px 18px rgba(0,0,0,0.25)}
+.ef-topic-btn .tb-icon{font-size:2rem;line-height:1}
+.ef-topic-btn .tb-label{line-height:1.25;font-size:0.8rem}
+.ef-panel{display:none;background:#fff;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px #5b21b614}
+.ef-panel.open{display:block}
+.ef-panel-header{background:linear-gradient(135deg,#5b21b6,#7c3aed);padding:1.4rem 1.6rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.ef-panel-header-left{display:flex;align-items:center;gap:14px}
+.ef-panel-icon{font-size:2.4rem;line-height:1}
+.ef-panel-title{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;color:#fff}
+.ef-panel-tagline{font-size:0.81rem;color:#c4b5fd;margin-top:3px}
+.ef-close-btn{background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:0.82rem;font-weight:700;font-family:'Nunito',sans-serif;flex-shrink:0;transition:background 0.2s}
+.ef-close-btn:hover{background:rgba(255,255,255,0.28)}
+.ef-section-nav{display:flex;gap:0.4rem;flex-wrap:wrap;padding:0.9rem 1.4rem 0;border-bottom:1.5px solid var(--border);background:#faf9ff}
+.ef-nav-pill{padding:6px 14px;border-radius:18px 18px 0 0;border:1.5px solid var(--border);border-bottom:none;background:#f5f3ff;font-size:0.78rem;font-weight:700;color:var(--purple);cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.ef-nav-pill.active{background:#fff;box-shadow:0 -2px 0 var(--purple) inset}
+.ef-nav-pill:hover{background:#ede9fe}
+.ef-section{display:none;padding:1.4rem 1.6rem}
+.ef-section.active{display:block}
+.ef-section h3{font-family:'Rajdhani',sans-serif;font-size:1.15rem;color:var(--purple);font-weight:700;margin-bottom:0.75rem;border-left:4px solid var(--orange);padding-left:0.65rem}
+.ef-section p{font-size:0.9rem;color:#374151;line-height:1.75;margin-bottom:0.75rem}
+.ef-section ul{padding-left:1.2rem}.ef-section li{font-size:0.89rem;color:#374151;line-height:1.7;margin-bottom:3px}
+.ef-formula-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0.7rem;margin-bottom:1rem}
+.ef-fbox{background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.8rem 0.95rem}
+.ef-fbox.hl{border-color:var(--orange);background:#fff7ed}
+.ef-fbox .efl{font-size:0.67rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:0.06em;margin-bottom:4px}
+.ef-fbox .efe{font-family:'Rajdhani',sans-serif;font-size:1.12rem;font-weight:700;color:var(--purple);margin-bottom:3px}
+.ef-fbox.hl .efe{color:#ea580c}
+.ef-fbox .efn{font-size:0.75rem;color:#6b7280;line-height:1.5}
+.ef-type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.7rem;margin-bottom:0.8rem}
+.ef-tcard{border-radius:10px;padding:0.85rem 0.95rem;border:1.5px solid}
+.ef-tcard h4{font-size:0.86rem;font-weight:700;margin-bottom:5px}
+.ef-tcard p{font-size:0.78rem;color:#4b5563;line-height:1.6;margin:0}
+.ef-badge{display:inline-block;font-size:0.67rem;font-weight:800;padding:2px 8px;border-radius:8px;margin-bottom:5px}
+.ef-app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.55rem;margin-bottom:0.8rem}
+.ef-app-item{background:#f5f3ff;border-radius:8px;padding:0.65rem 0.85rem;font-size:0.81rem;color:#374151;border-left:3px solid var(--purple);font-weight:600}
+.ef-faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:0.5rem;overflow:hidden}
+.ef-faq-item summary{padding:0.8rem 1.05rem;font-weight:700;font-size:0.9rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.ef-faq-item summary::-webkit-details-marker{display:none}
+.ef-faq-item summary::after{content:'+';font-size:1.2rem;font-weight:300;color:var(--purple);flex-shrink:0}
+.ef-faq-item[open] summary::after{content:'−'}
+.ef-faq-item[open] summary{color:var(--purple);border-bottom:1px solid var(--border)}
+.ef-faq-item .efa{padding:0.75rem 1.05rem;font-size:0.86rem;color:#4b5563;line-height:1.7}
+.ef-calc-box{background:#f5f3ff;border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:0.9rem}
+.ef-calc-title{font-family:'Rajdhani',sans-serif;font-size:0.98rem;font-weight:700;color:var(--purple);margin-bottom:0.75rem}
+@media(max-width:600px){.ef-topic-grid{grid-template-columns:repeat(2,1fr)}.ef-section{padding:1rem 0.9rem}.ef-panel-header{padding:1rem 1rem}.ef-formula-grid,.ef-type-grid{grid-template-columns:1fr}}
+</style>
+
+<!-- DASHBOARD -->
+<div class="ef-dashboard">
+  <h2>⚡ Electrical Formulas Dashboard</h2>
+  <p>Click any topic to open full formulas, calculators, types, applications &amp; FAQ — all in one place</p>
+  <div class="ef-topic-grid">
+    <button class="ef-topic-btn" onclick="openPanel('dcmotor',this)"><span class="tb-icon">🔋</span><span class="tb-label">DC Motor</span></button>
+    <button class="ef-topic-btn" onclick="openPanel('acmotor',this)"><span class="tb-icon">⚡</span><span class="tb-label">AC Motor</span></button>
+    <button class="ef-topic-btn" onclick="openPanel('transformer',this)"><span class="tb-icon">🔄</span><span class="tb-label">Transformer</span></button>
+    <button class="ef-topic-btn" onclick="openPanel('dcgen',this)"><span class="tb-icon">🔌</span><span class="tb-label">DC Generator</span></button>
+    <button class="ef-topic-btn" onclick="openPanel('acgen',this)"><span class="tb-icon">〜</span><span class="tb-label">AC Generator</span></button>
+    <button class="ef-topic-btn" onclick="openPanel('machdesign',this)"><span class="tb-icon">⚙️</span><span class="tb-label">Machine Design</span></button>
+  </div>
+</div>
+
+<!-- ═══ DC MOTOR ═══ -->
+<div class="ef-panel" id="panel-dcmotor">
+  <div class="ef-panel-header">
+    <div class="ef-panel-header-left"><div class="ef-panel-icon">🔋</div><div><div class="ef-panel-title">DC Motor</div><div class="ef-panel-tagline">Types · Key Formulas · Calculators · Applications · FAQ</div></div></div>
+    <button class="ef-close-btn" onclick="closePanel('dcmotor')">✕ Close</button>
+  </div>
+  <div class="ef-section-nav">
+    <button class="ef-nav-pill active" onclick="showSec('dcmotor','intro',this)">📘 Overview</button>
+    <button class="ef-nav-pill" onclick="showSec('dcmotor','formulas',this)">📐 Formulas</button>
+    <button class="ef-nav-pill" onclick="showSec('dcmotor','calc',this)">🧮 Calculator</button>
+    <button class="ef-nav-pill" onclick="showSec('dcmotor','types',this)">🔀 Types</button>
+    <button class="ef-nav-pill" onclick="showSec('dcmotor','apps',this)">🏭 Applications</button>
+    <button class="ef-nav-pill" onclick="showSec('dcmotor','faq',this)">❓ FAQ</button>
+  </div>
+  <div class="ef-section active" id="dcmotor-intro"><h3>What is a DC Motor?</h3><p>A DC motor converts <strong>electrical energy (DC)</strong> into <strong>mechanical rotational energy</strong>. It works on the Lorentz force principle — a current-carrying conductor in a magnetic field experiences a force. Direction of rotation follows Fleming's Left-Hand Rule.</p><p>DC motors allow precise speed control by varying armature voltage, armature resistance, or field flux. They are widely used in traction, steel mills, robotics, and industrial drives where speed control is critical.</p><p><strong>Working:</strong> DC supply → armature current → interaction with stator field → torque → rotation → Back EMF builds up → limits current to safe level (self-regulating mechanism).</p></div>
+  <div class="ef-section" id="dcmotor-formulas"><h3>Key Formulas — DC Motor</h3>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">Back EMF</div><div class="efe">Eb = V − Ia × Ra</div><div class="efn">V=supply(V), Ia=armature current(A), Ra=armature resistance(Ω)</div></div>
+      <div class="ef-fbox"><div class="efl">Torque</div><div class="efe">T = P×60 / (2π×N)</div><div class="efn">T=torque(N·m), P=shaft power(W), N=speed(RPM)</div></div>
+      <div class="ef-fbox"><div class="efl">Speed Law (Shunt)</div><div class="efe">N ∝ Eb / Φ</div><div class="efn">Speed proportional to back EMF, inversely to flux Φ</div></div>
+      <div class="ef-fbox"><div class="efl">Armature Current</div><div class="efe">Ia = (V − Eb) / Ra</div><div class="efn">At startup: Eb=0 → Ia max → starter needed</div></div>
+      <div class="ef-fbox"><div class="efl">Power Developed</div><div class="efe">Pm = Eb × Ia</div><div class="efn">Mechanical power developed in armature (Watts)</div></div>
+      <div class="ef-fbox"><div class="efl">Electromagnetic Torque</div><div class="efe">T = Ka × Φ × Ia</div><div class="efn">Ka=machine constant, Φ=flux(Wb)</div></div>
+      <div class="ef-fbox"><div class="efl">Efficiency</div><div class="efe">η = Pm / Pin × 100</div><div class="efn">Pin = V×IL. Typical DC motor η: 75–95%</div></div>
+      <div class="ef-fbox hl"><div class="efl">DC Motor EMF (from construction)</div><div class="efe">Eb = (P×Φ×N×Z) / (60×A)</div><div class="efn">P=poles, Z=conductors, A=parallel paths (Wave:2, Lap:P)</div></div>
+    </div>
+  </div>
+  <div class="ef-section" id="dcmotor-calc"><h3>DC Motor Calculators</h3>
+    <div class="ef-calc-box"><div class="ef-calc-title">⚡ Back EMF Calculator — Eb = V − Ia×Ra</div>
+      <div class="grid g3"><div><label>Supply Voltage V (V)</label><input id="dcm_v" type="number" placeholder="e.g. 220"></div><div><label>Armature Current Ia (A)</label><input id="dcm_ia" type="number" placeholder="e.g. 15"></div><div><label>Armature Resistance Ra (Ω)</label><input id="dcm_ra" type="number" placeholder="e.g. 0.5" step="0.01"></div></div>
+      <div class="btn-row"><button class="btn" onclick="dcm_backEMF()">Calculate Back EMF</button></div><div class="result" id="dcm_be_res"></div></div>
+    <div class="ef-calc-box"><div class="ef-calc-title">⚙️ Torque Calculator — T = P×60/(2π×N)</div>
+      <div class="grid g3"><div><label>Shaft Power</label><input id="dcm_p" type="number" placeholder="e.g. 3730"></div><div><label>Unit</label><select id="dcm_pu"><option value="w">Watts</option><option value="kw">kW</option><option value="hp">HP (1HP=746W)</option></select></div><div><label>Speed N (RPM)</label><input id="dcm_n" type="number" placeholder="e.g. 1500"></div></div>
+      <div class="btn-row"><button class="btn" onclick="dcm_torque()">Calculate Torque</button></div><div class="result" id="dcm_t_res"></div></div>
+    <div class="ef-calc-box"><div class="ef-calc-title">🔢 Armature Current — Ia = (V−Eb)/Ra</div>
+      <div class="grid g3"><div><label>Supply V (V)</label><input id="dcm_av" type="number" placeholder="e.g. 220"></div><div><label>Back EMF Eb (V)</label><input id="dcm_eb" type="number" placeholder="e.g. 205"></div><div><label>Ra (Ω)</label><input id="dcm_ara" type="number" placeholder="e.g. 0.5" step="0.01"></div></div>
+      <div class="btn-row"><button class="btn" onclick="dcm_ia()">Calculate Ia</button></div><div class="result" id="dcm_ia_res"></div></div>
+  </div>
+  <div class="ef-section" id="dcmotor-types"><h3>Types of DC Motors</h3>
+    <div class="ef-type-grid">
+      <div class="ef-tcard" style="background:#fff7ed;border-color:#fed7aa"><div class="ef-badge" style="background:#fed7aa;color:#c2410c">SHUNT</div><h4 style="color:#c2410c">⚡ DC Shunt Motor</h4><p>Field in <strong>parallel</strong> with armature. Constant speed under varying load. N∝Eb/Φ. Starting torque: moderate. Used in: Lathes, fans, pumps, centrifugal machines. Speed regulation: ±5%.</p></div>
+      <div class="ef-tcard" style="background:#fef3c7;border-color:#fde68a"><div class="ef-badge" style="background:#fde68a;color:#92400e">SERIES</div><h4 style="color:#92400e">🚀 DC Series Motor</h4><p>Field in <strong>series</strong> with armature. T∝Ia². Very high starting torque. Speed varies inversely with load. <strong>⚠️ Never run on no-load</strong> — runaway speed. Used in: Traction, cranes, hoists, elevators.</p></div>
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#86efac;color:#166534">COMPOUND</div><h4 style="color:#166534">🔄 Compound Motor</h4><p>Both series + shunt windings. Cumulative: good torque + stable speed. Differential: very constant speed. Used in: Printing presses, elevators, rolling mills. Best of shunt + series.</p></div>
+      <div class="ef-tcard" style="background:#f0f9ff;border-color:#bae6fd"><div class="ef-badge" style="background:#bae6fd;color:#0369a1">PMDC</div><h4 style="color:#0369a1">🧲 Permanent Magnet DC</h4><p>Permanent magnets for field — no field winding/current. Compact, lightweight, high efficiency. PWM speed control. Used in: Robotics, servo drives, medical devices, EV auxiliaries.</p></div>
+    </div>
+    <div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:0.79rem;min-width:500px"><tr style="background:var(--purple);color:#fff"><th style="padding:7px 10px;text-align:left;border:1px solid #7c3aed">Type</th><th style="padding:7px 10px;border:1px solid #7c3aed">Speed</th><th style="padding:7px 10px;border:1px solid #7c3aed">Starting Torque</th><th style="padding:7px 10px;border:1px solid #7c3aed">No-Load</th><th style="padding:7px 10px;border:1px solid #7c3aed">Key Use</th></tr><tr style="background:#fff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">Shunt</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Constant</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Moderate</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">✅ Safe</td><td style="padding:6px 10px;border:1px solid var(--border)">Lathes, fans</td></tr><tr style="background:#f5f3ff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">Series</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Variable</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-weight:700;color:#ea580c">Very High</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">⚠️ Dangerous</td><td style="padding:6px 10px;border:1px solid var(--border)">Traction, cranes</td></tr><tr style="background:#fff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">Compound</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Fairly const.</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">High</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">✅ Safe</td><td style="padding:6px 10px;border:1px solid var(--border)">Elevators, presses</td></tr></table></div>
+  </div>
+  <div class="ef-section" id="dcmotor-apps"><h3>Applications</h3>
+    <div class="ef-app-grid"><div class="ef-app-item">🚂 Electric Traction (Series)</div><div class="ef-app-item">🏗️ Cranes &amp; Hoists (Series)</div><div class="ef-app-item">🔧 Lathe Machines (Shunt)</div><div class="ef-app-item">💨 Industrial Fans (Shunt)</div><div class="ef-app-item">🛗 Elevators (Compound)</div><div class="ef-app-item">🖨️ Printing Presses (Compound)</div><div class="ef-app-item">🤖 Robotics &amp; CNC (PMDC)</div><div class="ef-app-item">⚙️ Steel Rolling Mills</div><div class="ef-app-item">🔬 Medical Equipment (PMDC)</div><div class="ef-app-item">🚗 EV Auxiliaries (PMDC)</div><div class="ef-app-item">🏭 Ward-Leonard Drives</div><div class="ef-app-item">🌊 Centrifugal Pumps (Shunt)</div></div>
+  </div>
+  <div class="ef-section" id="dcmotor-faq"><h3>FAQ — DC Motor</h3>
+    <details class="ef-faq-item"><summary>Why is a DC series motor never run on no-load?</summary><div class="efa">At no-load, armature current Ia is very small → field flux Φ is very small. Since N ∝ Eb/Φ, very small Φ causes speed to rise to dangerously high (theoretically infinite) levels — called "runaway". This can mechanically destroy the motor. Series motors must always be mechanically coupled to their load.</div></details>
+    <details class="ef-faq-item"><summary>What is Back EMF and why is a starter needed at startup?</summary><div class="efa">Back EMF (Eb) opposes supply voltage. At startup, rotor is stationary → Eb=0 → Ia=(V−0)/Ra → very high current (10–20× rated). A DC starter adds external resistance at startup, limiting current. As speed builds, Eb increases, limiting current naturally, and the starter resistance is gradually removed.</div></details>
+    <details class="ef-faq-item"><summary>How is DC motor speed controlled?</summary><div class="efa">(1) <strong>Armature Voltage Control</strong> — reduce supply voltage → reduce speed (below base speed). (2) <strong>Armature Resistance Control</strong> — add series resistance → reduce speed (less efficient, I²R loss). (3) <strong>Field Flux Control</strong> — reduce field current → increase speed (above base speed, called field weakening). Modern drives use thyristor/IGBT converters for smooth stepless control.</div></details>
+    <details class="ef-faq-item"><summary>What is the difference between lap winding and wave winding?</summary><div class="efa"><strong>Lap winding:</strong> A=P (parallel paths = number of poles). More parallel paths → higher current, lower voltage. Used for high-current applications. <strong>Wave winding:</strong> A=2 always. Only 2 parallel paths → higher voltage, lower current. Used for high-voltage applications. Rule: Lap = high current, Wave = high voltage.</div></details>
+  </div>
+</div>
+
+<!-- ═══ AC MOTOR ═══ -->
+<div class="ef-panel" id="panel-acmotor">
+  <div class="ef-panel-header">
+    <div class="ef-panel-header-left"><div class="ef-panel-icon">⚡</div><div><div class="ef-panel-title">AC Motor</div><div class="ef-panel-tagline">Induction · Synchronous · Slip · Formulas · Calculators · FAQ</div></div></div>
+    <button class="ef-close-btn" onclick="closePanel('acmotor')">✕ Close</button>
+  </div>
+  <div class="ef-section-nav">
+    <button class="ef-nav-pill active" onclick="showSec('acmotor','intro',this)">📘 Overview</button>
+    <button class="ef-nav-pill" onclick="showSec('acmotor','formulas',this)">📐 Formulas</button>
+    <button class="ef-nav-pill" onclick="showSec('acmotor','calc',this)">🧮 Calculator</button>
+    <button class="ef-nav-pill" onclick="showSec('acmotor','types',this)">🔀 Types</button>
+    <button class="ef-nav-pill" onclick="showSec('acmotor','apps',this)">🏭 Applications</button>
+    <button class="ef-nav-pill" onclick="showSec('acmotor','faq',this)">❓ FAQ</button>
+  </div>
+  <div class="ef-section active" id="acmotor-intro"><h3>What is an AC Motor?</h3><p>An AC motor converts <strong>alternating current electrical energy</strong> into <strong>mechanical rotational energy</strong>. No commutator or brushes needed — simpler, more robust, lower maintenance than DC motors.</p><p>The stator produces a <strong>Rotating Magnetic Field (RMF)</strong> at synchronous speed Ns = 120f/P. The rotor tries to follow this field. The lag between rotor speed and Ns is called <strong>slip</strong> — essential for torque production in induction motors.</p><p>Three-phase induction motors are the global workhorse of industry — they power pumps, fans, compressors, conveyors, and machines worldwide because of their simplicity and reliability.</p></div>
+  <div class="ef-section" id="acmotor-formulas"><h3>Key Formulas — AC Motor</h3>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">Synchronous Speed</div><div class="efe">Ns = 120f / P</div><div class="efn">f=frequency(Hz), P=poles. 4-pole 50Hz → Ns=1500 RPM</div></div>
+      <div class="ef-fbox hl"><div class="efl">Slip</div><div class="efe">s = (Ns − Nr) / Ns</div><div class="efn">Nr=rotor speed(RPM). Normal: 2–8%. At standstill: s=1</div></div>
+      <div class="ef-fbox"><div class="efl">Rotor Speed</div><div class="efe">Nr = Ns × (1 − s)</div><div class="efn">Actual rotor speed from synchronous speed and slip</div></div>
+      <div class="ef-fbox"><div class="efl">Torque</div><div class="efe">T = P×60 / (2π×Nr)</div><div class="efn">T in N·m, P in Watts, Nr in RPM</div></div>
+      <div class="ef-fbox"><div class="efl">Full Load Current (3-Ph)</div><div class="efe">I = P / (√3×V×pf×η)</div><div class="efn">P=rated power(W), V=line voltage, pf=power factor, η=efficiency</div></div>
+      <div class="ef-fbox"><div class="efl">Rotor Frequency</div><div class="efe">fr = s × f</div><div class="efn">Frequency of rotor currents. At standstill: fr=f, At Ns: fr=0</div></div>
+      <div class="ef-fbox"><div class="efl">Power Factor</div><div class="efe">pf = P / (√3×V×I)</div><div class="efn">Ratio of active to apparent power. IM typically: 0.75–0.90</div></div>
+      <div class="ef-fbox"><div class="efl">Starting Current (DOL)</div><div class="efe">Istart ≈ 6 to 8 × Ifl</div><div class="efn">Squirrel cage IM draws 6–8× full load current at direct-on-line start</div></div>
+    </div>
+  </div>
+  <div class="ef-section" id="acmotor-calc"><h3>AC Motor Calculators</h3>
+    <div class="ef-calc-box"><div class="ef-calc-title">🔄 Synchronous Speed &amp; Slip</div>
+      <div class="grid g3"><div><label>Frequency f (Hz)</label><input id="acm_f" type="number" placeholder="50" value="50"></div><div><label>Poles</label><select id="acm_p"><option value="2">2-pole (3000 RPM)</option><option value="4" selected>4-pole (1500 RPM)</option><option value="6">6-pole (1000 RPM)</option><option value="8">8-pole (750 RPM)</option><option value="10">10-pole (600 RPM)</option><option value="12">12-pole (500 RPM)</option></select></div><div><label>Actual Rotor Speed Nr (RPM)</label><input id="acm_nr" type="number" placeholder="e.g. 1440"></div></div>
+      <div class="btn-row"><button class="btn" onclick="acm_speed()">Calculate</button></div><div class="result" id="acm_spd_res"></div></div>
+    <div class="ef-calc-box"><div class="ef-calc-title">⚡ Full Load Current (3-Phase) — I = P/(√3×V×pf×η)</div>
+      <div class="grid g3"><div><label>Motor Power</label><input id="acm_pw" type="number" placeholder="e.g. 15"></div><div><label>Unit</label><select id="acm_pwu"><option value="kw">kW</option><option value="hp">HP</option></select></div><div><label>Line Voltage (V)</label><input id="acm_vl" type="number" placeholder="415" value="415"></div><div><label>Power Factor</label><input id="acm_pf" type="number" placeholder="0.85" step="0.01" value="0.85"></div><div><label>Efficiency η (0–1)</label><input id="acm_eta" type="number" placeholder="0.90" step="0.01" value="0.90"></div></div>
+      <div class="btn-row"><button class="btn" onclick="acm_flc()">Calculate FLC</button></div><div class="result" id="acm_flc_res"></div></div>
+  </div>
+  <div class="ef-section" id="acmotor-types"><h3>Types of AC Motors</h3>
+    <div class="ef-type-grid">
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#86efac;color:#166534">SCIM</div><h4 style="color:#166534">🐿️ Squirrel Cage IM</h4><p>Most common worldwide. Rotor bars short-circuited by end rings. Robust, simple, zero rotor maintenance. Starting current: 6–8×FLC. Used in: Pumps, fans, compressors, conveyors.</p></div>
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#86efac;color:#166534">WRIM</div><h4 style="color:#166534">💍 Slip Ring IM (WRIM)</h4><p>External rotor resistance via slip rings. Reduces starting current, increases starting torque. Resistance cut out as motor accelerates. Used in: Cranes, hoists, elevators, crushers.</p></div>
+      <div class="ef-tcard" style="background:#eff6ff;border-color:#bfdbfe"><div class="ef-badge" style="background:#bfdbfe;color:#1d4ed8">SYNC</div><h4 style="color:#1d4ed8">⏱️ Synchronous Motor</h4><p>Runs at exactly Ns. DC-excited rotor. Not self-starting. Over-excited → leading PF (PF correction). Used in: Large compressors, PF correction banks, precise speed needs.</p></div>
+      <div class="ef-tcard" style="background:#faf5ff;border-color:#e9d5ff"><div class="ef-badge" style="background:#e9d5ff;color:#7e22ce">1-Ph</div><h4 style="color:#7e22ce">1️⃣ Single Phase IM</h4><p>Not self-starting. Types: Capacitor-start, Capacitor-run, Split-phase, Shaded-pole. Used in: Ceiling fans, refrigerators, washing machines, small pumps.</p></div>
+      <div class="ef-tcard" style="background:#fff7ed;border-color:#fed7aa"><div class="ef-badge" style="background:#fed7aa;color:#c2410c">UNIV</div><h4 style="color:#c2410c">🔀 Universal Motor</h4><p>Runs on AC and DC. Series wound — high speed, high torque. Used in: Power drills, vacuum cleaners, food mixers, hair dryers.</p></div>
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#bbf7d0;color:#166534">BLDC</div><h4 style="color:#166534">🔋 BLDC Motor</h4><p>AC synchronous motor with permanent magnets driven by inverter. No brushes → high efficiency, no maintenance. Used in: EVs, drones, industrial servo drives.</p></div>
+    </div>
+  </div>
+  <div class="ef-section" id="acmotor-apps"><h3>Applications</h3>
+    <div class="ef-app-grid"><div class="ef-app-item">💧 Water Pumps</div><div class="ef-app-item">💨 Fans &amp; Blowers</div><div class="ef-app-item">❄️ HVAC Systems</div><div class="ef-app-item">🏗️ Cranes &amp; Hoists (WRIM)</div><div class="ef-app-item">🛗 Elevators</div><div class="ef-app-item">⚙️ Conveyor Belts</div><div class="ef-app-item">🔩 Compressors</div><div class="ef-app-item">🏭 CNC Machine Tools</div><div class="ef-app-item">🚗 Electric Vehicles (BLDC)</div><div class="ef-app-item">🌾 Agricultural Pumps</div><div class="ef-app-item">⚡ PF Correction (Sync)</div><div class="ef-app-item">🏠 Ceiling Fans (1-Ph Cap)</div></div>
+  </div>
+  <div class="ef-section" id="acmotor-faq"><h3>FAQ — AC Motor</h3>
+    <details class="ef-faq-item"><summary>Why does an induction motor need slip to produce torque?</summary><div class="efa">If the rotor rotated at Ns, there would be zero relative motion between rotor conductors and the rotating field — no EMF induced, no rotor current, no torque. Slip (rotor speed &lt; Ns) creates relative motion → induces rotor EMF &amp; current → interaction with stator flux → torque produced. Slip is essential for induction motor operation.</div></details>
+    <details class="ef-faq-item"><summary>What is the difference between squirrel cage and slip ring motors?</summary><div class="efa">Squirrel cage: solid rotor bars, no external connections — simple, rugged, high starting current (6–8×), limited starting torque. Slip ring: rotor windings connected via slip rings to external resistors — external resistance added at start reduces current, increases torque. Resistance cut out as motor accelerates. Slip ring chosen for high-torque start requirements: cranes, hoists, crushers.</div></details>
+    <details class="ef-faq-item"><summary>How does a VFD control AC motor speed?</summary><div class="efa">A VFD (Variable Frequency Drive) controls speed by changing output frequency f. Since Ns=120f/P, reducing f reduces Ns and therefore rotor speed. The VFD also adjusts voltage proportionally (V/f control) to maintain constant motor flux. On fans and pumps: reducing speed to 80% reduces power to just 51% (power ∝ speed³). Modern VFDs use IGBT-based PWM inverters.</div></details>
+    <details class="ef-faq-item"><summary>Why is a synchronous motor not self-starting?</summary><div class="efa">At startup, the stator RMF rotates at Ns while the rotor is stationary. The field poles change polarity 100 times/second (at 50Hz). The rotor cannot lock on to the fast-rotating field — the average torque over one cycle is zero. Solutions: (1) Start as induction motor using damper windings, then excite DC field to pull into synchronism; (2) Use pony motor; (3) VFD for ramp-up start.</div></details>
+  </div>
+</div>
+
+<!-- ═══ TRANSFORMER ═══ -->
+<div class="ef-panel" id="panel-transformer">
+  <div class="ef-panel-header">
+    <div class="ef-panel-header-left"><div class="ef-panel-icon">🔄</div><div><div class="ef-panel-title">Transformer</div><div class="ef-panel-tagline">EMF Equation · kVA Calculator · Types · Losses · FAQ</div></div></div>
+    <button class="ef-close-btn" onclick="closePanel('transformer')">✕ Close</button>
+  </div>
+  <div class="ef-section-nav">
+    <button class="ef-nav-pill active" onclick="showSec('transformer','intro',this)">📘 Overview</button>
+    <button class="ef-nav-pill" onclick="showSec('transformer','formulas',this)">📐 Formulas</button>
+    <button class="ef-nav-pill" onclick="showSec('transformer','calc',this)">🧮 Calculator</button>
+    <button class="ef-nav-pill" onclick="showSec('transformer','types',this)">🔀 Types</button>
+    <button class="ef-nav-pill" onclick="showSec('transformer','apps',this)">🏭 Applications</button>
+    <button class="ef-nav-pill" onclick="showSec('transformer','faq',this)">❓ FAQ</button>
+  </div>
+  <div class="ef-section active" id="transformer-intro"><h3>What is a Transformer?</h3><p>A transformer is a <strong>static electrical machine</strong> that transfers electrical energy between circuits through electromagnetic induction — changing voltage and current levels while keeping frequency and power (ideally) constant. No moving parts.</p><p><strong>Working principle:</strong> AC voltage on primary winding → alternating flux in core → flux links secondary winding → EMF induced ∝ turns ratio. Based on Faraday's Law: E = −N×dΦ/dt.</p><p>Transformers are the backbone of power systems — stepping up voltage for efficient long-distance transmission (reducing I²R losses), then stepping down for safe use. A modern power grid without transformers would be physically impossible.</p></div>
+  <div class="ef-section" id="transformer-formulas"><h3>Key Formulas — Transformer</h3>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">Voltage Ratio</div><div class="efe">V₁/V₂ = N₁/N₂ = a</div><div class="efn">a=turns ratio. a&gt;1: step-down. a&lt;1: step-up</div></div>
+      <div class="ef-fbox hl"><div class="efl">EMF Equation</div><div class="efe">E = 4.44 × f × N × Φₘ</div><div class="efn">4.44=2π/√2. f=Hz, N=turns, Φₘ=max flux(Wb)</div></div>
+      <div class="ef-fbox"><div class="efl">Current Ratio</div><div class="efe">I₁/I₂ = N₂/N₁</div><div class="efn">Current inversely proportional to turns. High-V side → low current</div></div>
+      <div class="ef-fbox"><div class="efl">kVA (1-Phase)</div><div class="efe">kVA = V × I / 1000</div><div class="efn">V=voltage(V), I=current(A)</div></div>
+      <div class="ef-fbox"><div class="efl">kVA (3-Phase)</div><div class="efe">kVA = √3 × V × I / 1000</div><div class="efn">√3=1.732, V=line voltage, I=line current</div></div>
+      <div class="ef-fbox"><div class="efl">Efficiency</div><div class="efe">η = P_out/(P_out+Pi+Pcu)×100</div><div class="efn">Pi=iron losses(constant), Pcu=copper losses(vary with load)</div></div>
+      <div class="ef-fbox"><div class="efl">Max Efficiency Condition</div><div class="efe">Pi = Pcu (at full load)</div><div class="efn">Load at max η: x=√(Pi/Pcu_fl)×kVA_rated</div></div>
+      <div class="ef-fbox"><div class="efl">All-Day Efficiency</div><div class="efe">η_day = Wout/Win × 100</div><div class="efn">Output/Input in kWh over 24 hrs. Used for distribution TX</div></div>
+    </div>
+  </div>
+  <div class="ef-section" id="transformer-calc"><h3>Transformer Calculators</h3>
+    <div class="ef-calc-box"><div class="ef-calc-title">🔌 kVA Calculator</div>
+      <div class="grid g3"><div><label>Phase</label><select id="tx2_ph"><option value="1">1-Phase</option><option value="3" selected>3-Phase</option></select></div><div><label>Mode</label><select id="tx2_mode"><option value="kva">V &amp; I → kVA</option><option value="i">kVA &amp; V → Current</option></select></div><div><label>Voltage (V)</label><input id="tx2_v" type="number" placeholder="e.g. 415"></div><div><label>Current (A) or kVA</label><input id="tx2_val" type="number" placeholder="e.g. 100 or 63"></div></div>
+      <div class="btn-row"><button class="btn" onclick="tx2_kva()">Calculate</button></div><div class="result" id="tx2_kva_res"></div></div>
+    <div class="ef-calc-box"><div class="ef-calc-title">📐 EMF Equation — E = 4.44×f×N×Φₘ</div>
+      <div class="grid g3"><div><label>Frequency f (Hz)</label><input id="tx2_ef" type="number" placeholder="50" value="50"></div><div><label>Turns N</label><input id="tx2_en" type="number" placeholder="e.g. 500"></div><div><label>Max Flux Φₘ (Wb)</label><input id="tx2_phi" type="number" placeholder="e.g. 0.05" step="0.001"></div></div>
+      <div class="btn-row"><button class="btn" onclick="tx2_emf()">Calculate EMF</button></div><div class="result" id="tx2_emf_res"></div></div>
+    <div class="ef-calc-box"><div class="ef-calc-title">📊 Efficiency Calculator</div>
+      <div class="grid g3"><div><label>Output Power (W)</label><input id="tx2_po" type="number" placeholder="e.g. 9500"></div><div><label>Iron Losses Pi (W)</label><input id="tx2_pi" type="number" placeholder="e.g. 200"></div><div><label>Copper Losses Pcu (W)</label><input id="tx2_pcu" type="number" placeholder="e.g. 300"></div></div>
+      <div class="btn-row"><button class="btn" onclick="tx2_eff()">Calculate Efficiency</button></div><div class="result" id="tx2_eff_res"></div></div>
+  </div>
+  <div class="ef-section" id="transformer-types"><h3>Types of Transformers</h3>
+    <div class="ef-type-grid">
+      <div class="ef-tcard" style="background:#f5f3ff;border-color:var(--border)"><div class="ef-badge" style="background:#ede9fe;color:#5b21b6">STEP-UP</div><h4 style="color:#5b21b6">⬆️ Step-Up</h4><p>N₂&gt;N₁ → V₂&gt;V₁. Used at generating stations (11kV→132/220/400kV for long-distance transmission)</p></div>
+      <div class="ef-tcard" style="background:#f5f3ff;border-color:var(--border)"><div class="ef-badge" style="background:#ede9fe;color:#5b21b6">STEP-DOWN</div><h4 style="color:#5b21b6">⬇️ Step-Down</h4><p>N₂&lt;N₁ → V₂&lt;V₁. Used in distribution (33kV→11kV→415V for consumers)</p></div>
+      <div class="ef-tcard" style="background:#f5f3ff;border-color:var(--border)"><div class="ef-badge" style="background:#ede9fe;color:#5b21b6">AUTO</div><h4 style="color:#5b21b6">🔁 Auto Transformer</h4><p>Single winding for both primary &amp; secondary. Cheaper, lighter. Used in motor starters, variac, voltage regulators. Not suitable where isolation needed.</p></div>
+      <div class="ef-tcard" style="background:#f5f3ff;border-color:var(--border)"><div class="ef-badge" style="background:#ede9fe;color:#5b21b6">CT/PT</div><h4 style="color:#5b21b6">📏 Instrument TX (CT &amp; PT)</h4><p>CT: steps down current (100/5A) for metering. PT: steps down voltage (11000/110V). ⚠️ Never open-circuit CT secondary — high voltage danger.</p></div>
+      <div class="ef-tcard" style="background:#f5f3ff;border-color:var(--border)"><div class="ef-badge" style="background:#ede9fe;color:#5b21b6">DIST.</div><h4 style="color:#5b21b6">🌡️ Distribution TX</h4><p>11kV/415V, oil-cooled ONAN. Dyn11 vector group standard in India. 25–2000 kVA per IS 1180/IEC 60076.</p></div>
+      <div class="ef-tcard" style="background:#f5f3ff;border-color:var(--border)"><div class="ef-badge" style="background:#ede9fe;color:#5b21b6">ISOLATION</div><h4 style="color:#5b21b6">↔️ Isolation TX</h4><p>1:1 ratio. No voltage change — provides galvanic isolation. Used in medical equipment, labs, noise isolation, safety applications.</p></div>
+    </div>
+  </div>
+  <div class="ef-section" id="transformer-apps"><h3>Applications</h3>
+    <div class="ef-app-grid"><div class="ef-app-item">🏭 Power Generation (Step-Up)</div><div class="ef-app-item">🔌 Grid Transmission (EHV)</div><div class="ef-app-item">🏘️ Distribution (11kV/415V)</div><div class="ef-app-item">🔬 Medical Equipment (Isolation)</div><div class="ef-app-item">🏠 Home Inverters/UPS</div><div class="ef-app-item">⚡ Welding Transformers</div><div class="ef-app-item">🛡️ CT/PT for Protection Relays</div><div class="ef-app-item">⚙️ Motor Starters (Auto-TX)</div><div class="ef-app-item">🔋 Battery Chargers</div><div class="ef-app-item">🌞 Solar Inverter TX (Step-Up)</div><div class="ef-app-item">🏗️ Substation TX</div><div class="ef-app-item">📡 Signal &amp; Audio Isolation</div></div>
+  </div>
+  <div class="ef-section" id="transformer-faq"><h3>FAQ — Transformer</h3>
+    <details class="ef-faq-item"><summary>Why is a transformer rated in kVA and not kW?</summary><div class="efa">Transformer losses (iron + copper) depend on voltage and current — not on the load power factor. The transformer cannot predict what power factor the load will have. kVA = V×I represents apparent power which directly determines heating and insulation stress. Rating in kW would change with every different load power factor — impractical.</div></details>
+    <details class="ef-faq-item"><summary>What does 4.44 represent in the EMF equation?</summary><div class="efa">4.44 = 2π/√2 ≈ 4.443. It comes from Faraday's law applied to sinusoidal flux: peak EMF = 2πfNΦₘ; RMS value = peak/√2 = (2π/√2)×fNΦₘ = 4.44fNΦₘ. It is the form factor of a sine wave. The constant 4.44 only applies to sinusoidal (50/60 Hz) AC systems.</div></details>
+    <details class="ef-faq-item"><summary>What is the condition for maximum efficiency?</summary><div class="efa">Maximum efficiency occurs when variable losses (copper losses Pcu) = constant losses (iron losses Pi). The load at which this occurs: x = √(Pi/Pcu_fl) × kVA_rated. Distribution transformers are designed for max efficiency at 50–70% load since they rarely operate at full load continuously.</div></details>
+    <details class="ef-faq-item"><summary>What is Dyn11 transformer and why is it used?</summary><div class="efa">D=Delta primary, y=star secondary, n=neutral brought out, 11=30° phase shift (11 o'clock). Used in Indian distribution because: (1) Delta primary suppresses 3rd harmonics; (2) Star secondary provides both 230V (single-phase) and 415V (three-phase) from neutral; (3) 30° phase shift isolates HV and LV ground faults.</div></details>
+  </div>
+</div>
+
+<!-- ═══ DC GENERATOR ═══ -->
+<div class="ef-panel" id="panel-dcgen">
+  <div class="ef-panel-header">
+    <div class="ef-panel-header-left"><div class="ef-panel-icon">🔌</div><div><div class="ef-panel-title">DC Generator</div><div class="ef-panel-tagline">EMF Equation · Winding Types · Types · Calculator · FAQ</div></div></div>
+    <button class="ef-close-btn" onclick="closePanel('dcgen')">✕ Close</button>
+  </div>
+  <div class="ef-section-nav">
+    <button class="ef-nav-pill active" onclick="showSec('dcgen','intro',this)">📘 Overview</button>
+    <button class="ef-nav-pill" onclick="showSec('dcgen','formulas',this)">📐 Formulas</button>
+    <button class="ef-nav-pill" onclick="showSec('dcgen','calc',this)">🧮 Calculator</button>
+    <button class="ef-nav-pill" onclick="showSec('dcgen','types',this)">🔀 Types</button>
+    <button class="ef-nav-pill" onclick="showSec('dcgen','apps',this)">🏭 Applications</button>
+    <button class="ef-nav-pill" onclick="showSec('dcgen','faq',this)">❓ FAQ</button>
+  </div>
+  <div class="ef-section active" id="dcgen-intro"><h3>What is a DC Generator?</h3><p>A DC generator converts <strong>mechanical energy into DC electrical energy</strong>. Works on Faraday's law — when conductors rotate inside a magnetic field, EMF is induced in them.</p><p>The rotor (armature) conductors rotate in stator magnetic field. The induced EMF in the armature is <strong>alternating</strong>, but the <strong>commutator converts it to unidirectional DC</strong> at the output — this is the fundamental difference from an alternator.</p><p>DC generators have largely been replaced by rectified AC in modern systems, but remain in use for electroplating, battery charging, arc welding, and as excitation sources for large alternators.</p></div>
+  <div class="ef-section" id="dcgen-formulas"><h3>Key Formulas — DC Generator</h3>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">EMF Equation</div><div class="efe">E = (P×Φ×N×Z) / (60×A)</div><div class="efn">P=poles, Φ=flux/pole(Wb), N=speed(RPM), Z=total conductors, A=parallel paths</div></div>
+      <div class="ef-fbox"><div class="efl">Terminal Voltage (Shunt)</div><div class="efe">V = E − Ia × Ra</div><div class="efn">Ia=armature current, Ra=armature resistance. Field current If=V/Rf</div></div>
+      <div class="ef-fbox"><div class="efl">Terminal Voltage (Series)</div><div class="efe">V = E − Ia(Ra + Rse)</div><div class="efn">Rse=series field resistance. For series gen: Ia=IL</div></div>
+      <div class="ef-fbox"><div class="efl">Power Generated</div><div class="efe">Pg = E × Ia</div><div class="efn">Total electrical power in armature. Output: Po=V×IL</div></div>
+      <div class="ef-fbox"><div class="efl">Lap Winding</div><div class="efe">A = P</div><div class="efn">Parallel paths = poles. High current, low voltage application</div></div>
+      <div class="ef-fbox"><div class="efl">Wave Winding</div><div class="efe">A = 2</div><div class="efn">Always 2 parallel paths. High voltage, low current application</div></div>
+    </div>
+  </div>
+  <div class="ef-section" id="dcgen-calc"><h3>DC Generator Calculators</h3>
+    <div class="ef-calc-box"><div class="ef-calc-title">⚡ EMF Equation: E = (P×Φ×N×Z)/(60×A)</div>
+      <div class="grid g3"><div><label>Poles P</label><input id="dg2_p" type="number" placeholder="e.g. 4" value="4"></div><div><label>Flux Φ (Wb)</label><input id="dg2_phi" type="number" placeholder="e.g. 0.03" step="0.001"></div><div><label>Speed N (RPM)</label><input id="dg2_n" type="number" placeholder="e.g. 1500"></div><div><label>Conductors Z</label><input id="dg2_z" type="number" placeholder="e.g. 400"></div><div><label>Winding Type</label><select id="dg2_wt"><option value="wave">Wave (A=2)</option><option value="lap">Lap (A=P)</option></select></div></div>
+      <div class="btn-row"><button class="btn" onclick="dg2_emf()">Calculate EMF</button></div><div class="result" id="dg2_emf_res"></div></div>
+    <div class="ef-calc-box"><div class="ef-calc-title">🔋 Terminal Voltage — V = E − Ia×Ra</div>
+      <div class="grid g3"><div><label>Generated EMF E (V)</label><input id="dg2_e" type="number" placeholder="e.g. 250"></div><div><label>Armature Current Ia (A)</label><input id="dg2_ia" type="number" placeholder="e.g. 50"></div><div><label>Ra (Ω)</label><input id="dg2_ra" type="number" placeholder="e.g. 0.3" step="0.01"></div></div>
+      <div class="btn-row"><button class="btn" onclick="dg2_v()">Calculate Terminal V</button></div><div class="result" id="dg2_v_res"></div></div>
+  </div>
+  <div class="ef-section" id="dcgen-types"><h3>Types of DC Generators</h3>
+    <div class="ef-type-grid">
+      <div class="ef-tcard" style="background:#fffbeb;border-color:#fde68a"><div class="ef-badge" style="background:#fde68a;color:#92400e">SEP.EX</div><h4 style="color:#92400e">⚡ Separately Excited</h4><p>Field from external DC source. Best voltage regulation. Precise output control. Used in: Ward-Leonard drives, welding, lab excitation.</p></div>
+      <div class="ef-tcard" style="background:#fffbeb;border-color:#fde68a"><div class="ef-badge" style="background:#fde68a;color:#92400e">SHUNT</div><h4 style="color:#92400e">🔀 Shunt Generator</h4><p>Field in parallel. Self-excited. Nearly constant terminal voltage. V=E−Ia×Ra, If=V/Rf. Used in: Battery charging, general DC supply.</p></div>
+      <div class="ef-tcard" style="background:#fffbeb;border-color:#fde68a"><div class="ef-badge" style="background:#fde68a;color:#92400e">SERIES</div><h4 style="color:#92400e">⛓️ Series Generator</h4><p>Field in series. V rises with load current. Used as: Voltage booster in long feeders, arc welding supplies.</p></div>
+      <div class="ef-tcard" style="background:#fffbeb;border-color:#fde68a"><div class="ef-badge" style="background:#fde68a;color:#92400e">COMPOUND</div><h4 style="color:#92400e">🔄 Compound Generator</h4><p>Both series + shunt fields. Over: V rises with load (long feeders). Level: V constant. Under: V drops slightly. Used in: DC distribution, tramways.</p></div>
+    </div>
+  </div>
+  <div class="ef-section" id="dcgen-apps"><h3>Applications</h3>
+    <div class="ef-app-grid"><div class="ef-app-item">🔋 Battery Charging</div><div class="ef-app-item">⚙️ Electroplating Plants</div><div class="ef-app-item">🏗️ Arc Welding</div><div class="ef-app-item">🚂 Railway Signalling</div><div class="ef-app-item">💡 Alternator Excitation</div><div class="ef-app-item">🏭 Ward-Leonard Drives</div><div class="ef-app-item">🔌 Emergency DC Supply</div><div class="ef-app-item">🔬 Laboratory DC Source</div></div>
+  </div>
+  <div class="ef-section" id="dcgen-faq"><h3>FAQ — DC Generator</h3>
+    <details class="ef-faq-item"><summary>What is the difference between lap and wave winding in DC generators?</summary><div class="efa">Lap: A=P parallel paths → high current, low voltage generator. Wave: A=2 always → high voltage, low current generator. For same machine: lap gives more current (P paths in parallel), wave gives more voltage (only 2 paths). Choose based on application: lap for high-current welding/electroplating, wave for high-voltage excitation.</div></details>
+    <details class="ef-faq-item"><summary>Why does a DC series generator's voltage rise with load?</summary><div class="efa">Field is in series with armature, so field current = load current (IL). As load increases → IL increases → field flux Φ increases → generated EMF E∝Φ×N increases. Despite increased drop in Ra+Rse, terminal voltage still rises. This makes series generators useful as "boosters" to compensate voltage drop in long distribution feeders.</div></details>
+    <details class="ef-faq-item"><summary>What is critical resistance in a DC shunt generator?</summary><div class="efa">Critical resistance is the maximum field circuit resistance at which a shunt generator can just build up voltage at a given speed. If field resistance exceeds critical resistance, the generator fails to self-excite. Found from OCC (Open Circuit Characteristic) as the slope of tangent from origin. Below critical speed also, generator won't self-excite even with correct resistance.</div></details>
+  </div>
+</div>
+
+<!-- ═══ AC GENERATOR ═══ -->
+<div class="ef-panel" id="panel-acgen">
+  <div class="ef-panel-header">
+    <div class="ef-panel-header-left"><div class="ef-panel-icon">〜</div><div><div class="ef-panel-title">AC Generator (Alternator)</div><div class="ef-panel-tagline">EMF Equation · Frequency · Types · Synchronisation · FAQ</div></div></div>
+    <button class="ef-close-btn" onclick="closePanel('acgen')">✕ Close</button>
+  </div>
+  <div class="ef-section-nav">
+    <button class="ef-nav-pill active" onclick="showSec('acgen','intro',this)">📘 Overview</button>
+    <button class="ef-nav-pill" onclick="showSec('acgen','formulas',this)">📐 Formulas</button>
+    <button class="ef-nav-pill" onclick="showSec('acgen','calc',this)">🧮 Calculator</button>
+    <button class="ef-nav-pill" onclick="showSec('acgen','types',this)">🔀 Types</button>
+    <button class="ef-nav-pill" onclick="showSec('acgen','apps',this)">🏭 Applications</button>
+    <button class="ef-nav-pill" onclick="showSec('acgen','faq',this)">❓ FAQ</button>
+  </div>
+  <div class="ef-section active" id="acgen-intro"><h3>What is an AC Generator (Alternator)?</h3><p>An AC generator (alternator) converts <strong>mechanical energy into AC electrical energy</strong>. No commutator used — output taken directly from armature via slip rings (or from stator in large machines).</p><p>In large alternators, the <strong>armature is stationary (stator)</strong> and <strong>rotor carries the DC field</strong>. This is because the armature produces high voltage (11–25 kV) — a stationary high-voltage armature is easier to insulate. The rotor carries low-current DC excitation through slip rings.</p><p>Output frequency: f = PN/120. For 50 Hz in India: 2-pole machine needs exactly 3000 RPM; 4-pole needs 1500 RPM.</p></div>
+  <div class="ef-section" id="acgen-formulas"><h3>Key Formulas — AC Generator</h3>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">Output Frequency</div><div class="efe">f = P × N / 120</div><div class="efn">P=poles, N=rotor speed(RPM). 4-pole 1500RPM → 50Hz</div></div>
+      <div class="ef-fbox hl"><div class="efl">EMF Equation</div><div class="efe">E = 4.44 × Kw × f × N × Φ</div><div class="efn">Kw=winding factor(0.85–0.96), N=turns/phase, Φ=flux(Wb)</div></div>
+      <div class="ef-fbox"><div class="efl">kVA Output (3-Phase)</div><div class="efe">kVA = √3 × VL × IL / 1000</div><div class="efn">VL=line voltage, IL=line current</div></div>
+      <div class="ef-fbox"><div class="efl">Synchronous Speed</div><div class="efe">Ns = 120f / P</div><div class="efn">Alternators must run at exactly Ns for correct frequency</div></div>
+      <div class="ef-fbox"><div class="efl">Voltage Regulation</div><div class="efe">VR% = (E₀ − V)/V × 100</div><div class="efn">E₀=no-load voltage, V=full-load terminal voltage</div></div>
+      <div class="ef-fbox"><div class="efl">Short Circuit Ratio</div><div class="efe">SCR = If_oc / If_sc</div><div class="efn">Higher SCR → better voltage regulation, more stable. SCR=1/Xs(pu)</div></div>
+    </div>
+  </div>
+  <div class="ef-section" id="acgen-calc"><h3>AC Generator Calculators</h3>
+    <div class="ef-calc-box"><div class="ef-calc-title">〜 Frequency &amp; Speed — f = PN/120</div>
+      <div class="grid g3"><div><label>Mode</label><select id="ag2_mode"><option value="freq">Speed → Frequency</option><option value="speed">Frequency → Speed</option></select></div><div><label>Poles P</label><input id="ag2_p" type="number" placeholder="e.g. 4" value="4"></div><div><label>N (RPM) or f (Hz)</label><input id="ag2_val" type="number" placeholder="e.g. 1500 or 50"></div></div>
+      <div class="btn-row"><button class="btn" onclick="ag2_calc()">Calculate</button></div><div class="result" id="ag2_res"></div></div>
+    <div class="ef-calc-box"><div class="ef-calc-title">📊 Alternator kVA &amp; Current</div>
+      <div class="grid g3"><div><label>Mode</label><select id="ag2_mode2"><option value="kva">VL &amp; IL → kVA</option><option value="il">kVA &amp; VL → IL</option></select></div><div><label>Line Voltage VL (V)</label><input id="ag2_vl" type="number" placeholder="e.g. 11000"></div><div><label>IL (A) or kVA</label><input id="ag2_val2" type="number" placeholder="e.g. 100"></div></div>
+      <div class="btn-row"><button class="btn" onclick="ag2_kva()">Calculate</button></div><div class="result" id="ag2_kva_res"></div></div>
+  </div>
+  <div class="ef-section" id="acgen-types"><h3>Types of AC Generators</h3>
+    <div class="ef-type-grid">
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#86efac;color:#166534">SALIENT POLE</div><h4 style="color:#166534">🔄 Salient Pole Alternator</h4><p>Projected rotor poles. Low speed (100–400 RPM). Large diameter, short axial length. Many poles (4–96). Used with hydro turbines. Example: Hydroelectric power stations.</p></div>
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#86efac;color:#166534">CYLINDRICAL</div><h4 style="color:#166534">⚡ Cylindrical Rotor (Turbo)</h4><p>Smooth cylindrical rotor. High speed (1500/3000 RPM at 50Hz). 2 or 4 poles. Small diameter, long length. Used with steam/gas turbines. Example: Thermal &amp; nuclear power stations.</p></div>
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#86efac;color:#166534">BRUSHLESS</div><h4 style="color:#166534">🔋 Brushless Alternator</h4><p>No slip rings — exciter on same shaft with rotating rectifier. Low maintenance, AVR-controlled. Used in: Diesel gensets, industrial standby generators.</p></div>
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#86efac;color:#166534">INDUCTION GEN</div><h4 style="color:#166534">🌬️ Induction Generator</h4><p>Induction motor driven above Ns (negative slip). Not self-exciting — needs reactive power from grid. Simple, no DC excitation. Used in: Wind turbines, small hydro.</p></div>
+    </div>
+    <div class="note" style="margin-top:1rem"><b>🔄 Synchronisation Conditions (Parallel Operation):</b><br>1. Same <strong>voltage magnitude</strong> as bus-bar &nbsp; 2. Same <strong>frequency</strong> (50 Hz) &nbsp; 3. Same <strong>phase sequence</strong> (RYB) &nbsp; 4. Same <strong>phase angle</strong> (zero difference)<br>Checked using: Synchroscope, dark lamp method, or synchronising relay. If any condition fails → large circulating currents or mechanical shock on breaker closing.</div>
+  </div>
+  <div class="ef-section" id="acgen-apps"><h3>Applications</h3>
+    <div class="ef-app-grid"><div class="ef-app-item">🏭 Thermal Power Stations</div><div class="ef-app-item">💧 Hydroelectric Power</div><div class="ef-app-item">⚛️ Nuclear Power Plants</div><div class="ef-app-item">🌬️ Wind Turbines</div><div class="ef-app-item">⛽ Diesel Gensets</div><div class="ef-app-item">🏗️ Construction Site Power</div><div class="ef-app-item">🏠 Residential Backup</div><div class="ef-app-item">🚢 Marine Power</div><div class="ef-app-item">✈️ Aircraft APU</div><div class="ef-app-item">🏥 Hospital Emergency Power</div><div class="ef-app-item">🌞 Solar Inverter Output</div><div class="ef-app-item">🔬 Portable Field Generators</div></div>
+  </div>
+  <div class="ef-section" id="acgen-faq"><h3>FAQ — AC Generator</h3>
+    <details class="ef-faq-item"><summary>Why are large alternators built with stationary armature and rotating field?</summary><div class="efa">Large alternators produce high voltages (11–25 kV). Collecting this through slip rings would need high-voltage, complex brush gear. Instead, the stationary armature (stator) is insulated for HV and connected directly to bus-bars. Only low-current DC excitation (a few hundred volts) passes through the rotor slip rings — much simpler and safer.</div></details>
+    <details class="ef-faq-item"><summary>What are the four synchronisation conditions for parallel operation?</summary><div class="efa">(1) <strong>Voltage</strong> — incoming alternator voltage must equal bus-bar voltage; (2) <strong>Frequency</strong> — incoming frequency must equal 50 Hz; (3) <strong>Phase sequence</strong> — RYB sequence must match; (4) <strong>Phase angle</strong> — phase of incoming EMF must be in phase with bus-bar at the closing moment. If any condition is unmet → large circulating currents or mechanical shock when breaker closes.</div></details>
+    <details class="ef-faq-item"><summary>What is voltage regulation and why does it matter?</summary><div class="efa">VR% = (E₀−V)/V×100. Positive VR: voltage drops under load (inductive/resistive loads). Negative VR: voltage rises under load (capacitive loads). Low VR% = good regulation (voltage stays constant with load). An AVR (Automatic Voltage Regulator) continuously adjusts field excitation to maintain constant terminal voltage from no-load to full load.</div></details>
+  </div>
+</div>
+
+<!-- ═══ MACHINE DESIGN ═══ -->
+<div class="ef-panel" id="panel-machdesign">
+  <div class="ef-panel-header">
+    <div class="ef-panel-header-left"><div class="ef-panel-icon">⚙️</div><div><div class="ef-panel-title">Electrical Machine Design</div><div class="ef-panel-tagline">Magnetic Circuit · DC Machine · Transformer · Induction Motor · Alternator · Calculators · FAQ</div></div></div>
+    <button class="ef-close-btn" onclick="closePanel('machdesign')">✕ Close</button>
+  </div>
+  <div class="ef-section-nav">
+    <button class="ef-nav-pill active" onclick="showSec('machdesign','intro',this)">📘 Overview</button>
+    <button class="ef-nav-pill" onclick="showSec('machdesign','formulas',this)">📐 Formulas</button>
+    <button class="ef-nav-pill" onclick="showSec('machdesign','calc',this)">🧮 Calculator</button>
+    <button class="ef-nav-pill" onclick="showSec('machdesign','types',this)">🔀 Design Types</button>
+    <button class="ef-nav-pill" onclick="showSec('machdesign','apps',this)">🏭 Applications</button>
+    <button class="ef-nav-pill" onclick="showSec('machdesign','faq',this)">❓ FAQ</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="ef-section active" id="machdesign-intro">
+    <h3>What is Electrical Machine Design?</h3>
+    <p>Electrical Machine Design is the branch of electrical engineering that deals with determining the physical dimensions, winding parameters, magnetic circuit parameters, and thermal characteristics of electrical machines — DC motors/generators, AC induction motors, synchronous alternators, and transformers.</p>
+    <p>The goal is to produce a machine that meets the required output rating (kVA or kW), operates within allowable temperature limits, has high efficiency, and can be manufactured economically. Design involves choosing the right <strong>magnetic loading (Bav)</strong> and <strong>electric loading (ac)</strong> to achieve the best size-to-output ratio.</p>
+    <p>The <strong>Output Equation</strong> is the foundation of machine design: <strong>Q = C₀ D² L nₛ</strong>, where Q is output (kVA or kW), D is the bore diameter, L is the core length, and nₛ is speed in rev/sec. The output coefficient C₀ embeds both magnetic and electric loading in one parameter.</p>
+    <div class="note"><b>📐 Key Design Principle:</b> Machine design is a balance — increasing Bav and ac gives more output per unit volume (smaller, lighter machine) but increases core loss, copper loss, and temperature rise. The designer selects optimum loading values from standard tables based on machine type, cooling method, and insulation class.</div>
+  </div>
+
+  <!-- FORMULAS -->
+  <div class="ef-section" id="machdesign-formulas">
+    <h3>Key Formulas — Electrical Machine Design</h3>
+
+    <div class="section-label" style="margin-top:0.3rem">🧲 Magnetic Circuit</div>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">MMF</div><div class="efe">MMF = N × I</div><div class="efn">N=turns, I=current(A). MMF in Ampere-Turns (AT)</div></div>
+      <div class="ef-fbox hl"><div class="efl">Flux</div><div class="efe">Φ = MMF / S</div><div class="efn">S=Reluctance (AT/Wb). Magnetic Ohm's Law</div></div>
+      <div class="ef-fbox"><div class="efl">Flux Density</div><div class="efe">B = Φ / A</div><div class="efn">A=cross-sectional area (m²). B in Tesla</div></div>
+      <div class="ef-fbox"><div class="efl">Reluctance</div><div class="efe">S = l / (μ × A)</div><div class="efn">l=length(m), μ=permeability(H/m), A=area(m²)</div></div>
+      <div class="ef-fbox"><div class="efl">Permeability</div><div class="efe">μ = μr × μ₀</div><div class="efn">μ₀=4π×10⁻⁷ H/m, μr=relative permeability of material</div></div>
+      <div class="ef-fbox"><div class="efl">Magnetising Force</div><div class="efe">H = MMF / l = B / μ</div><div class="efn">H in A/m. Relates field intensity to flux density</div></div>
+      <div class="ef-fbox"><div class="efl">Air Gap MMF</div><div class="efe">ATg = 800000 × Bav × Kg × lg</div><div class="efn">Bav=avg flux density(T), Kg=gap contraction factor, lg=gap length(m)</div></div>
+      <div class="ef-fbox"><div class="efl">Carter Coefficient</div><div class="efe">Kcs = 1/(1 + 5lg/W₀)</div><div class="efn">lg=air gap length, W₀=slot opening width. Corrects for slotting effect</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:1rem">🔋 DC Machine Design</div>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">Output Equation</div><div class="efe">Q = C₀ × D² × L × nₛ</div><div class="efn">Q=output(kW), D=bore dia(m), L=core length(m), nₛ=speed(rps)</div></div>
+      <div class="ef-fbox hl"><div class="efl">Output Coefficient</div><div class="efe">C₀ = π² × Bav × ac × 10⁻³</div><div class="efn">Bav=avg flux density(T), ac=specific electric loading(A/m)</div></div>
+      <div class="ef-fbox"><div class="efl">Avg Flux Density</div><div class="efe">Bav = PΦ / (π D L)</div><div class="efn">P=poles, Φ=flux/pole(Wb). Typical: 0.6–0.8 T</div></div>
+      <div class="ef-fbox"><div class="efl">Electric Loading</div><div class="efe">ac = Ia × Z / (A × π × D)</div><div class="efn">Ia=armature current, Z=conductors, A=parallel paths</div></div>
+      <div class="ef-fbox"><div class="efl">Pole Pitch</div><div class="efe">τ = π D / P</div><div class="efn">P=number of poles. Pole pitch in metres</div></div>
+      <div class="ef-fbox"><div class="efl">Commutator Peripheral Speed</div><div class="efe">vc = π Dc N / 60</div><div class="efn">Dc=commutator dia(m), N=speed(rpm). Max vc ≤ 15 m/s</div></div>
+      <div class="ef-fbox"><div class="efl">Commutator Temp Rise</div><div class="efe">θ = 120 × Loss / (1 + 0.1vc)</div><div class="efn">Loss in W/cm², vc in m/s. Allowable θ ≤ 55°C</div></div>
+      <div class="ef-fbox"><div class="efl">Brush Loss</div><div class="efe">Brush Loss = 9.81 × μ × Pb × A × vc</div><div class="efn">μ=friction coefficient, Pb=brush pressure(N/m²), A=brush area(m²)</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:1rem">🔄 Transformer Design</div>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">EMF Equation</div><div class="efe">E = 4.44 f Φm T</div><div class="efn">f=frequency(Hz), Φm=peak flux(Wb), T=turns</div></div>
+      <div class="ef-fbox hl"><div class="efl">Output — 1-Phase</div><div class="efe">Q = 2.22 f Bm Ai Kw Aw δ × 10⁻³</div><div class="efn">Bm=peak flux density, Ai=core area, Kw=window util. factor, Aw=window area, δ=current density</div></div>
+      <div class="ef-fbox hl"><div class="efl">Output — 3-Phase</div><div class="efe">Q = 3.33 f Bm Ai Kw Aw δ × 10⁻³</div><div class="efn">Same parameters as single-phase; factor 3.33 accounts for 3-phase</div></div>
+      <div class="ef-fbox"><div class="efl">EMF per Turn</div><div class="efe">Et = 4.44 f Φm = K√Q</div><div class="efn">K=constant (0.6–0.75 for core type, 0.45 for shell). Et links design to rating</div></div>
+      <div class="ef-fbox"><div class="efl">Window Utilisation</div><div class="efe">Kw = Conductor Area / Window Area</div><div class="efn">Typical Kw: 0.28–0.32 for HV, 0.3–0.4 for LV transformers</div></div>
+      <div class="ef-fbox"><div class="efl">Temp Rise (Cooling Tubes)</div><div class="efe">θ = (Pi + Pc) / [St(12.5 + 8.8x)]</div><div class="efn">Pi=iron loss, Pc=copper loss, St=cooling surface, x=dissipation factor</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:1rem">⚡ Induction Motor Design</div>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">Output Coefficient</div><div class="efe">C₀ = 11 Bav q Kw η cosφ × 10⁻³</div><div class="efn">q=specific electric loading, Kw=winding factor, η=efficiency, cosφ=PF</div></div>
+      <div class="ef-fbox"><div class="efl">Air Gap Length</div><div class="efe">lg = 0.2 + 2√(D × L) mm</div><div class="efn">D=stator bore(m), L=core length(m). Typical: 0.2–1.5 mm</div></div>
+      <div class="ef-fbox"><div class="efl">Rotor Bar Current</div><div class="efe">Ib = 0.85 × (6 Is Ts / Sr)</div><div class="efn">Is=stator current, Ts=stator turns/phase, Sr=rotor slots</div></div>
+      <div class="ef-fbox"><div class="efl">End Ring Current</div><div class="efe">Ie = (Sr × Ib) / (π × p)</div><div class="efn">p=pole pairs. End ring current for squirrel cage design</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:1rem">〜 Alternator Design</div>
+    <div class="ef-formula-grid">
+      <div class="ef-fbox hl"><div class="efl">Output Equation</div><div class="efe">Q = 11 Bav ac Kw D² L nₛ × 10⁻³</div><div class="efn">kVA output. Bav=0.52–0.65T, ac=20000–40000 A/m typical</div></div>
+      <div class="ef-fbox"><div class="efl">Short Circuit Ratio</div><div class="efe">SCR = If(OC) / If(SC)</div><div class="efn">If(OC)=field current at rated V (open circuit), If(SC)=field for rated short circuit current. Typical SCR: 0.5–1.2</div></div>
+      <div class="ef-fbox"><div class="efl">Air Gap (Salient Pole)</div><div class="efe">lg = ATf₀ / (Bg × Kg × 10⁶)</div><div class="efn">ATf₀=field AT, Bg=max flux density at gap(T), Kg=gap factor</div></div>
+      <div class="ef-fbox"><div class="efl">Damper Winding Area</div><div class="efe">Ad = 0.2 × ac × τ / δd</div><div class="efn">τ=pole pitch(m), δd=current density in damper bars(A/m²)</div></div>
+    </div>
+  </div>
+
+  <!-- CALCULATORS -->
+  <div class="ef-section" id="machdesign-calc">
+    <h3>Machine Design Calculators</h3>
+
+    <div class="ef-calc-box">
+      <div class="ef-calc-title">🧲 MMF & Magnetic Circuit</div>
+      <div class="grid g3">
+        <div><label>Turns N</label><input id="md_turns" type="number" placeholder="e.g. 500"></div>
+        <div><label>Current I (A)</label><input id="md_current" type="number" placeholder="e.g. 2"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_mmf()">Calculate MMF</button></div>
+      <div class="result" id="md_mmf_res"></div>
+      <hr>
+      <div class="grid g3" style="margin-top:0.8rem">
+        <div><label>Flux Φ (Wb)</label><input id="md_phi" type="number" placeholder="e.g. 0.05" step="0.001"></div>
+        <div><label>Area A (m²)</label><input id="md_area" type="number" placeholder="e.g. 0.01" step="0.001"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_fluxden()">Calculate Flux Density B</button></div>
+      <div class="result" id="md_b_res"></div>
+      <hr>
+      <div class="grid g3" style="margin-top:0.8rem">
+        <div><label>MMF (AT)</label><input id="md_mmf2" type="number" placeholder="e.g. 1000"></div>
+        <div><label>Reluctance S (AT/Wb)</label><input id="md_rel" type="number" placeholder="e.g. 20000"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_flux()">Calculate Flux Φ</button></div>
+      <div class="result" id="md_flux_res"></div>
+    </div>
+
+    <div class="ef-calc-box">
+      <div class="ef-calc-title">🔋 DC Machine — Output Equation: Q = C₀ D² L nₛ</div>
+      <div class="grid g3">
+        <div><label>Bav (Tesla)</label><input id="md_bav" type="number" placeholder="e.g. 0.7" step="0.01"></div>
+        <div><label>ac (A/m)</label><input id="md_ac" type="number" placeholder="e.g. 30000"></div>
+        <div><label>D — Bore Dia (m)</label><input id="md_d" type="number" placeholder="e.g. 0.3" step="0.01"></div>
+        <div><label>L — Core Length (m)</label><input id="md_l" type="number" placeholder="e.g. 0.25" step="0.01"></div>
+        <div><label>nₛ — Speed (rps)</label><input id="md_ns" type="number" placeholder="e.g. 25"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_dcoutput()">Calculate DC Output (kW)</button></div>
+      <div class="result" id="md_dc_res"></div>
+    </div>
+
+    <div class="ef-calc-box">
+      <div class="ef-calc-title">🔋 DC Machine — Pole Pitch & Commutator Speed</div>
+      <div class="grid g3">
+        <div><label>Bore Dia D (m)</label><input id="md_d_pp" type="number" placeholder="e.g. 0.3" step="0.01"></div>
+        <div><label>Poles P</label><input id="md_p_pp" type="number" placeholder="e.g. 4"></div>
+        <div><label>Commutator Dia Dc (m)</label><input id="md_dc_comm" type="number" placeholder="e.g. 0.22" step="0.01"></div>
+        <div><label>Speed N (rpm)</label><input id="md_n_comm" type="number" placeholder="e.g. 1500"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_pole_vc()">Calculate Pole Pitch & vc</button></div>
+      <div class="result" id="md_pp_res"></div>
+    </div>
+
+    <div class="ef-calc-box">
+      <div class="ef-calc-title">🔄 Transformer Design — EMF & Output</div>
+      <div class="grid g3">
+        <div><label>Frequency f (Hz)</label><input id="md_f_tr" type="number" placeholder="e.g. 50" value="50"></div>
+        <div><label>Peak Flux Φm (Wb)</label><input id="md_phi_tr" type="number" placeholder="e.g. 0.05" step="0.001"></div>
+        <div><label>Turns T</label><input id="md_t_tr" type="number" placeholder="e.g. 200"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_emf_tr()">Calculate EMF</button></div>
+      <div class="result" id="md_emf_tr_res"></div>
+      <hr>
+      <div class="grid g3" style="margin-top:0.8rem">
+        <div><label>Phase</label><select id="md_ph_tr"><option value="1">1-Phase (×2.22)</option><option value="3">3-Phase (×3.33)</option></select></div>
+        <div><label>f (Hz)</label><input id="md_f_op" type="number" placeholder="50" value="50"></div>
+        <div><label>Bm (Tesla)</label><input id="md_bm_op" type="number" placeholder="e.g. 1.5" step="0.01"></div>
+        <div><label>Ai — Core Area (m²)</label><input id="md_ai_op" type="number" placeholder="e.g. 0.004" step="0.0001"></div>
+        <div><label>Kw (0.28–0.4)</label><input id="md_kw_op" type="number" placeholder="e.g. 0.32" step="0.01"></div>
+        <div><label>Aw — Window Area (m²)</label><input id="md_aw_op" type="number" placeholder="e.g. 0.01" step="0.001"></div>
+        <div><label>δ — Current Density (A/m²)</label><input id="md_delta_op" type="number" placeholder="e.g. 2500000"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_tx_output()">Calculate Transformer Output (kVA)</button></div>
+      <div class="result" id="md_tx_op_res"></div>
+    </div>
+
+    <div class="ef-calc-box">
+      <div class="ef-calc-title">⚡ Induction Motor — Output Coefficient C₀ & Air Gap</div>
+      <div class="grid g3">
+        <div><label>Bav (Tesla)</label><input id="md_bav_im" type="number" placeholder="e.g. 0.55" step="0.01"></div>
+        <div><label>q — Elec. Loading (A/m)</label><input id="md_q_im" type="number" placeholder="e.g. 26000"></div>
+        <div><label>Kw — Winding Factor</label><input id="md_kw_im" type="number" placeholder="e.g. 0.955" step="0.001"></div>
+        <div><label>η — Efficiency</label><input id="md_eta_im" type="number" placeholder="e.g. 0.9" step="0.01"></div>
+        <div><label>cosφ — Power Factor</label><input id="md_pf_im" type="number" placeholder="e.g. 0.85" step="0.01"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_c0_im()">Calculate C₀</button></div>
+      <div class="result" id="md_c0_im_res"></div>
+      <hr>
+      <div class="grid g3" style="margin-top:0.8rem">
+        <div><label>D — Stator Bore (m)</label><input id="md_d_im" type="number" placeholder="e.g. 0.25" step="0.01"></div>
+        <div><label>L — Core Length (m)</label><input id="md_l_im" type="number" placeholder="e.g. 0.18" step="0.01"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_gap_im()">Calculate Air Gap Length</button></div>
+      <div class="result" id="md_gap_im_res"></div>
+    </div>
+
+    <div class="ef-calc-box">
+      <div class="ef-calc-title">〜 Alternator — Output & SCR</div>
+      <div class="grid g3">
+        <div><label>Bav (Tesla)</label><input id="md_bav_alt" type="number" placeholder="e.g. 0.6" step="0.01"></div>
+        <div><label>ac (A/m)</label><input id="md_ac_alt" type="number" placeholder="e.g. 30000"></div>
+        <div><label>Kw — Winding Factor</label><input id="md_kw_alt" type="number" placeholder="e.g. 0.955" step="0.001"></div>
+        <div><label>D (m)</label><input id="md_d_alt" type="number" placeholder="e.g. 1.2" step="0.01"></div>
+        <div><label>L (m)</label><input id="md_l_alt" type="number" placeholder="e.g. 0.6" step="0.01"></div>
+        <div><label>nₛ (rps)</label><input id="md_ns_alt" type="number" placeholder="e.g. 25"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_alt_output()">Calculate Alternator Output (kVA)</button></div>
+      <div class="result" id="md_alt_res"></div>
+      <hr>
+      <div class="grid g3" style="margin-top:0.8rem">
+        <div><label>If — Open Circuit (A)</label><input id="md_oc_alt" type="number" placeholder="e.g. 120"></div>
+        <div><label>If — Short Circuit (A)</label><input id="md_sc_alt" type="number" placeholder="e.g. 100"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_scr()">Calculate SCR</button></div>
+      <div class="result" id="md_scr_res"></div>
+    </div>
+
+    <div class="ef-calc-box">
+      <div class="ef-calc-title">🧲 Air Gap MMF & Reluctance</div>
+      <div class="grid g3">
+        <div><label>Bav (Tesla)</label><input id="md_bav_ag" type="number" placeholder="e.g. 0.7" step="0.01"></div>
+        <div><label>Kg — Gap Factor</label><input id="md_kg_ag" type="number" placeholder="e.g. 1.15" step="0.01"></div>
+        <div><label>lg — Gap Length (m)</label><input id="md_lg_ag" type="number" placeholder="e.g. 0.003" step="0.0001"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="md_airgap()">Calculate Air Gap MMF</button></div>
+      <div class="result" id="md_airgap_res"></div>
+    </div>
+  </div>
+
+  <!-- DESIGN TYPES -->
+  <div class="ef-section" id="machdesign-types">
+    <h3>Machine Design Types & Methods</h3>
+    <div class="ef-type-grid">
+      <div class="ef-tcard" style="background:#f5f3ff;border-color:var(--border)"><div class="ef-badge" style="background:#ede9fe;color:#5b21b6">DC MACHINE</div><h4 style="color:#5b21b6">🔋 DC Motor / Generator</h4><p>Design based on Q=C₀D²Lnₛ. Key parameters: Bav (0.6–0.8T), ac (15,000–50,000 A/m), pole pitch τ, commutator design. Lap winding for high current; wave for high voltage.</p></div>
+      <div class="ef-tcard" style="background:#fff7ed;border-color:#fed7aa"><div class="ef-badge" style="background:#fed7aa;color:#c2410c">TRANSFORMER</div><h4 style="color:#c2410c">🔄 Transformer Design</h4><p>Core type vs shell type. Output: Q=2.22fBmAiKwAwδ×10⁻³ (1-ph), 3.33×(3-ph). EMF per turn Et=K√Q links rating to physical dimensions. Cooling: ONAN, ONAF, OFAF.</p></div>
+      <div class="ef-tcard" style="background:#f0fdf4;border-color:#86efac"><div class="ef-badge" style="background:#86efac;color:#166534">INDUCTION MOTOR</div><h4 style="color:#166534">⚡ Induction Motor Design</h4><p>C₀=11BavqKwηcosφ×10⁻³. Air gap: lg=0.2+2√DL mm. Stator winding, rotor bar and end ring sizing. Squirrel cage vs slip ring rotor design considerations.</p></div>
+      <div class="ef-tcard" style="background:#f0f9ff;border-color:#bae6fd"><div class="ef-badge" style="background:#bae6fd;color:#0369a1">ALTERNATOR</div><h4 style="color:#0369a1">〜 Synchronous Machine</h4><p>Q=11BavacKwD²Lnₛ×10⁻³. SCR=If(OC)/If(SC): high SCR→better stability, large size. Salient pole (low speed, hydro) vs cylindrical (high speed, turbo) rotor.</p></div>
+      <div class="ef-tcard" style="background:#fef9c3;border-color:#fde68a"><div class="ef-badge" style="background:#fde68a;color:#92400e">MAGNETIC CKT</div><h4 style="color:#92400e">🧲 Magnetic Circuit Design</h4><p>Series magnetic circuits with air gap. Carter coefficient corrects for slotting. ATg=800000×Bav×Kg×lg. Total AT=ATcore+ATteeth+ATyoke+ATgap.</p></div>
+      <div class="ef-tcard" style="background:#fdf4ff;border-color:#e9d5ff"><div class="ef-badge" style="background:#e9d5ff;color:#7e22ce">THERMAL</div><h4 style="color:#7e22ce">🌡️ Thermal Design</h4><p>Permissible temperature rise depends on insulation class: Class A(105°C), B(130°C), F(155°C), H(180°C). Transformer cooling: cooling tubes, radiators, forced oil/air cooling.</p></div>
+    </div>
+
+    <div class="note" style="margin-top:1rem"><b>📊 Typical Design Values — Quick Reference:</b><br>
+    <strong>DC Machine:</strong> Bav=0.6–0.8T, ac=15,000–50,000A/m, vc≤15m/s (commutator) &nbsp;|&nbsp;
+    <strong>Transformer:</strong> Bm=1.2–1.7T (CRGO), Kw=0.28–0.4, δ=1.5–5 A/mm² &nbsp;|&nbsp;
+    <strong>Induction Motor:</strong> Bav=0.4–0.6T, q=15,000–45,000A/m, Kw=0.95–0.96 &nbsp;|&nbsp;
+    <strong>Alternator:</strong> Bav=0.52–0.65T, ac=20,000–40,000A/m, SCR=0.5–1.2</div>
+  </div>
+
+  <!-- APPLICATIONS -->
+  <div class="ef-section" id="machdesign-apps">
+    <h3>Applications of Machine Design Knowledge</h3>
+    <div class="ef-app-grid">
+      <div class="ef-app-item">🏭 Industrial Motor Sizing</div>
+      <div class="ef-app-item">🔌 Power Transformer Specification</div>
+      <div class="ef-app-item">💧 Hydro Generator Design</div>
+      <div class="ef-app-item">🌬️ Wind Turbine Alternator</div>
+      <div class="ef-app-item">🚂 Traction Motor Design</div>
+      <div class="ef-app-item">🤖 Servo & CNC Motor Design</div>
+      <div class="ef-app-item">🔬 Instrument Transformer (CT/PT)</div>
+      <div class="ef-app-item">⚡ Distribution Transformer (Dyn11)</div>
+      <div class="ef-app-item">🔋 DC Generator for Excitation</div>
+      <div class="ef-app-item">🏗️ Crane & Hoist Motor</div>
+      <div class="ef-app-item">🌞 Solar Inverter Transformer</div>
+      <div class="ef-app-item">🎓 GATE / University Exam Prep</div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="ef-section" id="machdesign-faq">
+    <h3>FAQ — Electrical Machine Design</h3>
+    <details class="ef-faq-item"><summary>What is the significance of the Output Equation Q = C₀D²Lnₛ?</summary><div class="efa">The output equation relates the rated output of a machine to its physical dimensions and speed. D²L is the volume utilisation term — it shows that output can be increased by increasing size or speed. C₀ (output coefficient) captures both magnetic loading (Bav) and electric loading (ac). For DC machines: C₀ = π²Bav×ac×10⁻³. For AC machines: C₀ = 11Bav×q×Kw×η×cosφ×10⁻³. The designer adjusts Bav and ac within allowable limits to achieve the required output in minimum volume.</div></details>
+    <details class="ef-faq-item"><summary>What is magnetic loading and electric loading? How do you choose them?</summary><div class="efa"><strong>Magnetic loading (Bav)</strong>: Average flux density in the air gap (Tesla). Higher Bav → smaller machine but higher core loss and saturation risk. <strong>Electric loading (ac or q)</strong>: Ampere-conductors per metre of armature periphery. Higher ac → smaller machine but higher copper loss and temperature rise. Both are chosen from standard design tables based on: machine type, cooling method, insulation class, duty cycle, and efficiency requirements. Over-loading either leads to excessive losses; under-loading gives a larger, heavier machine than necessary.</div></details>
+    <details class="ef-faq-item"><summary>What is the Carter coefficient and why is it used?</summary><div class="efa">The Carter coefficient (Kcs) corrects for the fact that slotted armature surfaces have a higher effective reluctance than a smooth surface — the slots create regions of reduced flux, making the effective air gap longer. Kcs = 1/(1 + 5lg/W₀) where lg is the air gap length and W₀ is the slot opening width. The gap contraction factor Kg = Kgs × Kgd (for stator and rotor slots separately). Using Kg in the MMF calculation: ATg = 800000 × Bav × Kg × lg gives the correct air gap MMF accounting for slotting.</div></details>
+    <details class="ef-faq-item"><summary>Why is EMF per turn (Et = K√Q) important in transformer design?</summary><div class="efa">Et = 4.44fΦm = K√Q links the electrical rating directly to the physical dimensions. For core-type transformers, K ≈ 0.6–0.75; for shell-type, K ≈ 0.45. Et determines the cross-section of iron core (Ai = Φm/Bm) and window dimensions. A higher Et means fewer turns (lower copper) but larger core (more iron). Designers choose K from standard tables to balance copper and iron costs — the minimum cost design achieves equilibrium between these two loss components.</div></details>
+    <details class="ef-faq-item"><summary>What does Short Circuit Ratio (SCR) tell us about an alternator?</summary><div class="efa">SCR = If(OC)/If(SC). It is the reciprocal of per-unit synchronous reactance (SCR ≈ 1/Xs_pu). <strong>High SCR (1.0–1.2)</strong>: Better voltage regulation, more stable under sudden load changes, larger air gap → heavier and costlier machine. <strong>Low SCR (0.5–0.7)</strong>: Less stable, more sensitive to load changes, smaller machine, cheaper. Hydro alternators (salient pole) typically have high SCR. Turbo-alternators (cylindrical rotor) have lower SCR. Modern machines with AVR can operate with lower SCR.</div></details>
+    <details class="ef-faq-item"><summary>How is the air gap length determined for an induction motor?</summary><div class="efa">The empirical formula lg = 0.2 + 2√(DL) mm gives a practical starting value. D and L are in metres. A longer air gap: increases magnetising current (poor power factor), but reduces harmonic distortion and noise. A shorter air gap: lower magnetising current (better PF), but higher harmonic content and more sensitive to eccentricity. The final value is verified by ensuring the magnetising current (Im) stays within 30–50% of full load current for squirrel cage designs.</div></details>
+  </div>
+</div>
+
+<!-- DASHBOARD JS -->
+<script>
+function openPanel(topic, btn) {
+  document.querySelectorAll('.ef-panel').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('.ef-topic-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('panel-' + topic);
+  if (panel) { panel.classList.add('open'); btn.classList.add('active'); setTimeout(() => panel.scrollIntoView({behavior:'smooth',block:'start'}), 50); }
+}
+function closePanel(topic) {
+  document.getElementById('panel-' + topic).classList.remove('open');
+  document.querySelectorAll('.ef-topic-btn').forEach(b => b.classList.remove('active'));
+}
+function showSec(panel, section, pill) {
+  document.querySelectorAll('#panel-' + panel + ' .ef-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(panel + '-' + section).classList.add('active');
+  pill.closest('.ef-section-nav').querySelectorAll('.ef-nav-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+}
+// DC Motor
+function dcm_backEMF(){const v=+document.getElementById('dcm_v').value,ia=+document.getElementById('dcm_ia').value,ra=+document.getElementById('dcm_ra').value;if(!v||!ia||!ra)return showRes('dcm_be_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const eb=(v-ia*ra).toFixed(3),r=((v-ia*ra)/v*100).toFixed(1);showRes('dcm_be_res',`<div class="res-val">Eb = ${eb} V</div>Eb=V−Ia×Ra=${v}−${ia}×${ra}<br>Back EMF = <b>${r}%</b> of supply ${r<80?'⚠️ Low speed?':'✅ Normal'}`);}
+function dcm_torque(){let p=+document.getElementById('dcm_p').value;const u=document.getElementById('dcm_pu').value,n=+document.getElementById('dcm_n').value;if(!p||!n)return showRes('dcm_t_res','<span style="color:#dc2626">⚠️ Enter power and speed.</span>');const pw=u==='kw'?p*1000:u==='hp'?p*746:p,t=(pw*60/(2*Math.PI*n)).toFixed(3);showRes('dcm_t_res',`<div class="res-val">T = ${t} N·m</div>T=P×60/(2π×N)=${pw.toFixed(0)}×60/(6.283×${n})`);}
+function dcm_ia(){const v=+document.getElementById('dcm_av').value,eb=+document.getElementById('dcm_eb').value,ra=+document.getElementById('dcm_ara').value;if(!v||!ra)return showRes('dcm_ia_res','<span style="color:#dc2626">⚠️ Enter V and Ra.</span>');const ia=((v-eb)/ra).toFixed(3);showRes('dcm_ia_res',`<div class="res-val">Ia = ${ia} A</div>Ia=(V−Eb)/Ra=(${v}−${eb})/${ra}`);}
+// AC Motor
+function acm_speed(){const f=+document.getElementById('acm_f').value,p=+document.getElementById('acm_p').value,nr=+document.getElementById('acm_nr').value;const ns=(120*f/p).toFixed(0);let sh='';if(nr){const s=((ns-nr)/ns*100).toFixed(2);sh=`<br>Slip s=(${ns}−${nr})/${ns}=<b>${s}%</b> ${s<0?'⚠️ Generator mode':s<=5?'✅ Normal':'⚠️ High slip'}`;}showRes('acm_spd_res',`<div class="res-val">Ns = ${ns} RPM</div>Ns=120×${f}/${p}${sh}`);}
+function acm_flc(){let p=+document.getElementById('acm_pw').value;const u=document.getElementById('acm_pwu').value,vl=+document.getElementById('acm_vl').value,pf=+document.getElementById('acm_pf').value,eta=+document.getElementById('acm_eta').value;if(!p||!vl||!pf||!eta)return showRes('acm_flc_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const pw=u==='hp'?p*746:p*1000,flc=(pw/(Math.sqrt(3)*vl*pf*eta)).toFixed(3);showRes('acm_flc_res',`<div class="res-val">FLC = ${flc} A</div>I=P/(√3×V×pf×η)=${pw.toFixed(0)}/(1.732×${vl}×${pf}×${eta})`);}
+// Transformer
+function tx2_kva(){const ph=+document.getElementById('tx2_ph').value,mode=document.getElementById('tx2_mode').value,v=+document.getElementById('tx2_v').value,val=+document.getElementById('tx2_val').value;const std=[25,63,100,160,250,315,400,500,630,800,1000,1250,1600,2000,2500];if(!v||!val)return showRes('tx2_kva_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');if(mode==='kva'){const kva=ph===1?v*val/1000:Math.sqrt(3)*v*val/1000;const nx=std.find(s=>s>=kva)||'>2500';showRes('tx2_kva_res',`<div class="res-val">${kva.toFixed(2)} kVA</div>${ph===1?'kVA=V×I/1000':'kVA=√3×V×I/1000'}<br>📋 Next standard size: <b>${nx} kVA</b>`);}else{const c=ph===1?val*1000/v:val*1000/(Math.sqrt(3)*v);showRes('tx2_kva_res',`<div class="res-val">I = ${c.toFixed(2)} A</div>${ph===1?'I=kVA×1000/V':'I=kVA×1000/(√3×V)'}`);}}
+function tx2_emf(){const f=+document.getElementById('tx2_ef').value,n=+document.getElementById('tx2_en').value,phi=+document.getElementById('tx2_phi').value;if(!f||!n||!phi)return showRes('tx2_emf_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const e=(4.44*f*n*phi).toFixed(2);showRes('tx2_emf_res',`<div class="res-val">E = ${e} V</div>E=4.44×${f}×${n}×${phi}`);}
+function tx2_eff(){const po=+document.getElementById('tx2_po').value,pi=+document.getElementById('tx2_pi').value,pcu=+document.getElementById('tx2_pcu').value;if(!po)return showRes('tx2_eff_res','<span style="color:#dc2626">⚠️ Enter output power.</span>');const pin=po+pi+pcu,eta=(po/pin*100).toFixed(2);const cond=Math.abs(pi-pcu)<1?'✅ At maximum efficiency (Pi=Pcu)':pi<pcu?'⚠️ Below max η point':'⚠️ Above max η point';showRes('tx2_eff_res',`<div class="res-val">η = ${eta}%</div>P_in=${po}+${pi}+${pcu}=${pin}W<br>${cond}`);}
+// DC Generator
+function dg2_emf(){const p=+document.getElementById('dg2_p').value,phi=+document.getElementById('dg2_phi').value,n=+document.getElementById('dg2_n').value,z=+document.getElementById('dg2_z').value,wt=document.getElementById('dg2_wt').value;if(!p||!phi||!n||!z)return showRes('dg2_emf_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const a=wt==='wave'?2:p,e=(p*phi*n*z/(60*a)).toFixed(2);showRes('dg2_emf_res',`<div class="res-val">E = ${e} V</div>E=(${p}×${phi}×${n}×${z})/(60×${a})<br>A=${a} (${wt} winding)`);}
+function dg2_v(){const e=+document.getElementById('dg2_e').value,ia=+document.getElementById('dg2_ia').value,ra=+document.getElementById('dg2_ra').value;if(!e||!ia||!ra)return showRes('dg2_v_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const v=(e-ia*ra).toFixed(2);showRes('dg2_v_res',`<div class="res-val">V = ${v} V</div>V=E−Ia×Ra=${e}−${ia}×${ra}`);}
+// AC Generator
+function ag2_calc(){const mode=document.getElementById('ag2_mode').value,p=+document.getElementById('ag2_p').value,val=+document.getElementById('ag2_val').value;if(!p||!val)return showRes('ag2_res','<span style="color:#dc2626">⚠️ Enter values.</span>');if(mode==='freq'){const f=(p*val/120).toFixed(2);const ok=Math.abs(f-50)<0.5?'✅ 50Hz':Math.abs(f-60)<0.5?'✅ 60Hz':'⚠️ Non-standard';showRes('ag2_res',`<div class="res-val">f = ${f} Hz</div>f=P×N/120=${p}×${val}/120<br>${ok}`);}else{const s=(120*val/p).toFixed(0);showRes('ag2_res',`<div class="res-val">N = ${s} RPM</div>N=120×${val}/${p}`);}}
+function ag2_kva(){const mode=document.getElementById('ag2_mode2').value,vl=+document.getElementById('ag2_vl').value,val=+document.getElementById('ag2_val2').value;if(!vl||!val)return showRes('ag2_kva_res','<span style="color:#dc2626">⚠️ Enter values.</span>');if(mode==='kva'){const k=(Math.sqrt(3)*vl*val/1000).toFixed(2);showRes('ag2_kva_res',`<div class="res-val">${k} kVA</div>kVA=√3×${vl}×${val}/1000`);}else{const i=(val*1000/(Math.sqrt(3)*vl)).toFixed(2);showRes('ag2_kva_res',`<div class="res-val">IL = ${i} A</div>IL=${val}×1000/(1.732×${vl})`);}}
+// Machine Design
+function md_mmf(){const n=+document.getElementById('md_turns').value,i=+document.getElementById('md_current').value;if(!n||!i)return showRes('md_mmf_res','<span style="color:#dc2626">⚠️ Enter Turns and Current.</span>');const mmf=(n*i).toFixed(2);showRes('md_mmf_res',`<div class="res-val">MMF = ${mmf} AT</div>MMF = N × I = ${n} × ${i}<br>Magnetomotive Force = <b>${mmf} Ampere-Turns</b>`);}
+function md_fluxden(){const phi=+document.getElementById('md_phi').value,a=+document.getElementById('md_area').value;if(!phi||!a)return showRes('md_b_res','<span style="color:#dc2626">⚠️ Enter Flux and Area.</span>');const b=(phi/a).toFixed(4);showRes('md_b_res',`<div class="res-val">B = ${b} T</div>B = Φ/A = ${phi}/${a}<br>Flux Density = <b>${b} Tesla</b> ${b>2?'⚠️ Exceeds saturation limit for most steels':b>1.5?'⚠️ High — approaching saturation':'✅ Normal range'}`);}
+function md_flux(){const mmf=+document.getElementById('md_mmf2').value,s=+document.getElementById('md_rel').value;if(!mmf||!s)return showRes('md_flux_res','<span style="color:#dc2626">⚠️ Enter MMF and Reluctance.</span>');const phi=(mmf/s).toExponential(4);showRes('md_flux_res',`<div class="res-val">Φ = ${phi} Wb</div>Φ = MMF / S = ${mmf} / ${s}`);}
+function md_dcoutput(){const bav=+document.getElementById('md_bav').value,ac=+document.getElementById('md_ac').value,d=+document.getElementById('md_d').value,l=+document.getElementById('md_l').value,ns=+document.getElementById('md_ns').value;if(!bav||!ac||!d||!l||!ns)return showRes('md_dc_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const c0=(Math.PI*Math.PI*bav*ac*1e-3).toFixed(4),q=(c0*d*d*l*ns).toFixed(3);showRes('md_dc_res',`<div class="res-val">Q = ${q} kW</div>C₀ = π²×Bav×ac×10⁻³ = π²×${bav}×${ac}×10⁻³ = <b>${c0}</b><br>Q = C₀×D²×L×nₛ = ${c0}×${d}²×${l}×${ns} = <b>${q} kW</b>`);}
+function md_pole_vc(){const d=+document.getElementById('md_d_pp').value,p=+document.getElementById('md_p_pp').value,dc=+document.getElementById('md_dc_comm').value,n=+document.getElementById('md_n_comm').value;let html='';if(d&&p){const tau=(Math.PI*d/p).toFixed(4);html+=`<div class="res-val">τ = ${tau} m</div>Pole Pitch τ = πD/P = π×${d}/${p} = <b>${tau} m</b><br>`;}if(dc&&n){const vc=(Math.PI*dc*n/60).toFixed(3);html+=`vc = πDcN/60 = π×${dc}×${n}/60 = <b>${vc} m/s</b> ${vc>15?'⚠️ Exceeds 15 m/s limit — reduce commutator dia or speed':'✅ Within limit (≤15 m/s)'}`;}if(!html)return showRes('md_pp_res','<span style="color:#dc2626">⚠️ Enter at least D and P.</span>');showRes('md_pp_res',html);}
+function md_emf_tr(){const f=+document.getElementById('md_f_tr').value,phi=+document.getElementById('md_phi_tr').value,t=+document.getElementById('md_t_tr').value;if(!f||!phi||!t)return showRes('md_emf_tr_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const e=(4.44*f*phi*t).toFixed(2);showRes('md_emf_tr_res',`<div class="res-val">E = ${e} V</div>E = 4.44 × f × Φm × T = 4.44 × ${f} × ${phi} × ${t}<br>Induced EMF = <b>${e} Volts</b>`);}
+function md_tx_output(){const ph=document.getElementById('md_ph_tr').value,f=+document.getElementById('md_f_op').value,bm=+document.getElementById('md_bm_op').value,ai=+document.getElementById('md_ai_op').value,kw=+document.getElementById('md_kw_op').value,aw=+document.getElementById('md_aw_op').value,delta=+document.getElementById('md_delta_op').value;if(!f||!bm||!ai||!kw||!aw||!delta)return showRes('md_tx_op_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const k=ph==='1'?2.22:3.33,q=(k*f*bm*ai*kw*aw*delta*1e-3).toFixed(3);showRes('md_tx_op_res',`<div class="res-val">Q = ${q} kVA</div>Q = ${k} × f × Bm × Ai × Kw × Aw × δ × 10⁻³<br>= ${k} × ${f} × ${bm} × ${ai} × ${kw} × ${aw} × ${delta} × 10⁻³<br>Output = <b>${q} kVA</b> (${ph==='1'?'Single':'Three'}-Phase Transformer)`);}
+function md_c0_im(){const bav=+document.getElementById('md_bav_im').value,q=+document.getElementById('md_q_im').value,kw=+document.getElementById('md_kw_im').value,eta=+document.getElementById('md_eta_im').value,pf=+document.getElementById('md_pf_im').value;if(!bav||!q||!kw||!eta||!pf)return showRes('md_c0_im_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const c0=(11*bav*q*kw*eta*pf*1e-3).toFixed(4);showRes('md_c0_im_res',`<div class="res-val">C₀ = ${c0} kVA/m³/rps</div>C₀ = 11 × Bav × q × Kw × η × cosφ × 10⁻³<br>= 11 × ${bav} × ${q} × ${kw} × ${eta} × ${pf} × 10⁻³`);}
+function md_gap_im(){const d=+document.getElementById('md_d_im').value,l=+document.getElementById('md_l_im').value;if(!d||!l)return showRes('md_gap_im_res','<span style="color:#dc2626">⚠️ Enter D and L.</span>');const gap=(0.2+2*Math.sqrt(d*l)).toFixed(3);showRes('md_gap_im_res',`<div class="res-val">lg = ${gap} mm</div>lg = 0.2 + 2√(D×L) = 0.2 + 2√(${d}×${l})<br>Air Gap Length = <b>${gap} mm</b> ${gap>2?'⚠️ Large gap — check magnetising current':'✅ Normal range'}`);}
+function md_alt_output(){const bav=+document.getElementById('md_bav_alt').value,ac=+document.getElementById('md_ac_alt').value,kw=+document.getElementById('md_kw_alt').value,d=+document.getElementById('md_d_alt').value,l=+document.getElementById('md_l_alt').value,ns=+document.getElementById('md_ns_alt').value;if(!bav||!ac||!kw||!d||!l||!ns)return showRes('md_alt_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const q=(11*bav*ac*kw*d*d*l*ns*1e-3).toFixed(2);showRes('md_alt_res',`<div class="res-val">Q = ${q} kVA</div>Q = 11 × Bav × ac × Kw × D² × L × nₛ × 10⁻³<br>= 11 × ${bav} × ${ac} × ${kw} × ${d}² × ${l} × ${ns} × 10⁻³`);}
+function md_scr(){const oc=+document.getElementById('md_oc_alt').value,sc=+document.getElementById('md_sc_alt').value;if(!oc||!sc)return showRes('md_scr_res','<span style="color:#dc2626">⚠️ Enter both field currents.</span>');const scr=(oc/sc).toFixed(3);const qual=scr>1?'✅ High SCR — Good stability, larger machine':scr<0.6?'⚠️ Low SCR — Less stable, needs AVR':'✅ Normal SCR range';showRes('md_scr_res',`<div class="res-val">SCR = ${scr}</div>SCR = If(OC) / If(SC) = ${oc} / ${sc}<br>${qual}<br>Xs_pu ≈ 1/SCR = <b>${(1/scr).toFixed(3)} pu</b>`);}
+function md_airgap(){const bav=+document.getElementById('md_bav_ag').value,kg=+document.getElementById('md_kg_ag').value,lg=+document.getElementById('md_lg_ag').value;if(!bav||!kg||!lg)return showRes('md_airgap_res','<span style="color:#dc2626">⚠️ Enter all values.</span>');const atg=(800000*bav*kg*lg).toFixed(1);showRes('md_airgap_res',`<div class="res-val">ATg = ${atg} AT</div>ATg = 800000 × Bav × Kg × lg<br>= 800000 × ${bav} × ${kg} × ${lg}<br>Air Gap MMF = <b>${atg} Ampere-Turns</b>`);}
+</script>
+
   <!-- Quick-access links for sister pages -->
   <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:0.5rem;">
     <a href="solar-calculator.html" style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fbbf24;border-radius:12px;padding:0.9rem 1.4rem;text-decoration:none;flex:1;min-width:220px;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 16px #d9770640'" onmouseout="this.style.boxShadow=''">
@@ -674,6 +1329,7 @@ This tool is useful for electrical engineers, diploma students, maintenance tech
       <div class="tab active" onclick="switchTab('tx','vr',this)">⚡ Voltage / Turns</div>
       <div class="tab" onclick="switchTab('tx','emf',this)">📐 EMF Equation</div>
       <div class="tab" onclick="switchTab('tx','eff',this)">📊 Efficiency</div>
+      <div class="tab" onclick="switchTab('tx','kva',this)">🔌 kVA Calculator</div>
     </div>
 
     <!-- Tab 1: Voltage & Turns -->
@@ -726,6 +1382,84 @@ This tool is useful for electrical engineers, diploma students, maintenance tech
         2. <strong>Copper Losses</strong> — caused by resistance of the windings (I²R). They <em>vary with load</em> (also called load losses).<br>
         At maximum efficiency: Iron losses = Copper losses. η_max occurs when Pᵢ = Pcu.
       </div>
+    </div>
+
+    <!-- Tab 4: kVA Calculator -->
+    <div class="tab-content" id="tx-kva">
+      <div class="card-sub" style="margin-bottom:0.8rem">Calculate transformer kVA rating, full load current, and select standard kVA size. kVA = V × I / 1000 (1-ph) or kVA = √3 × V × I / 1000 (3-ph)</div>
+      <div class="grid g3">
+        <div>
+          <label>Phase Type</label>
+          <select id="kva_phase">
+            <option value="1">Single Phase (1-Ph)</option>
+            <option value="3" selected>Three Phase (3-Ph)</option>
+          </select>
+        </div>
+        <div><label>Voltage (Volts)</label><input id="kva_v" type="number" placeholder="e.g. 415"></div>
+        <div><label>Current (Amperes)</label><input id="kva_i" type="number" placeholder="e.g. 100"></div>
+        <div>
+          <label>Calculate Mode</label>
+          <select id="kva_mode">
+            <option value="kva">Find kVA from V &amp; I</option>
+            <option value="i">Find Current from kVA &amp; V</option>
+          </select>
+        </div>
+        <div><label>kVA Rating (for current calc)</label><input id="kva_kva" type="number" placeholder="e.g. 100"></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="calcTxKVA()">🔌 Calculate kVA</button></div>
+      <div class="result" id="tx_kva_res"></div>
+      <div class="note" style="margin-top:1rem;">
+        <b>📘 Concept: Transformer kVA Rating</b>
+        A transformer is rated in kVA (kilovolt-amperes), not kW, because its losses (iron + copper) depend on voltage and current — not on the power factor of the load. Standard kVA sizes: 25, 63, 100, 160, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000, 2500 kVA. Always select the next standard size above your calculated kVA to allow safe loading margin.
+      </div>
+    </div>
+
+    <hr style="margin:1.2rem 0">
+
+    <!-- Transformer Types -->
+    <div class="section-label">🔄 Types of Transformers</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.8rem;margin-top:0.6rem;">
+
+      <div style="background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:var(--purple);font-size:0.9rem;margin-bottom:6px">⬆️ Step-Up Transformer</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.6">N₂ &gt; N₁ → V₂ &gt; V₁ | I₂ &lt; I₁<br>Used in: Power generation (11 kV → 132/220/400 kV for transmission)</div>
+      </div>
+
+      <div style="background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:var(--purple);font-size:0.9rem;margin-bottom:6px">⬇️ Step-Down Transformer</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.6">N₂ &lt; N₁ → V₂ &lt; V₁ | I₂ &gt; I₁<br>Used in: Distribution (33 kV → 11 kV → 415 V for consumers)</div>
+      </div>
+
+      <div style="background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:var(--purple);font-size:0.9rem;margin-bottom:6px">↔️ Isolation Transformer</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.6">N₁ = N₂ → V₁ = V₂ (1:1 ratio)<br>Used in: Medical equipment, labs, noise isolation</div>
+      </div>
+
+      <div style="background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:var(--purple);font-size:0.9rem;margin-bottom:6px">🔁 Auto Transformer</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.6">Single winding acts as both primary &amp; secondary. Cheaper, lighter.<br>Used in: Motor starters, variac, voltage regulators</div>
+      </div>
+
+      <div style="background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:var(--purple);font-size:0.9rem;margin-bottom:6px">📏 Current Transformer (CT)</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.6">Steps down high current to 1A or 5A for metering &amp; protection.<br>Ratio: 100/5 A, 200/1 A etc. Never open-circuit secondary.</div>
+      </div>
+
+      <div style="background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:var(--purple);font-size:0.9rem;margin-bottom:6px">📐 Potential Transformer (PT/VT)</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.6">Steps down high voltage to 110V or 63.5V for measurement.<br>Ratio: 11000/110 V. Never short-circuit secondary.</div>
+      </div>
+
+      <div style="background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:var(--purple);font-size:0.9rem;margin-bottom:6px">🌡️ Distribution Transformer</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.6">11 kV / 415 V, oil-cooled (ONAN). Dyn11 vector group most common in India. Rated 25–2000 kVA.</div>
+      </div>
+
+      <div style="background:#f5f3ff;border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:var(--purple);font-size:0.9rem;margin-bottom:6px">🔥 Power Transformer</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.6">Used in transmission substations. Rating: 10 MVA and above. Cooling: ONAN, ONAF, OFAF.</div>
+      </div>
+
     </div>
   </div>
 
@@ -851,6 +1585,113 @@ This tool is useful for electrical engineers, diploma students, maintenance tech
         When a DC motor rotates, its armature conductors cut through the magnetic field and generate a voltage that opposes the supply voltage. This is called Back EMF (Eb). The motor draws current I = (V − Eb) / Ra. As speed increases, Eb increases and current drops — this is the self-regulating mechanism of a DC motor. At startup, Eb = 0 so a starting resistor is needed to limit the high initial current.
       </div>
     </div>
+
+    <hr style="margin:1.2rem 0">
+
+    <!-- DC Motor Types -->
+    <div class="section-label" style="margin-bottom:0.5rem">🔋 DC Motor Types</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;margin-bottom:1.2rem;">
+
+      <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#c2410c;font-size:0.9rem;margin-bottom:5px">⚡ DC Shunt Motor</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Field winding connected in <strong>parallel</strong> with armature.<br>
+          <span style="color:#ea580c;font-weight:700">→ Constant speed</span> at varying loads.<br>
+          Formula: Speed ∝ Eb / Φ<br>
+          Used in: Lathes, fans, centrifugal pumps, conveyors</div>
+      </div>
+
+      <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#c2410c;font-size:0.9rem;margin-bottom:5px">🚀 DC Series Motor</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Field winding connected in <strong>series</strong> with armature.<br>
+          <span style="color:#ea580c;font-weight:700">→ High starting torque</span>, speed varies with load.<br>
+          Formula: T ∝ Ia² (series field)<br>
+          Used in: Electric traction, cranes, hoists, elevators<br>
+          ⚠️ Never run on no-load — dangerous over-speed</div>
+      </div>
+
+      <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#c2410c;font-size:0.9rem;margin-bottom:5px">🔄 DC Compound Motor</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Has <strong>both</strong> series and shunt field windings.<br>
+          <span style="color:#ea580c;font-weight:700">→ Combination: good starting torque + stable speed</span><br>
+          Cumulative compound (most common) or Differential compound.<br>
+          Used in: Printing presses, elevators, rolling mills</div>
+      </div>
+
+      <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#c2410c;font-size:0.9rem;margin-bottom:5px">🧲 DC Permanent Magnet Motor</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Uses permanent magnets instead of field winding. No field current needed.<br>
+          Compact, efficient, easy speed control.<br>
+          Used in: Small appliances, robotics, toys, servo drives</div>
+      </div>
+
+    </div>
+
+    <!-- AC Motor Types -->
+    <div class="section-label" style="margin-bottom:0.5rem">🔌 AC Motor Types</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;margin-bottom:1.2rem;">
+
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">🐿️ Squirrel Cage Induction Motor</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Most common AC motor. Rotor bars short-circuited by end rings (cage shape).<br>
+          <span style="color:#166534;font-weight:700">→ Robust, low maintenance, self-starting</span><br>
+          Slip: 2–8%. Starting current: 6–8× FLC.<br>
+          Used in: Pumps, fans, compressors, conveyor belts</div>
+      </div>
+
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">💍 Slip Ring Induction Motor (WRIM)</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Rotor windings connected to external resistance via slip rings.<br>
+          <span style="color:#166534;font-weight:700">→ Controllable starting torque, reduced starting current</span><br>
+          External resistance gradually reduced as motor accelerates.<br>
+          Used in: Cranes, hoists, elevators, crushers</div>
+      </div>
+
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">⏱️ Synchronous Motor</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Runs exactly at synchronous speed (Ns). Requires DC excitation on rotor.<br>
+          <span style="color:#166534;font-weight:700">→ Constant speed, can operate at leading power factor (over-excited)</span><br>
+          Not self-starting. Used for power factor correction.<br>
+          Used in: Compressors, large fans, power factor correction banks</div>
+      </div>
+
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">🔀 Universal Motor</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Can run on both AC and DC supply. Series wound.<br>
+          <span style="color:#166534;font-weight:700">→ High speed, high starting torque</span><br>
+          Used in: Power drills, vacuum cleaners, food mixers, hair dryers</div>
+      </div>
+
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+        <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">1️⃣ Single Phase Induction Motor</div>
+        <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Not self-starting. Needs auxiliary winding or capacitor.<br>
+          Types: Capacitor-start, Capacitor-run, Split-phase, Shaded-pole.<br>
+          Used in: Ceiling fans, refrigerators, washing machines, small pumps</div>
+      </div>
+
+    </div>
+
+    <!-- Motor Comparison Table -->
+    <div style="overflow-x:auto;margin-bottom:0.5rem;">
+      <table style="border-collapse:collapse;width:100%;font-size:0.8rem;min-width:580px;">
+        <thead>
+          <tr style="background:var(--purple);color:#fff;">
+            <th style="padding:8px 10px;text-align:left;border:1px solid #7c3aed;">Motor Type</th>
+            <th style="padding:8px 10px;border:1px solid #7c3aed;">Supply</th>
+            <th style="padding:8px 10px;border:1px solid #7c3aed;">Speed</th>
+            <th style="padding:8px 10px;border:1px solid #7c3aed;">Starting Torque</th>
+            <th style="padding:8px 10px;border:1px solid #7c3aed;">Key Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#fff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">DC Shunt</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">DC</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Constant</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Moderate</td><td style="padding:6px 10px;border:1px solid var(--border)">Lathes, fans</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">DC Series</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">DC</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Variable</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center;color:#ea580c;font-weight:700">Very High</td><td style="padding:6px 10px;border:1px solid var(--border)">Traction, cranes</td></tr>
+          <tr style="background:#fff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">DC Compound</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">DC</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Fairly Const.</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">High</td><td style="padding:6px 10px;border:1px solid var(--border)">Elevators, presses</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">Squirrel Cage IM</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">3-Ph AC</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Near Constant</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Low–Moderate</td><td style="padding:6px 10px;border:1px solid var(--border)">Pumps, fans</td></tr>
+          <tr style="background:#fff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">Slip Ring IM</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">3-Ph AC</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Variable</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-weight:700">High</td><td style="padding:6px 10px;border:1px solid var(--border)">Cranes, hoists</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:6px 10px;border:1px solid var(--border);font-weight:700">Synchronous</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">3-Ph AC</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-weight:700">Exactly Ns</td><td style="padding:6px 10px;border:1px solid var(--border);text-align:center">Zero (not self-start)</td><td style="padding:6px 10px;border:1px solid var(--border)">PF correction</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
@@ -885,6 +1726,257 @@ This tool is useful for electrical engineers, diploma students, maintenance tech
         </tbody>
       </table>
     </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       DC & AC GENERATORS — TYPES, FORMULAS
+  ═══════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-title">⚡ DC &amp; AC Generators — Types &amp; Formulas</div>
+    <div class="card-sub">A generator converts mechanical energy into electrical energy using Faraday's law of electromagnetic induction. EMF equation: E = PΦNZa / 60A</div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('gen','dc',this)">🔋 DC Generators</div>
+      <div class="tab" onclick="switchTab('gen','ac',this)">〜 AC Generators (Alternators)</div>
+    </div>
+
+    <!-- DC Generators Tab -->
+    <div class="tab-content active" id="gen-dc">
+
+      <div style="background:#fef3c7;border-left:4px solid #f59e0b;border-radius:6px;padding:0.7rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#78350f;">
+        <b>📐 DC Generator EMF Equation:</b><br>
+        <span style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;color:#92400e;font-weight:700">E = (P × Φ × N × Z) / (60 × A)</span><br>
+        P = poles, Φ = flux/pole (Wb), N = speed (RPM), Z = total armature conductors, A = parallel paths
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0.8rem;margin-bottom:1rem;">
+
+        <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:0.9rem 1rem;">
+          <div style="font-weight:700;color:#92400e;font-size:0.9rem;margin-bottom:5px">⚡ DC Separately Excited Generator</div>
+          <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Field winding powered by <strong>external DC source</strong>.<br>
+            Best voltage regulation. Output voltage easily controlled.<br>
+            Used in: Ward-Leonard drives, welding sets, laboratory excitation</div>
+        </div>
+
+        <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:0.9rem 1rem;">
+          <div style="font-weight:700;color:#92400e;font-size:0.9rem;margin-bottom:5px">🔀 DC Shunt Generator</div>
+          <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Field winding connected in <strong>parallel</strong> with armature.<br>
+            Self-excited. Nearly constant terminal voltage.<br>
+            Used in: Battery charging, general purpose DC supply<br>
+            Key formula: V = E − Ia×Ra &nbsp;|&nbsp; If = V/Rf</div>
+        </div>
+
+        <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:0.9rem 1rem;">
+          <div style="font-weight:700;color:#92400e;font-size:0.9rem;margin-bottom:5px">⛓️ DC Series Generator</div>
+          <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Field winding connected in <strong>series</strong> with armature.<br>
+            Terminal voltage increases with load current.<br>
+            Used in: Boosters, arc welding, series railway supply<br>
+            Key formula: E = V + Ia×(Ra + Rse)</div>
+        </div>
+
+        <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:0.9rem 1rem;">
+          <div style="font-weight:700;color:#92400e;font-size:0.9rem;margin-bottom:5px">🔄 DC Compound Generator</div>
+          <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Has <strong>both</strong> series and shunt field windings.<br>
+            <span style="font-weight:700">Over-compounded:</span> V rises with load (for long feeders)<br>
+            <span style="font-weight:700">Level-compounded:</span> V stays constant<br>
+            <span style="font-weight:700">Under-compounded:</span> V drops slightly<br>
+            Used in: Power supply, tramways, DC distribution</div>
+        </div>
+
+      </div>
+
+      <!-- DC Gen Calculator -->
+      <div style="background:#f5f3ff;border-radius:10px;padding:1rem;margin-top:0.5rem;">
+        <div class="section-label" style="margin-bottom:0.6rem">🧮 DC Generator EMF Calculator</div>
+        <div class="grid g3">
+          <div><label>Poles P</label><input id="dcg_p" type="number" placeholder="e.g. 4" value="4"></div>
+          <div><label>Flux per Pole Φ (Weber)</label><input id="dcg_phi" type="number" placeholder="e.g. 0.03" step="0.001"></div>
+          <div><label>Speed N (RPM)</label><input id="dcg_n" type="number" placeholder="e.g. 1500"></div>
+          <div><label>Total Conductors Z</label><input id="dcg_z" type="number" placeholder="e.g. 400"></div>
+          <div>
+            <label>Winding Type (Parallel Paths A)</label>
+            <select id="dcg_a">
+              <option value="wave">Wave Winding — A = 2</option>
+              <option value="lap">Lap Winding — A = P (no. of poles)</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="calcDCGenEMF()">⚡ Calculate EMF</button></div>
+        <div class="result" id="dcg_res"></div>
+      </div>
+    </div>
+
+    <!-- AC Generators Tab -->
+    <div class="tab-content" id="gen-ac">
+
+      <div style="background:#f0fdf4;border-left:4px solid #22c55e;border-radius:6px;padding:0.7rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#14532d;">
+        <b>📐 AC Generator (Alternator) EMF Equation:</b><br>
+        <span style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;color:#166534;font-weight:700">E = 4.44 × Kw × f × N × Φ</span><br>
+        Kw = winding factor (0.85–0.96), f = frequency (Hz), N = turns per phase, Φ = flux (Wb)<br>
+        <span style="margin-top:4px;display:block">Output frequency: <strong>f = P × N / 120</strong> (P = poles, N = RPM)</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0.8rem;margin-bottom:1rem;">
+
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+          <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">🔄 Synchronous Generator (Alternator)</div>
+          <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Most common AC generator. Rotor runs at exact synchronous speed.<br>
+            <span style="font-weight:700">Salient pole type:</span> Low speed (hydro turbines, 100–400 RPM)<br>
+            <span style="font-weight:700">Cylindrical/Round rotor:</span> High speed (steam turbines, 1500–3000 RPM)<br>
+            Used in: Power stations, diesel gensets, wind turbines</div>
+        </div>
+
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+          <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">🌬️ Induction Generator</div>
+          <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Induction motor run above synchronous speed acts as a generator (negative slip).<br>
+            Requires reactive power from the grid (not self-exciting).<br>
+            Used in: Wind turbines, small hydro, regenerative braking</div>
+        </div>
+
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+          <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">🏠 Single Phase Alternator</div>
+          <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">Generates single phase AC. Used where 3-phase is not needed.<br>
+            Output: 220V / 50Hz typically.<br>
+            Used in: Portable generators, emergency power, residential backup</div>
+        </div>
+
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.9rem 1rem;">
+          <div style="font-weight:700;color:#166534;font-size:0.9rem;margin-bottom:5px">🔋 Brushless AC Generator</div>
+          <div style="font-size:0.8rem;color:#4b5563;line-height:1.65">No slip rings or brushes — uses exciter on same shaft.<br>
+            Low maintenance, self-excited via AVR (Automatic Voltage Regulator).<br>
+            Used in: Industrial diesel gensets, standby power</div>
+        </div>
+
+      </div>
+
+      <!-- AC Gen Frequency Calculator -->
+      <div style="background:#f0fdf4;border-radius:10px;padding:1rem;margin-top:0.5rem;">
+        <div class="section-label" style="margin-bottom:0.6rem">🧮 Alternator Frequency &amp; Speed Calculator</div>
+        <div class="grid g3">
+          <div>
+            <label>Calculate</label>
+            <select id="acg_mode">
+              <option value="freq">Find Frequency (f = PN/120)</option>
+              <option value="speed">Find Speed (N = 120f/P)</option>
+            </select>
+          </div>
+          <div><label>Number of Poles P</label><input id="acg_p" type="number" placeholder="e.g. 4" value="4"></div>
+          <div><label>Speed N (RPM) or Frequency f (Hz)</label><input id="acg_val" type="number" placeholder="e.g. 1500 or 50"></div>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="calcACGen()">〜 Calculate</button></div>
+        <div class="result" id="acg_res"></div>
+      </div>
+
+      <!-- Generator Comparison -->
+      <div style="overflow-x:auto;margin-top:1rem;">
+        <table style="border-collapse:collapse;width:100%;font-size:0.8rem;min-width:560px;">
+          <thead>
+            <tr style="background:var(--purple);color:#fff;">
+              <th style="padding:7px 10px;text-align:left;border:1px solid #7c3aed;">Generator Type</th>
+              <th style="padding:7px 10px;border:1px solid #7c3aed;">Output</th>
+              <th style="padding:7px 10px;border:1px solid #7c3aed;">Speed</th>
+              <th style="padding:7px 10px;border:1px solid #7c3aed;">Self-Excitation</th>
+              <th style="padding:7px 10px;border:1px solid #7c3aed;">Typical Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#fff"><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">DC Shunt Gen.</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">DC</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">Constant</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">Yes</td><td style="padding:5px 10px;border:1px solid var(--border)">Battery charging</td></tr>
+            <tr style="background:#f5f3ff"><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">DC Compound Gen.</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">DC</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">Constant</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">Yes</td><td style="padding:5px 10px;border:1px solid var(--border)">DC distribution</td></tr>
+            <tr style="background:#fff"><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">Sync. Alternator</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">AC 3-Ph</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">Sync. speed</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">Yes (AVR)</td><td style="padding:5px 10px;border:1px solid var(--border)">Power stations</td></tr>
+            <tr style="background:#f5f3ff"><td style="padding:5px 10px;border:1px solid var(--border);font-weight:700">Induction Gen.</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">AC 3-Ph</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">&gt; Ns (−ve slip)</td><td style="padding:5px 10px;border:1px solid var(--border);text-align:center">No (needs grid)</td><td style="padding:5px 10px;border:1px solid var(--border)">Wind, small hydro</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FAQ — ELECTRICAL MACHINES
+  ═══════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-title">❓ Frequently Asked Questions — Electrical Machines</div>
+    <div class="card-sub">Common questions asked by diploma students, BE students, and site engineers.</div>
+
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:0.6rem;overflow:hidden;">
+      <summary style="padding:0.9rem 1.1rem;font-weight:700;font-size:0.93rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+        What is the difference between a DC shunt motor and a DC series motor?
+        <span style="color:var(--purple);font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+      </summary>
+      <div style="padding:0.8rem 1.1rem;font-size:0.88rem;color:#4b5563;line-height:1.72;border-top:1px solid var(--border);">
+        A <strong>DC shunt motor</strong> has its field winding in parallel with the armature. It maintains nearly constant speed under varying loads — used in lathes, fans, and pumps. A <strong>DC series motor</strong> has its field winding in series with the armature. It produces very high starting torque but its speed drops dangerously under no-load conditions — used in cranes, hoists, and electric traction. The key rule: <em>never run a DC series motor on no-load</em>.
+      </div>
+    </details>
+
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:0.6rem;overflow:hidden;">
+      <summary style="padding:0.9rem 1.1rem;font-weight:700;font-size:0.93rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+        Why is a transformer rated in kVA and not kW?
+        <span style="color:var(--purple);font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+      </summary>
+      <div style="padding:0.8rem 1.1rem;font-size:0.88rem;color:#4b5563;line-height:1.72;border-top:1px solid var(--border);">
+        A transformer is rated in kVA because its losses — iron (core) losses and copper (winding) losses — depend on voltage and current, not on the power factor of the connected load. The transformer cannot know in advance what power factor the load will operate at. kVA represents the apparent power (V × I), which determines the actual heating and current stress on the windings. If rated in kW, the rating would change with every different load power factor.
+      </div>
+    </details>
+
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:0.6rem;overflow:hidden;">
+      <summary style="padding:0.9rem 1.1rem;font-weight:700;font-size:0.93rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+        What is slip in an induction motor and what is its significance?
+        <span style="color:var(--purple);font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+      </summary>
+      <div style="padding:0.8rem 1.1rem;font-size:0.88rem;color:#4b5563;line-height:1.72;border-top:1px solid var(--border);">
+        Slip is the difference between synchronous speed (Ns) and actual rotor speed (Nr), expressed as a percentage: <strong>s = (Ns − Nr) / Ns × 100%</strong>. Slip is essential for torque production — without slip, there is no relative motion between the rotor and the rotating magnetic field, so no EMF is induced in the rotor and no current flows, meaning no torque is produced. At full load, typical slip is 2–8%. High slip (&gt;8%) may indicate overloading, low voltage, or rotor bar failure.
+      </div>
+    </details>
+
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:0.6rem;overflow:hidden;">
+      <summary style="padding:0.9rem 1.1rem;font-weight:700;font-size:0.93rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+        What is the EMF equation of a transformer and what does 4.44 represent?
+        <span style="color:var(--purple);font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+      </summary>
+      <div style="padding:0.8rem 1.1rem;font-size:0.88rem;color:#4b5563;line-height:1.72;border-top:1px solid var(--border);">
+        The EMF equation of a transformer is: <strong>E = 4.44 × f × N × Φₘ</strong>. The constant 4.44 comes from 2π/√2 = 4.443, which is the form factor for a sinusoidal waveform (the ratio of RMS value to average value). It is not an arbitrary constant — it is derived from Faraday's law applied to a sinusoidal flux variation. For 50 Hz supply, 500 turns, and 0.05 Wb flux: E = 4.44 × 50 × 500 × 0.05 = 5550 V.
+      </div>
+    </details>
+
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:0.6rem;overflow:hidden;">
+      <summary style="padding:0.9rem 1.1rem;font-weight:700;font-size:0.93rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+        What is the difference between squirrel cage and slip ring induction motors?
+        <span style="color:var(--purple);font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+      </summary>
+      <div style="padding:0.8rem 1.1rem;font-size:0.88rem;color:#4b5563;line-height:1.72;border-top:1px solid var(--border);">
+        A <strong>squirrel cage induction motor</strong> has a rotor made of bars short-circuited by end rings — simple, rugged, low maintenance, but has high starting current (6–8× FLC) and low starting torque. A <strong>slip ring (wound rotor) induction motor</strong> has rotor windings connected via slip rings to external resistors. Adding external resistance at startup reduces starting current and increases starting torque — making it ideal for heavy-start applications like cranes, hoists, and crushers. As the motor accelerates, the resistance is gradually reduced to zero.
+      </div>
+    </details>
+
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:0.6rem;overflow:hidden;">
+      <summary style="padding:0.9rem 1.1rem;font-weight:700;font-size:0.93rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+        How do you calculate transformer kVA rating?
+        <span style="color:var(--purple);font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+      </summary>
+      <div style="padding:0.8rem 1.1rem;font-size:0.88rem;color:#4b5563;line-height:1.72;border-top:1px solid var(--border);">
+        For a <strong>single-phase transformer</strong>: kVA = V × I / 1000. For a <strong>three-phase transformer</strong>: kVA = √3 × V × I / 1000 (where V is line voltage and I is line current). To find full load current from kVA: For 1-phase: I = kVA × 1000 / V. For 3-phase: I = kVA × 1000 / (√3 × V). Standard kVA sizes per IS 1180 / IEC 60076: 25, 63, 100, 160, 250, 315, 400, 500, 630, 800, 1000 kVA. Always choose the next standard size above your calculated requirement.
+      </div>
+    </details>
+
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:0.6rem;overflow:hidden;">
+      <summary style="padding:0.9rem 1.1rem;font-weight:700;font-size:0.93rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+        What is back EMF in a DC motor and why is it important?
+        <span style="color:var(--purple);font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+      </summary>
+      <div style="padding:0.8rem 1.1rem;font-size:0.88rem;color:#4b5563;line-height:1.72;border-top:1px solid var(--border);">
+        Back EMF (Eb) is the voltage generated by a rotating DC motor that opposes the applied supply voltage. It is calculated as: <strong>Eb = V − Ia × Ra</strong>. At startup, Eb = 0 (motor is stationary), so the full supply voltage drives current through the armature resistance — causing dangerously high current. This is why DC motors need a starter resistor. As speed builds up, Eb increases, reducing the current naturally. Back EMF acts as the self-regulating mechanism of a DC motor — as load increases, speed drops, Eb drops, current increases, and torque increases to match the load.
+      </div>
+    </details>
+
+    <details style="border:1px solid var(--border);border-radius:10px;margin-bottom:0.6rem;overflow:hidden;">
+      <summary style="padding:0.9rem 1.1rem;font-weight:700;font-size:0.93rem;cursor:pointer;color:#1e1b4b;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+        What is the difference between a synchronous generator and an induction generator?
+        <span style="color:var(--purple);font-size:1.2rem;font-weight:300;flex-shrink:0;">+</span>
+      </summary>
+      <div style="padding:0.8rem 1.1rem;font-size:0.88rem;color:#4b5563;line-height:1.72;border-top:1px solid var(--border);">
+        A <strong>synchronous generator (alternator)</strong> is self-excited via DC excitation on the rotor. It runs at exactly synchronous speed and can supply both active power (kW) and reactive power (kVAR). It is used in all power stations. An <strong>induction generator</strong> is an induction motor driven above synchronous speed (negative slip). It is not self-exciting — it needs reactive power from the grid or capacitor banks. It is simpler and cheaper, used in wind turbines and small hydro plants, but cannot work in isolation (island mode) without a grid connection.
+      </div>
+    </details>
+
   </div>
 
   <!-- Relay Testing Promo Banner -->
@@ -1492,28 +2584,83 @@ function calcBackEMF() {
     ${ratio < 80 ? '⚠️ Low back EMF — motor may be running at low speed or underloaded' : '✅ Normal back EMF ratio'}
   `);
 }
-</script>
-<script>
-function toggleMenu() {
-  let menu = document.querySelector('.menu');
-  if (menu.style.display === 'block') {
-    menu.style.display = 'none';
-  } else {
-    menu.style.display = 'block';
-  }
-}
-</script>
-<script>
-function toggleMenu() {
-  let menu = document.querySelector('.menu');
-  if (menu.style.display === 'block') {
-    menu.style.display = 'none';
-  } else {
-    menu.style.display = 'block';
-  }
-}
-</script>
 
+// Transformer kVA Calculator
+function calcTxKVA() {
+  const phase = parseInt(document.getElementById('kva_phase').value);
+  const v   = parseFloat(document.getElementById('kva_v').value);
+  const i   = parseFloat(document.getElementById('kva_i').value);
+  const kva = parseFloat(document.getElementById('kva_kva').value);
+  const mode = document.getElementById('kva_mode').value;
+  const stdSizes = [25,63,100,160,250,315,400,500,630,800,1000,1250,1600,2000,2500];
+
+  if (mode === 'kva') {
+    if (isNaN(v)||isNaN(i)) return err('tx_kva_res','Enter Voltage and Current.');
+    const result = phase===1 ? v*i/1000 : Math.sqrt(3)*v*i/1000;
+    const flc_pri = result*1000/(phase===1?v:Math.sqrt(3)*v);
+    const next = stdSizes.find(s=>s>=result) || '> 2500';
+    const formula = phase===1 ? `kVA = V × I / 1000 = ${v} × ${i} / 1000` : `kVA = √3 × V × I / 1000 = 1.732 × ${v} × ${i} / 1000`;
+    showRes('tx_kva_res', `
+      <div class="res-val">${result.toFixed(2)} kVA</div>
+      ${formula}<br>
+      Full Load Current = <b>${flc_pri.toFixed(2)} A</b><br>
+      📋 Next standard size: <b>${next} kVA</b> (per IS 1180 / IEC 60076)
+    `);
+  } else {
+    if (isNaN(v)||isNaN(kva)) return err('tx_kva_res','Enter kVA and Voltage.');
+    const curr = phase===1 ? kva*1000/v : kva*1000/(Math.sqrt(3)*v);
+    const formula = phase===1 ? `I = kVA × 1000 / V = ${kva} × 1000 / ${v}` : `I = kVA × 1000 / (√3 × V) = ${kva} × 1000 / (1.732 × ${v})`;
+    showRes('tx_kva_res', `
+      <div class="res-val">I = ${curr.toFixed(2)} A</div>
+      ${formula}<br>
+      Full Load Current of a ${kva} kVA, ${phase}-Phase, ${v}V transformer = <b>${curr.toFixed(2)} A</b>
+    `);
+  }
+}
+
+// DC Generator EMF Calculator
+function calcDCGenEMF() {
+  const p   = parseFloat(document.getElementById('dcg_p').value);
+  const phi = parseFloat(document.getElementById('dcg_phi').value);
+  const n   = parseFloat(document.getElementById('dcg_n').value);
+  const z   = parseFloat(document.getElementById('dcg_z').value);
+  const wt  = document.getElementById('dcg_a').value;
+  if ([p,phi,n,z].some(isNaN)) return err('dcg_res','Enter all values.');
+  const a = wt === 'wave' ? 2 : p;
+  const emf = (p * phi * n * z / (60 * a)).toFixed(2);
+  showRes('dcg_res', `
+    <div class="res-val">E = ${emf} V</div>
+    E = (P × Φ × N × Z) / (60 × A)<br>
+    = (${p} × ${phi} × ${n} × ${z}) / (60 × ${a})<br>
+    Parallel paths A = ${a} (${wt} winding)<br>
+    Generated EMF = <b>${emf} Volts</b>
+  `);
+}
+
+// AC Generator Frequency/Speed Calculator
+function calcACGen() {
+  const mode = document.getElementById('acg_mode').value;
+  const p    = parseFloat(document.getElementById('acg_p').value);
+  const val  = parseFloat(document.getElementById('acg_val').value);
+  if (isNaN(p)||isNaN(val)) return err('acg_res','Enter both values.');
+  if (mode === 'freq') {
+    const f = (p * val / 120).toFixed(2);
+    showRes('acg_res', `
+      <div class="res-val">f = ${f} Hz</div>
+      f = P × N / 120 = ${p} × ${val} / 120<br>
+      Output frequency = <b>${f} Hz</b><br>
+      ${Math.abs(f-50)<0.5?'✅ Standard 50 Hz output':Math.abs(f-60)<0.5?'✅ Standard 60 Hz output':'⚠️ Non-standard frequency — check pole count and speed'}
+    `);
+  } else {
+    const spd = (120 * val / p).toFixed(0);
+    showRes('acg_res', `
+      <div class="res-val">N = ${spd} RPM</div>
+      N = 120 × f / P = 120 × ${val} / ${p}<br>
+      Required rotor speed = <b>${spd} RPM</b> for ${val} Hz output
+    `);
+  }
+}
+</script>
 <script>
 function toggleMenu() {
   let menu = document.querySelector('.menu');
@@ -1523,6 +2670,14 @@ function toggleMenu() {
     menu.style.display = 'block';
   }
 }
+
+// FAQ toggle: swap + to − when open
+document.querySelectorAll('details').forEach(d => {
+  d.addEventListener('toggle', () => {
+    const span = d.querySelector('summary span');
+    if (span) span.textContent = d.open ? '−' : '+';
+  });
+});
 </script>
 
 
