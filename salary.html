@@ -53,6 +53,16 @@ nav{background:var(--navy);padding:0 1.2rem;display:flex;align-items:center;just
 .nav-hamburger{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:6px 8px;line-height:1;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background .2s;flex-shrink:0;}
 .nav-hamburger:hover{background:rgba(255,255,255,0.15);}
 
+/* ── MOBILE NAV — hide text & How to Use, keep R icon + currency + hamburger ── */
+@media(max-width:600px){
+  .nav-logo span{display:none;}
+  .nav-howto{display:none!important;}
+  .nav-logo .nav-r-icon{width:32px;height:32px;font-size:.95rem;}
+  nav{padding:0 .75rem;}
+  #currencySelect{max-width:130px;font-size:.7rem;}
+  .currency-select-wrap label{font-size:.55rem;}
+}
+
 /* CURRENCY SELECTOR */
 .currency-select-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
 .currency-select-wrap label{color:rgba(255,255,255,0.5);font-size:.6rem;font-weight:600;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;}
@@ -338,8 +348,7 @@ footer a:hover{color:#fff;}
   nav,footer,.tabs-wrap,.hero,.btn-row,.emp-card,
   .card-head,.prorata-panel,.method-select,.tab-btn,
   #calcTab,#slipTab,#empTab,#guideTab,
-  .payroll-actions,.page-content,
-  .scroll-hint,#seo-salary,.sal-foot{display:none!important;}
+  .payroll-actions,.page-content{display:none!important;}
 
   /* show only payroll tab */
   #payrollTab{display:block!important;}
@@ -347,48 +356,21 @@ footer a:hover{color:#fff;}
 
   body{background:#fff!important;}
   .main{padding:4mm 0 0 0;}
-
-  /* table fits page — no scrollbar on print */
-  .payroll-table-wrap{
-    box-shadow:none!important;
-    overflow:visible!important;
-    overflow-x:visible!important;
-    width:100%!important;
-    max-width:100%!important;
-  }
+  .payroll-table-wrap{box-shadow:none!important;overflow:visible!important;}
   .payroll-summary-cards{display:none!important;}
-  .payroll-table{
-    font-size:.55rem!important;
-    min-width:unset!important;
-    width:100%!important;
-    table-layout:fixed!important;
-  }
-  .payroll-table th,.payroll-table td{
-    padding:.22rem .3rem!important;
-    word-break:break-word!important;
-    white-space:normal!important;
-  }
+  .payroll-table{font-size:.66rem!important;min-width:unset!important;}
+  .payroll-table th,.payroll-table td{padding:.28rem .4rem!important;}
 
   /* keep navy header colours on print */
   .payroll-table th{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   #payrollHeader *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 
-  @page{size:A4 landscape;margin:6mm;}
-}
-
-/* ── PAYROLL TABLE WRAP — always scrollable ───────────────── */
-.payroll-table-wrap{
-  overflow-x:auto !important;
-  -webkit-overflow-scrolling:touch;
-  border-radius:8px;
-}
-.payroll-table{
-  min-width:1000px;
+  @page{size:A4 landscape;margin:8mm;}
 }
 
 /* ── SCROLL HINT ─────────────────────────────────────────── */
 .scroll-hint{
-  display:flex;
+  display:none;
   align-items:center;
   gap:.4rem;
   font-size:.75rem;
@@ -707,7 +689,7 @@ footer a:hover{color:#fff;}
         </select>
       </div>
     </div>
-    <button onclick="document.getElementById('salary-how-to-use').scrollIntoView({behavior:'smooth'})"
+    <button class="nav-howto" onclick="document.getElementById('salary-how-to-use').scrollIntoView({behavior:'smooth'})"
       style="background:#5dade2;color:#0f2540;border:none;padding:6px 14px;
       border-radius:20px;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap;
       display:flex;align-items:center;gap:5px;flex-shrink:0;font-family:'DM Sans',sans-serif;">
