@@ -338,7 +338,8 @@ footer a:hover{color:#fff;}
   nav,footer,.tabs-wrap,.hero,.btn-row,.emp-card,
   .card-head,.prorata-panel,.method-select,.tab-btn,
   #calcTab,#slipTab,#empTab,#guideTab,
-  .payroll-actions,.page-content{display:none!important;}
+  .payroll-actions,.page-content,
+  .scroll-hint,#seo-salary,.sal-foot{display:none!important;}
 
   /* show only payroll tab */
   #payrollTab{display:block!important;}
@@ -346,21 +347,48 @@ footer a:hover{color:#fff;}
 
   body{background:#fff!important;}
   .main{padding:4mm 0 0 0;}
-  .payroll-table-wrap{box-shadow:none!important;overflow:visible!important;}
+
+  /* table fits page — no scrollbar on print */
+  .payroll-table-wrap{
+    box-shadow:none!important;
+    overflow:visible!important;
+    overflow-x:visible!important;
+    width:100%!important;
+    max-width:100%!important;
+  }
   .payroll-summary-cards{display:none!important;}
-  .payroll-table{font-size:.66rem!important;min-width:unset!important;}
-  .payroll-table th,.payroll-table td{padding:.28rem .4rem!important;}
+  .payroll-table{
+    font-size:.55rem!important;
+    min-width:unset!important;
+    width:100%!important;
+    table-layout:fixed!important;
+  }
+  .payroll-table th,.payroll-table td{
+    padding:.22rem .3rem!important;
+    word-break:break-word!important;
+    white-space:normal!important;
+  }
 
   /* keep navy header colours on print */
   .payroll-table th{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   #payrollHeader *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 
-  @page{size:A4 landscape;margin:8mm;}
+  @page{size:A4 landscape;margin:6mm;}
+}
+
+/* ── PAYROLL TABLE WRAP — always scrollable ───────────────── */
+.payroll-table-wrap{
+  overflow-x:auto !important;
+  -webkit-overflow-scrolling:touch;
+  border-radius:8px;
+}
+.payroll-table{
+  min-width:1000px;
 }
 
 /* ── SCROLL HINT ─────────────────────────────────────────── */
 .scroll-hint{
-  display:none;
+  display:flex;
   align-items:center;
   gap:.4rem;
   font-size:.75rem;
@@ -679,6 +707,12 @@ footer a:hover{color:#fff;}
         </select>
       </div>
     </div>
+    <button onclick="document.getElementById('salary-how-to-use').scrollIntoView({behavior:'smooth'})"
+      style="background:#5dade2;color:#0f2540;border:none;padding:6px 14px;
+      border-radius:20px;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap;
+      display:flex;align-items:center;gap:5px;flex-shrink:0;font-family:'DM Sans',sans-serif;">
+      📖 How to Use ↓
+    </button>
     <button class="nav-hamburger" id="navHamburger" onclick="toggleSalaryMenu()" aria-label="Toggle menu">☰</button>
   </div>
   <ul class="nav-links" id="salaryNavMenu">
@@ -696,31 +730,7 @@ footer a:hover{color:#fff;}
   <h1>💼 Salary<span>Pro</span></h1>
   <p>Professional salary slip generator with pro-rata, all deductions & instant preview</p>
 </div>
-<section class="page-content" style="margin-top:2rem;overflow:hidden;max-width:100%;box-sizing:border-box;padding:0 1rem;">
-
-<h2>About Salary Calculator</h2>
-<p>
-This salary calculator helps employees, HR professionals, and small business owners calculate salary components such as basic pay, HRA, PF, and deductions easily.
-It simplifies payroll calculations and generates accurate salary slips instantly.
-</p>
-
-<h2>How to Use</h2>
-<ol>
-<li>Enter employee salary details</li>
-<li>Add allowances and deductions</li>
-<li>Click calculate</li>
-<li>Download or view salary slip</li>
-</ol>
-
-<h2>Example</h2>
-<p>
-If basic salary is ₹20,000 and allowances are ₹5,000, total gross salary becomes ₹25,000. After deductions like PF and tax, net salary is calculated.
-</p>
-<p style="font-size:16px;color:black;font-weight:bold;">
-🔒⚠️ Data Safety Notice:
-All employee data is stored locally in your browser. Do not refresh the page or Click top menu links while entering data. Use only the buttons inside this page like Salary Slip/Payroll Summary etc., To prevent data loss, please download a backup (JSON file) before leaving this page.The back up and restore buttons available at Employees page.
-You can restore the data anytime using the Restore button. Otherwise, your data may be lost. Choose currency from top right corner before entering any data. The selected currency will be used across all calculations and salary slips.
-</section>
+<section class="page-content" style="display:none;"></section>
 <div class="tabs-wrap">
   <button class="tab-btn active" onclick="switchTab('calc')">⚙️ Calculator</button>
   <button class="tab-btn" onclick="switchTab('slip')">📄 Salary Slip</button>
@@ -1132,15 +1142,7 @@ You can restore the data anytime using the Restore button. Otherwise, your data 
 
 </div><!-- end main -->
 
-<footer>
-  <div style="margin-bottom:.4rem;">
-    <a href="index.html">Home</a> &nbsp;|&nbsp;
-    <a href="about.html">About</a> &nbsp;|&nbsp;
-    <a href="contact.html">Contact</a> &nbsp;|&nbsp;
-    <a href="privacy.html">Privacy</a>
-  </div>
-  © 2026 RamTools. All Rights Reserved.
-</footer>
+<footer style="display:none;"></footer>
 
 <script>
 // ─── CURRENCY CONFIG ─────────────────────────────────────────────
@@ -1982,5 +1984,476 @@ function toggleSalaryMenu(){
   document.getElementById("salaryNavMenu").classList.toggle("show");
 }
 </script>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PROFESSIONAL SEO / INFO SECTION — SalaryPro
+     Matching the style of AC & DC Circuit Analyzer
+══════════════════════════════════════════════════════════════ -->
+<style>
+/* ── SALARY SEO SECTION STYLES ─────────────────────────────── */
+#seo-salary { margin:0; padding:0; }
+
+.sal-topbar {
+  background: #f0f4f9; border-top: 2px solid #dde3ed;
+  padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: flex-end;
+}
+.sal-topbar button {
+  background: #0f2540; color: #fff; border: none; border-radius: 20px;
+  padding: 6px 16px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+}
+.sal-topbar button:hover { background: #1a5fa8; }
+
+.sal-hero {
+  background: linear-gradient(135deg, #0f2540 0%, #1a3a6b 60%, #1e5fa8 100%);
+  color: #fff; text-align: center; padding: 3rem 1.5rem 2.5rem; position: relative; overflow: hidden;
+}
+.sal-hero::before {
+  content:''; position:absolute; inset:0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.sal-badge {
+  display: inline-block; background: rgba(93,173,226,0.25); border: 1px solid rgba(93,173,226,0.5);
+  color: #5dade2; border-radius: 20px; padding: 4px 14px; font-size: 0.78rem;
+  font-weight: 700; letter-spacing: 0.05em; margin-bottom: 1rem; position: relative;
+}
+.sal-hero h2 {
+  font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
+  color: #fff; margin-bottom: 0.7rem; line-height: 1.25; position: relative;
+}
+.sal-hero h2 span { color: #5dade2; }
+.sal-hero p {
+  color: rgba(255,255,255,0.75); font-size: 0.95rem; max-width: 620px;
+  margin: 0 auto; line-height: 1.7; position: relative;
+}
+
+.sal-art {
+  max-width: 980px; margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+  font-size: 0.93rem; color: #334155; line-height: 1.75;
+}
+.sal-art p { margin-bottom: 1rem; }
+.sal-art h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.35rem; font-weight: 800;
+  color: #0f2540; margin: 2rem 0 0.8rem;
+  border-bottom: 2px solid #dde3ed; padding-bottom: 0.45rem;
+}
+.sal-art h2:first-of-type { margin-top: 0; }
+
+/* FEATURE CARDS GRID */
+.sal-cgrid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem; margin: 1rem 0 1.8rem;
+}
+.sal-ccard {
+  background: #fff; border: 1px solid #dde3ed; border-radius: 14px;
+  padding: 1.1rem; box-shadow: 0 2px 10px rgba(15,37,64,0.06);
+}
+.sal-ctag {
+  display: inline-block; background: #e8f4fd; color: #1a5fa8;
+  border-radius: 6px; padding: 2px 9px; font-size: 0.72rem;
+  font-weight: 700; letter-spacing: 0.03em; margin-bottom: 0.5rem;
+}
+.sal-ccard h4 { font-size: 0.9rem; font-weight: 700; color: #0f2540; margin-bottom: 0.3rem; }
+.sal-ccard p { font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.6; }
+
+/* FORMULA BOX */
+.sal-formula {
+  background: #f0f7ff; border-left: 4px solid #1a5fa8; border-radius: 10px;
+  padding: 1rem 1.2rem; font-family: monospace; font-size: 0.86rem;
+  color: #0f2540; line-height: 1.9; margin: 1.2rem 0 1.5rem; white-space: pre-line;
+}
+.sal-formula .fl {
+  font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 700;
+  color: #7f8fa6; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+
+/* STEPS */
+.sal-steps { list-style: none; padding: 0; margin: 1rem 0 1.5rem; }
+.sal-steps li {
+  display: flex; gap: 0.9rem; align-items: flex-start;
+  margin-bottom: 0.85rem; background: #fff;
+  border: 1px solid #dde3ed; border-radius: 12px; padding: 0.9rem 1.1rem;
+}
+.sal-snum {
+  flex-shrink: 0; width: 32px; height: 32px;
+  background: linear-gradient(135deg, #1a5fa8, #0f2540);
+  color: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.82rem; font-family: monospace;
+}
+.sal-sbody strong { display: block; font-size: 0.93rem; color: #0f2540; margin-bottom: 0.2rem; font-weight: 700; }
+.sal-sbody span { font-size: 0.86rem; color: #64748b; line-height: 1.65; }
+
+/* DEVICE BOXES */
+.sal-dbox {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.3rem 0;
+}
+@media(max-width:560px){ .sal-dbox { grid-template-columns: 1fr; } }
+.sal-dcard { border-radius: 14px; padding: 1.1rem; border: 1px solid; }
+.sal-dcard.pc { background: #e8f4fd; border-color: #85c1e9; }
+.sal-dcard.mob { background: #fff8e1; border-color: #fcd34d; }
+.sal-dcard h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 0.55rem; }
+.sal-dcard.pc h4 { color: #1a5fa8; }
+.sal-dcard.mob h4 { color: #b45309; }
+.sal-dcard ul { list-style: none; padding: 0; margin: 0; }
+.sal-dcard ul li { font-size: 0.83rem; color: #64748b; padding: 3px 0; display: flex; gap: 6px; align-items: flex-start; }
+.sal-dcard ul li::before { content: '→'; font-weight: 700; flex-shrink: 0; }
+.sal-dcard.pc ul li::before { color: #1a5fa8; }
+.sal-dcard.mob ul li::before { color: #f39c12; }
+
+/* DATA SAFETY BOX */
+.sal-safety {
+  background: #fff8e1; border: 1px solid #fcd34d;
+  border-left: 4px solid #f39c12; border-radius: 10px;
+  padding: 0.85rem 1rem; font-size: 0.86rem;
+  color: #78350f; margin: 0.9rem 0 1.4rem; line-height: 1.65;
+}
+.sal-safety strong { color: #92400e; }
+.sal-safety ul { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+.sal-safety ul li { display: flex; gap: 6px; align-items: flex-start; padding: 2px 0; }
+.sal-safety ul li::before { content: '⚠️'; flex-shrink: 0; font-size: 0.82rem; }
+
+/* BENEFITS */
+.sal-blist { list-style: none; padding: 0; margin: 0.9rem 0 1.8rem; }
+.sal-blist li {
+  display: flex; gap: 0.65rem; align-items: flex-start;
+  padding: 0.5rem 0; border-bottom: 1px solid #dde3ed;
+  font-size: 0.91rem; color: #334155;
+}
+.sal-blist li:last-child { border-bottom: none; }
+.sal-blist li::before { content: '✓'; color: #1a8a4a; font-weight: 800; font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+/* USE CASES */
+.sal-ugrid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem; margin: 1.1rem 0 1.8rem;
+}
+.sal-ucard { background: #fff; border: 1px solid #dde3ed; border-radius: 14px; padding: 1.1rem; }
+.sal-ucard .ui { font-size: 1.5rem; margin-bottom: 0.45rem; }
+.sal-ucard h4 { font-size: 0.9rem; font-weight: 700; color: #0f2540; margin-bottom: 0.25rem; }
+.sal-ucard p { font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.6; }
+
+/* FAQ */
+.sal-faq { margin: 1.1rem 0 1.8rem; }
+.sal-faq details {
+  background: #fff; border: 1px solid #dde3ed;
+  border-radius: 12px; margin-bottom: 0.65rem; overflow: hidden;
+}
+.sal-faq summary {
+  padding: 0.95rem 1.1rem; font-weight: 700; font-size: 0.93rem;
+  cursor: pointer; color: #0f2540; list-style: none;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+}
+.sal-faq summary::-webkit-details-marker { display: none; }
+.sal-faq summary::after { content: '+'; font-size: 1.25rem; font-weight: 300; color: #1a5fa8; flex-shrink: 0; }
+.sal-faq details[open] summary::after { content: '−'; }
+.sal-faq details[open] summary { color: #0f2540; border-bottom: 1px solid #dde3ed; }
+.sal-faq .fa { padding: 0.85rem 1.1rem; font-size: 0.88rem; color: #64748b; line-height: 1.72; }
+
+/* CONCLUSION */
+.sal-concl {
+  background: linear-gradient(135deg, #0f2540, #1a5fa8);
+  color: #fff; border-radius: 18px;
+  padding: 2rem 1.8rem; text-align: center; margin-top: 2rem;
+}
+.sal-concl h2 { color: #fff !important; border: none !important; padding: 0 !important; font-size: 1.35rem; margin: 0 0 0.7rem; }
+.sal-concl p { color: #a9cde8; margin: 0 0 1.4rem; font-size: 0.95rem; line-height: 1.7; }
+.sal-concl button {
+  background: #5dade2; color: #0f2540; font-weight: 800;
+  padding: 0.75rem 1.9rem; border-radius: 50px; border: none;
+  font-size: 0.95rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
+}
+.sal-concl button:hover { background: #85c1e9; }
+
+/* FOOTER */
+.sal-foot { background: #0f2540; color: rgba(255,255,255,0.45); text-align: center; padding: 1.3rem; font-size: 0.82rem; }
+.sal-foot a { color: #5dade2; text-decoration: none; }
+.sal-foot a:hover { color: #85c1e9; }
+
+@media(max-width:600px){
+  .sal-hero { padding: 2rem 1rem 2rem; }
+  .sal-hero h2 { font-size: 1.45rem; }
+  .sal-art { padding: 1.8rem 1rem 2.5rem; }
+  .sal-art h2 { font-size: 1.15rem; }
+  .sal-steps li { flex-direction: column; gap: 0.5rem; }
+}
+</style>
+
+<div id="seo-salary">
+
+  <!-- ANCHOR -->
+  <div id="salary-how-to-use" class="sal-topbar">
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to Calculator</button>
+  </div>
+
+  <!-- HERO -->
+  <div class="sal-hero">
+    <div class="sal-badge">💼 RamTools — Free HR & Payroll Tool</div>
+    <h2>Free <span>Salary Calculator</span><br/>Instant Payroll, Slip & Pro-Rata</h2>
+    <p>Calculate gross salary, all allowances, PF, PT, TDS, and net pay in seconds. Generate professional salary slips, manage multiple employees, and export full payroll summaries — all in one free browser tool.</p>
+  </div>
+
+  <div class="sal-art">
+
+    <h2>What Is RamTools SalaryPro?</h2>
+    <p>The <strong>RamTools SalaryPro</strong> is a free, browser-based payroll calculator that computes salary components and generates professional salary slips instantly. It supports multiple employees, handles pro-rata calculations for partial months, manages all standard deductions (PF, PT, TDS, advance, and custom items), and produces a full payroll summary table — all without any login, subscription, or software installation.</p>
+    <p>Unlike a basic spreadsheet, SalaryPro gives you a live salary slip preview that updates in real time as you type, supports 12 international currencies, and lets you back up and restore your entire employee data as a JSON file. It is built for HR professionals, small business owners, accountants, and employees who want fast and accurate payroll without a complex system.</p>
+
+    <!-- TABS / MODULES -->
+    <h2>Modules Included in SalaryPro</h2>
+    <p>SalaryPro is organized into five tabs — each handling a distinct part of the payroll workflow:</p>
+    <div class="sal-cgrid">
+      <div class="sal-ccard">
+        <div class="sal-ctag">⚙️ Calculator</div>
+        <h4>Salary Calculator</h4>
+        <p>Enter earnings and deductions. Supports pro-rata for partial months, custom deduction items, and live net salary preview with an inline salary slip.</p>
+      </div>
+      <div class="sal-ccard">
+        <div class="sal-ctag">📄 Salary Slip</div>
+        <h4>Salary Slip Generator</h4>
+        <p>Professional printable salary slip with company logo area, employee details, itemized earnings, deductions, and net pay — ready to print or save as PDF.</p>
+      </div>
+      <div class="sal-ccard">
+        <div class="sal-ctag">👥 Employees</div>
+        <h4>Employee Manager</h4>
+        <p>Add, edit, and delete multiple employees. Each record stores full salary structure. Backup and restore all employee data as a JSON file at any time.</p>
+      </div>
+      <div class="sal-ccard">
+        <div class="sal-ctag">📖 Guide</div>
+        <h4>How-To Guide</h4>
+        <p>Step-by-step instructions built into the tool — covering pro-rata, deductions, PF rules, currency selection, and printing, all in one place.</p>
+      </div>
+      <div class="sal-ccard">
+        <div class="sal-ctag">📊 Payroll</div>
+        <h4>Payroll Summary</h4>
+        <p>Full payroll table showing all employees with gross, total deductions, and net salary. Includes summary cards, salary pay date field, and printable A4 layout.</p>
+      </div>
+    </div>
+
+    <!-- WHY USEFUL -->
+    <h2>Why This Tool Is Useful</h2>
+    <p>Payroll calculations involve multiple components — basic pay, HRA, transport allowance, medical, special allowance, PF at 12%, professional tax, TDS, and pro-rata for mid-month joiners or leavers. Doing this manually for even a few employees is slow and error-prone.</p>
+    <p>SalaryPro removes that friction entirely. Enter your numbers and the tool instantly calculates gross salary, applies all deductions, computes net pay, and generates a formatted salary slip — ready to print. Switch currency at the top right and every figure updates globally across all calculations and slips.</p>
+
+    <div class="sal-formula">
+      <div class="fl">Key Formulas Used Internally</div>
+      Gross Salary    = Basic + HRA + TA + Medical + Special + Other Earnings
+      PF (Employee)   = 12% × Basic Salary (capped as applicable)
+      Net Salary      = Gross − (PF + PT + TDS + Advance + Other Deductions)
+      Pro-Rata Salary = (Monthly Salary ÷ Total Days in Month) × Days Worked
+      PT              = Professional Tax as per state slab (configurable)
+    </div>
+
+    <!-- HOW TO USE -->
+    <h2>How to Use SalaryPro — Step by Step</h2>
+    <ol class="sal-steps">
+      <li>
+        <div class="sal-snum">1</div>
+        <div class="sal-sbody">
+          <strong>Select Your Currency</strong>
+          <span>Before entering any data, choose your currency from the <strong>💱 Currency</strong> dropdown in the top-right corner of the navigation bar. SalaryPro supports 12 currencies including INR, USD, EUR, GBP, AED, SGD, and more. All calculations, slip values, and payroll figures will use the selected currency throughout.</span>
+        </div>
+      </li>
+      <li>
+        <div class="sal-snum">2</div>
+        <div class="sal-sbody">
+          <strong>Fill Company & Employee Information</strong>
+          <span>In the <strong>⚙️ Calculator</strong> tab, enter the company name, employee name, designation, department, employee ID, and pay month/year. These details appear on the salary slip header automatically.</span>
+        </div>
+      </li>
+      <li>
+        <div class="sal-snum">3</div>
+        <div class="sal-sbody">
+          <strong>Enter Earnings</strong>
+          <span>Fill in Basic Salary, HRA, Transport Allowance, Medical Allowance, Special Allowance, and any Other Earnings. Each field is highlighted in blue to distinguish earnings from deductions. The live preview on the right updates after every keystroke.</span>
+        </div>
+      </li>
+      <li>
+        <div class="sal-snum">4</div>
+        <div class="sal-sbody">
+          <strong>Enable Pro-Rata (if Applicable)</strong>
+          <span>If the employee joined mid-month or worked only part of the month, toggle the <strong>Pro-Rata</strong> switch. Enter the number of days worked and the total days in the month — SalaryPro will scale all salary components proportionally using the formula: <em>(Monthly Salary ÷ Total Days) × Days Worked</em>.</span>
+        </div>
+      </li>
+      <li>
+        <div class="sal-snum">5</div>
+        <div class="sal-sbody">
+          <strong>Add Deductions</strong>
+          <span>Enter PF (Provident Fund), Professional Tax (PT), TDS (Tax Deducted at Source), and Advance deductions in the red-highlighted fields. You can also add custom deduction items using the <strong>+ Add Deduction</strong> button — useful for loan EMI, canteen, or other recoveries. Drag the handles to reorder items.</span>
+        </div>
+      </li>
+      <li>
+        <div class="sal-snum">6</div>
+        <div class="sal-sbody">
+          <strong>Choose a Calculation Method</strong>
+          <span>Select how deductions are calculated: <em>On Basic Only</em> (PF applied to basic salary only) or <em>On Gross Salary</em> (deduction percentage applied to total gross). The method selector is in the green panel below the deduction fields.</span>
+        </div>
+      </li>
+      <li>
+        <div class="sal-snum">7</div>
+        <div class="sal-sbody">
+          <strong>View Live Salary Slip & Net Pay</strong>
+          <span>The right column shows a live salary slip preview as you type — including net salary, gross, total deductions, and an itemized slip layout. Click <strong>📄 Salary Slip</strong> tab for a print-ready full-page slip. Click <strong>🖨️ Print</strong> to save as PDF or send directly to a printer.</span>
+        </div>
+      </li>
+      <li>
+        <div class="sal-snum">8</div>
+        <div class="sal-sbody">
+          <strong>Save to Employees & Run Payroll</strong>
+          <span>Click <strong>💾 Save Employee</strong> to add this record to your employee list. Go to the <strong>👥 Employees</strong> tab to see all records and to <strong>⬇️ Backup Data</strong> as a JSON file. Switch to <strong>📊 Payroll Summary</strong> to view the full payroll table with all employee totals — printable in A4 landscape format.</span>
+        </div>
+      </li>
+    </ol>
+
+    <!-- DEVICE NOTES -->
+    <h2>Operating Notes — PC vs Mobile</h2>
+    <p>SalaryPro is fully responsive and works on any screen size. Here are device-specific tips:</p>
+    <div class="sal-dbox">
+      <div class="sal-dcard pc">
+        <h4>🖥️ PC / Desktop / Laptop</h4>
+        <ul>
+          <li>Calculator and live slip preview sit side-by-side for simultaneous comparison.</li>
+          <li>All five tabs are visible in the tab bar — click to switch instantly.</li>
+          <li>Payroll Summary table is fully visible without horizontal scrolling on wide screens.</li>
+          <li>Print function opens the browser print dialog — choose "Save as PDF" for a digital copy.</li>
+          <li>Backup and Restore buttons are easily accessible in the Employees tab.</li>
+        </ul>
+      </div>
+      <div class="sal-dcard mob">
+        <h4>📱 Mobile / Tablet</h4>
+        <ul>
+          <li>Calculator and slip preview stack vertically — scroll down to see the live slip.</li>
+          <li>Tab bar scrolls horizontally if all tabs don't fit — swipe left to see Payroll Summary.</li>
+          <li>Payroll Summary table scrolls horizontally on small screens — a scroll hint arrow appears.</li>
+          <li>The currency selector is in the top nav — set it before entering data.</li>
+          <li>Use the hamburger ☰ menu to access page navigation links.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DATA SAFETY -->
+    <div class="sal-safety">
+      <strong>🔒 Data Safety — Important Notice</strong>
+      <ul>
+        <li>All employee data is stored only in your browser's memory — <strong>it is not sent to any server</strong> and disappears when the page is refreshed or closed.</li>
+        <li>Before leaving this page or clicking any top navigation links, always click <strong>⬇️ Backup Data</strong> in the Employees tab to download your data as a JSON file.</li>
+        <li>You can restore all data at any time using the <strong>⬆️ Restore</strong> button and selecting the downloaded JSON backup file.</li>
+        <li>Do not edit the JSON backup file manually — it may corrupt the structure and prevent successful restoration.</li>
+        <li>Set the currency <strong>before</strong> entering any salary data. Changing currency after entry does not convert previously entered amounts.</li>
+      </ul>
+    </div>
+
+    <!-- BENEFITS -->
+    <h2>Key Features and Benefits</h2>
+    <ul class="sal-blist">
+      <li><strong>5 Modules in One Tool</strong> — Calculator, Salary Slip, Employees, Guide, and Payroll Summary — all switchable via tabs.</li>
+      <li><strong>Live Salary Slip Preview</strong> — The formatted slip updates in real time as you type every field — no Calculate button needed.</li>
+      <li><strong>Pro-Rata Salary Support</strong> — Handles mid-month joiners and leavers with automatic proportional salary calculation.</li>
+      <li><strong>Custom Deductions</strong> — Add unlimited named deduction items (loan EMI, canteen, equipment rental) with drag-to-reorder.</li>
+      <li><strong>12 Currency Support</strong> — INR, USD, EUR, GBP, AED, SGD, AUD, CAD, JPY, MYR, SAR, ZAR — switchable globally from the nav bar.</li>
+      <li><strong>Multiple Employee Management</strong> — Store, edit, and delete records for multiple employees in one session.</li>
+      <li><strong>Full Payroll Summary Table</strong> — Printable A4 landscape table showing all employees with gross, deductions, and net totals.</li>
+      <li><strong>Backup & Restore</strong> — Export all employee data as a JSON file and restore it in a future session with one click.</li>
+      <li><strong>Print-Ready Salary Slip</strong> — Professional slip layout with company name, employee info, itemized earnings and deductions, and net pay.</li>
+      <li><strong>100% Free, No Registration</strong> — Open directly in any modern browser. No download, login, or payment required.</li>
+    </ul>
+
+    <!-- USE CASES -->
+    <h2>Real-World Use Cases</h2>
+    <div class="sal-ugrid">
+      <div class="sal-ucard">
+        <div class="ui">🏢</div>
+        <h4>Small Business Owners</h4>
+        <p>Run monthly payroll for a team of 5–50 employees without dedicated HR software. Export the payroll summary for your accountant.</p>
+      </div>
+      <div class="sal-ucard">
+        <div class="ui">👩‍💼</div>
+        <h4>HR Professionals</h4>
+        <p>Quickly generate salary slips for individual employees, handle pro-rata for new joiners, and produce a payroll register at month-end.</p>
+      </div>
+      <div class="sal-ucard">
+        <div class="ui">🧾</div>
+        <h4>Accountants & CA Firms</h4>
+        <p>Calculate net salary after PF, PT, and TDS for multiple clients. Export payroll data and generate professional slips for salary compliance.</p>
+      </div>
+      <div class="sal-ucard">
+        <div class="ui">👨‍💻</div>
+        <h4>Employees & Freelancers</h4>
+        <p>Verify your own salary slip against your offer letter. Check how PF and TDS affect your take-home, or generate an invoice-style pay summary.</p>
+      </div>
+      <div class="sal-ucard">
+        <div class="ui">🏫</div>
+        <h4>Schools & NGOs</h4>
+        <p>Manage teaching and support staff salaries without expensive payroll software. Use the backup feature to maintain month-wise records.</p>
+      </div>
+      <div class="sal-ucard">
+        <div class="ui">🌍</div>
+        <h4>International Teams</h4>
+        <p>Switch between 12 currencies to handle remote employees or overseas payroll. All calculations and slips reflect the selected currency.</p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <h2>Frequently Asked Questions (FAQ)</h2>
+    <div class="sal-faq">
+
+      <details>
+        <summary>Will my data be lost if I refresh the page?</summary>
+        <div class="fa">Yes — all data is stored in browser memory only and is cleared on page refresh or close. This is by design to protect your privacy (no data is ever sent to a server). Always use the <strong>⬇️ Backup Data</strong> button in the Employees tab before leaving the page. You can restore all data instantly using the <strong>⬆️ Restore</strong> button and your saved JSON file.</div>
+      </details>
+
+      <details>
+        <summary>How does pro-rata salary calculation work?</summary>
+        <div class="fa">Pro-rata (proportional) salary is used when an employee works only part of the month — for example, a new joiner on the 15th. Enable the <strong>Pro-Rata</strong> toggle in the Calculator tab, enter the number of days worked and the total working days in the month. The tool applies the formula: <em>Net Monthly Salary ÷ Total Days × Days Worked</em> to each earnings component, then recalculates deductions on the pro-rated gross.</div>
+      </details>
+
+      <details>
+        <summary>How do I add custom deductions like loan EMI or canteen recovery?</summary>
+        <div class="fa">In the Deductions section of the Calculator tab, click the <strong>+ Add Deduction</strong> button. A new row appears where you can type the deduction name (e.g., "Loan EMI") and enter the amount. You can add unlimited custom deductions. Drag the handle icon (⠿) on the left side of each row to reorder them. Click the ✕ button to remove any item.</div>
+      </details>
+
+      <details>
+        <summary>What is the difference between "On Basic" and "On Gross" calculation methods?</summary>
+        <div class="fa"><strong>On Basic Only</strong> applies percentage-based deductions (like PF at 12%) only to the basic salary component — this is the standard Indian payroll method. <strong>On Gross Salary</strong> applies the percentage to the total gross salary including all allowances. For most Indian companies, "On Basic Only" is the correct choice for PF. Select the appropriate method in the green panel below the deduction fields.</div>
+      </details>
+
+      <details>
+        <summary>Can I change the currency after entering data?</summary>
+        <div class="fa">You can switch currency using the dropdown at the top right of the navigation bar, but note that previously entered amounts are <strong>not converted</strong> — the new currency symbol is applied to the same numbers. It is strongly recommended to select your currency <strong>before</strong> entering any salary data to avoid confusion. If you need to switch currencies, clear all fields and re-enter the amounts in the new currency.</div>
+      </details>
+
+      <details>
+        <summary>How do I generate a payroll report for the whole team?</summary>
+        <div class="fa">After saving each employee using the <strong>💾 Save Employee</strong> button, go to the <strong>📊 Payroll Summary</strong> tab. This tab shows a full payroll table with every saved employee's gross salary, total deductions, and net pay, along with summary totals. Set the salary pay date at the top and click <strong>🖨️ Print Payroll</strong> to get a formatted A4 landscape printout suitable for records or submission.</div>
+      </details>
+
+      <details>
+        <summary>Is the salary slip generated here legally valid?</summary>
+        <div class="fa">The SalaryPro slip is a professionally formatted document that includes all standard payroll fields — company name, employee details, earnings, deductions, and net salary. For most administrative, banking, and internal HR purposes, it is perfectly suitable. For statutory compliance or legal use (e.g., court submissions, government applications), consult your accountant or legal advisor to confirm the format meets the specific requirements of your jurisdiction.</div>
+      </details>
+
+      <details>
+        <summary>Can I restore a backup from a different month?</summary>
+        <div class="fa">Yes. The Restore function loads any valid SalaryPro JSON backup file, regardless of when it was created. This is useful for revisiting previous month's payroll or correcting a past slip. After restoring, you can edit individual employees and re-save the updated data. Note that restoring overwrites any currently unsaved data in memory — save a fresh backup of the current session first if needed.</div>
+      </details>
+
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="sal-concl">
+      <h2>Calculate Any Salary Instantly — 100% Free</h2>
+      <p>No software to install. No registration. No data sent to any server. Enter your salary components, enable pro-rata if needed, add deductions, and get a professional salary slip in real time. RamTools SalaryPro is your complete payroll companion — whether you're an HR manager, a small business owner, or verifying your own take-home pay.</p>
+      <button onclick="window.scrollTo({top:0,behavior:'smooth'})">💼 Back to Calculator ↑</button>
+    </div>
+
+  </div><!-- end sal-art -->
+
+</div><!-- end seo-salary -->
+
+<div class="sal-foot">
+  <p>© 2026 RamTools. All Rights Reserved. | <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms</a> | <a href="index.html">← Home</a></p>
+</div>
+
 </body>
 </html>
