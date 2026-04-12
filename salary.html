@@ -647,10 +647,21 @@ footer a:hover{color:#fff;}
   .slip-company{font-size:.88rem!important;}
 }
 
+/* mobile how-to button — hidden by default, shown only on mobile */
+.nav-howto-mobile{
+  display:none;
+  background:#5dade2;color:#0f2540;border:none;
+  padding:5px 10px;border-radius:20px;font-size:0.75rem;
+  font-weight:700;cursor:pointer;white-space:nowrap;
+  align-items:center;gap:4px;flex-shrink:0;
+  font-family:'DM Sans',sans-serif;margin-left:6px;
+}
+
 /* ── MOBILE NAV ≤600px ──────────────────────────────────────── */
 @media(max-width:600px){
   .nav-logo span{display:none!important;}
   .nav-howto{display:none!important;}
+  .nav-howto-mobile{display:flex!important;}
   nav{padding:0 .6rem!important;}
   .nav-logo .nav-r-icon{width:32px;height:32px;}
   #currencySelect{max-width:120px;font-size:.7rem;padding:.2rem .3rem;}
@@ -666,6 +677,7 @@ footer a:hover{color:#fff;}
     <div class="nav-r-icon">R</div>
     <span>RamTools</span>
   </a>
+  <button class="nav-howto-mobile" onclick="var el=document.getElementById('salary-how-to-use');if(el)el.scrollIntoView({behavior:'smooth'});" aria-label="How to Use">📖 How to Use ↓</button>
   <div class="nav-right">
     <div class="currency-select-wrap">
       <label for="currencySelect">💱 Currency</label>
@@ -1727,6 +1739,8 @@ window.onload = () => {
   const today = new Date().toISOString().split('T')[0];
   $('salaryPayDate').value = today;
   liveCalc();
+
+
 };
 
 // ════════════════════════════════════════════════════════════════
