@@ -293,10 +293,52 @@
             <div class="metric-box"><div class="m-val" id="rlc-q" style="font-size:1rem;color:#e67e00;">--</div><div class="m-label">Q Factor</div></div>
           </div>
         </div>
-        <!-- Phasor diagram -->
-        <div style="margin-top:0.9rem;">
-          <div style="font-size:0.78rem;font-weight:700;color:#9b27af;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.4rem;">📊 Phasor Diagram</div>
-          <canvas id="phasorCanvas" width="280" height="180" style="width:100%;border-radius:10px;background:#f9f7ff;border:1px solid #e0d9ff;display:block;"></canvas>
+        <!-- Phasor diagram placeholder (moved to full-width card below) -->
+        <div id="phasor-inline-note" class="sim-hidden" style="margin-top:0.9rem;background:#f0ecff;border-radius:10px;padding:0.7rem;text-align:center;border:1px dashed #9b27af;">
+          <span style="font-size:0.8rem;color:#7b3fa0;font-weight:600;">📊 Phasor Diagram shown below ↓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL-WIDTH PHASOR DIAGRAM CARD (RLC only) -->
+  <div id="phasor-fullcard" class="sim-hidden" style="background:#fff;border-radius:16px;padding:1.2rem 1.4rem;box-shadow:0 4px 20px rgba(61,11,158,0.08);border:1px solid #e0d9ff;margin-top:1.5rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;margin-bottom:0.8rem;">
+      <div style="font-size:0.95rem;font-weight:700;color:#9b27af;display:flex;align-items:center;gap:0.5rem;">
+        📐 Phasor Diagram
+        <span style="font-size:0.72rem;font-weight:600;color:#aaa;margin-left:4px;">RC / RL / RLC Series Circuit</span>
+      </div>
+      <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+        <!-- Legend -->
+        <div style="display:flex;gap:0.8rem;margin-right:0.5rem;">
+          <span style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#555;"><span style="display:inline-block;width:14px;height:4px;background:#c0392b;border-radius:2px;"></span>VR</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#555;"><span style="display:inline-block;width:14px;height:4px;background:#185fa5;border-radius:2px;"></span>VL</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#555;"><span style="display:inline-block;width:14px;height:4px;background:#1d9e75;border-radius:2px;"></span>VC</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#555;"><span style="display:inline-block;width:14px;height:4px;background:#9b27af;border-radius:2px;border-style:dashed;border-width:1px 0;"></span>V total</span>
+        </div>
+        <!-- Zoom controls -->
+        <button onclick="phasorZoom(1.25)" title="Zoom In" style="width:32px;height:32px;border:1.5px solid #9b27af;border-radius:8px;background:#fff;color:#9b27af;font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+        <button onclick="phasorZoom(0.8)" title="Zoom Out" style="width:32px;height:32px;border:1.5px solid #9b27af;border-radius:8px;background:#fff;color:#9b27af;font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+        <button onclick="phasorResetZoom()" title="Reset Zoom" style="padding:5px 12px;border:1.5px solid #6a3de8;border-radius:8px;background:#f4f3ff;color:#3d0b9e;font-size:0.78rem;font-weight:700;cursor:pointer;">Reset</button>
+      </div>
+    </div>
+    <canvas id="phasorCanvas" width="900" height="340" style="width:100%;border-radius:10px;background:#f9f7ff;border:1px solid #e0d9ff;display:block;cursor:grab;"></canvas>
+    <div style="font-size:0.72rem;color:#aaa;text-align:center;margin-top:0.4rem;">Scroll to zoom • Drag to pan • Use +/− buttons or pinch on mobile</div>
+  </div>
+
+  <!-- DC MODE — Phasor not applicable notice (RLC only) -->
+  <div id="phasor-dc-note" class="sim-hidden" style="background:#fff8e1;border-radius:16px;padding:1.2rem 1.5rem;box-shadow:0 4px 20px rgba(61,11,158,0.06);border:1px solid #f6a623;margin-top:1.5rem;">
+    <div style="display:flex;align-items:flex-start;gap:0.8rem;">
+      <div style="font-size:2rem;line-height:1;">⚠️</div>
+      <div>
+        <div style="font-size:0.95rem;font-weight:700;color:#b06000;margin-bottom:0.5rem;">Phasor Diagram — Not Applicable in DC Mode</div>
+        <div style="font-size:0.84rem;color:#7a5000;line-height:1.7;">
+          Phasor diagrams represent <strong>rotating vectors</strong> and only exist for <strong>AC (sinusoidal)</strong> circuits.<br>
+          In DC mode: <strong>f = 0 Hz</strong>, so <strong>X<sub>L</sub> = 2πfL = 0</strong> (inductor → short circuit) and <strong>X<sub>C</sub> = 1/(2πfC) = ∞</strong> (capacitor → open circuit).<br>
+          There is <strong>no phase angle</strong>, no rotating vectors, and no phasor diagram in DC circuits.
+        </div>
+        <div style="margin-top:0.8rem;">
+          <button onclick="setMode('ac');" style="background:#3d0b9e;color:#fff;border:none;padding:7px 18px;border-radius:20px;font-size:0.82rem;font-weight:700;cursor:pointer;">〜 Switch to AC Mode to see Phasor Diagram</button>
         </div>
       </div>
     </div>
@@ -308,7 +350,7 @@
   </div>
 
   <!-- WAVEFORM GRAPH -->
-  <div class="waveform-card">
+  <div id="waveform-card" class="waveform-card sim-hidden">
     <div class="waveform-header">
       <span class="waveform-title">📊 Live Waveform — Oscilloscope View</span>
       <div class="waveform-legend">
@@ -347,16 +389,27 @@
     document.getElementById('btnDC').classList.toggle('active', m==='dc');
     document.getElementById('btnAC').classList.toggle('active', m==='ac');
     var badge = document.getElementById('modeBadge');
-    if(m==='ac') {
+    var isAC = (m === 'ac');
+    var isReactive = (mode === 'rc' || mode === 'rl' || mode === 'rlc');
+
+    if (isAC) {
       badge.className='ac-badge'; badge.textContent='Alternating Current — Sinusoidal';
-      // Show freq control for all AC modes
       setVis('ctrl-freq', true);
     } else {
       badge.className='dc-badge'; badge.textContent='Direct Current — Constant voltage';
-      // Hide freq only if mode doesn't need it
-      var needFreq = (mode==='rc'||mode==='rl'||mode==='rlc');
-      setVis('ctrl-freq', needFreq);
+      setVis('ctrl-freq', isReactive);
     }
+
+    // ── WAVEFORM: DC → only RC/RL/RLC; AC → always ──
+    setVis('waveform-card', isAC || isReactive);
+
+    // ── PHASOR: AC + reactive only; DC shows explanation card ──
+    var showPhasor = isReactive && isAC;
+    var showDcNote = isReactive && !isAC;
+    setVis('phasor-fullcard',    showPhasor);
+    setVis('phasor-dc-note',     showDcNote);
+    setVis('phasor-inline-note', (mode === 'rlc') && isAC);
+
     redraw();
   }
 
@@ -370,18 +423,36 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
 
-    var showCap  = (m === 'rc' || m === 'rlc');
-    var showInd  = (m === 'rl' || m === 'rlc');
-    var showR2   = (m === 'series' || m === 'parallel');
-    var showFreq = (m === 'rc' || m === 'rl' || m === 'rlc') || supplyMode === 'ac';
-    var showRlcInfo = (m === 'rlc');
+    var isAC  = (supplyMode === 'ac');
+    var isRC  = (m === 'rc');
+    var isRL  = (m === 'rl');
+    var isRLC = (m === 'rlc');
+    var isReactive = isRC || isRL || isRLC;  // RC, RL, RLC
 
+    var showCap  = (isRC || isRLC);
+    var showInd  = (isRL || isRLC);
+    var showR2   = (m === 'series' || m === 'parallel');
+    var showFreq = isReactive || isAC;
+
+    // RLC-only sidebar extras
     setVis('ctrl-r2',       showR2);
     setVis('ctrl-cap',      showCap);
     setVis('ctrl-ind',      showInd);
     setVis('ctrl-freq',     showFreq);
-    setVis('ctrl-rlc-info', showRlcInfo);
-    setVis('ctrl-rlc-extra',showRlcInfo);
+    setVis('ctrl-rlc-info', isRLC);
+    setVis('ctrl-rlc-extra',isRLC);
+
+    // ── WAVEFORM: DC → only RC/RL/RLC; AC → always ──
+    var showWaveform = isAC || isReactive;
+    setVis('waveform-card', showWaveform);
+
+    // ── PHASOR: only for RC, RL, RLC and only in AC mode ──
+    // (for RC/RL, sidebar phasor-inline-note not shown — phasor card is below directly)
+    var showPhasor   = isReactive && isAC;
+    var showDcNote   = isReactive && !isAC;
+    setVis('phasor-fullcard',    showPhasor);
+    setVis('phasor-dc-note',     showDcNote);
+    setVis('phasor-inline-note', isRLC && isAC);  // sidebar hint only for RLC
 
     var titles = {
       series:   '⚙️ Series Circuit Controls',
@@ -476,6 +547,8 @@
       document.getElementById('formula-text').textContent = 'Xc = 1/(2πfC) = '+fmt(Xc)+' Ω\nZ = √(R²+Xc²) = '+fmt(Z)+' Ω\nφ = '+phi.toFixed(1)+'° (V leads I)';
       lastV=V; lastI=I; lastZ=Z; lastPhi=phi; lastF=f; lastVR=VR1; lastVL=0; lastVC=VR2;
       drawRC(V, R1, C, f, I, VR1, VR2, Xc);
+      // RC phasor: XL=0, Xnet=-Xc (capacitive), VC=VR2, VL=0
+      drawPhasor(R1, 0, Xc, -Xc, Z, -Math.abs(phi), I, V);
 
     } else if(mode === 'rl') {
       XL = 2 * Math.PI * f * L; Z = Math.sqrt(R1*R1 + XL*XL);
@@ -489,6 +562,8 @@
       document.getElementById('formula-text').textContent = 'XL = 2πfL = '+fmt(XL)+' Ω\nZ = √(R²+XL²) = '+fmt(Z)+' Ω\nφ = '+phi.toFixed(1)+'° (I leads V)';
       lastV=V; lastI=I; lastZ=Z; lastPhi=phi; lastF=f; lastVR=VR1; lastVL=VR2; lastVC=0;
       drawRL(V, R1, L, f, I, VR1, VR2, XL);
+      // RL phasor: Xc=0, Xnet=XL (inductive), VL=VR2, VC=0
+      drawPhasor(R1, XL, 0, XL, Z, Math.abs(phi), I, V);
 
     } else if(mode === 'rlc') {
       Xc = 1 / (2 * Math.PI * f * C); XL = 2 * Math.PI * f * L;
@@ -658,13 +733,102 @@ if (isDC && mode === 'rc') {
 
   // Labels
   WFX.fillStyle = '#00d4ff';
-  WFX.fillText('Vc (charging)', WW - 140, 20);
-
+  WFX.font = '10px monospace'; WFX.textAlign = 'left';
+  WFX.fillText('Vc (charging) → V(1−e^−t/τ)', 8, 18);
   WFX.fillStyle = '#00ff88';
-  WFX.fillText('I (decay)', WW - 140, 40);
+  WFX.fillText('I (decay) → (V/R)·e^−t/τ', 8, 34);
+  WFX.fillStyle = '#556'; WFX.textAlign = 'right';
+  WFX.fillText('τ = RC = '+(tau*1000).toFixed(2)+' ms', WW-8, 18);
 
   return; // IMPORTANT stop rest of code
 }
+
+    // 🔥 RL DC: current rise (V/R)(1−e^−t/τ), VL decay
+    if (isDC && mode === 'rl') {
+      let R = parseFloat(document.getElementById('r1').value);
+      let L = parseFloat(document.getElementById('ind').value) / 1e3;
+      let tau = L / R;
+      let Vdc = lastV;
+      let Imax = Vdc / R;
+
+      WFX.fillStyle = '#0a0a1a'; WFX.fillRect(0, 0, WW, WH);
+      WFX.strokeStyle = '#1a1a3a'; WFX.lineWidth = 1;
+      for (let gx = 0; gx < WW; gx += WW/8) { WFX.beginPath(); WFX.moveTo(gx,0); WFX.lineTo(gx,WH); WFX.stroke(); }
+
+      // Current rise: i(t) = (V/R)(1 − e^−t/τ)
+      WFX.beginPath(); WFX.strokeStyle = '#00ff88'; WFX.lineWidth = 2.5;
+      for (let px = 0; px < WW; px++) {
+        let t = (px / WW) * 5 * tau;
+        let i = Imax * (1 - Math.exp(-t / tau));
+        let y = WH/2 - i * (WH * 0.35 / Imax);
+        if (px === 0) WFX.moveTo(px, y); else WFX.lineTo(px, y);
+      }
+      WFX.stroke();
+
+      // VL decay: vL(t) = V·e^−t/τ
+      WFX.beginPath(); WFX.strokeStyle = '#4a9eff'; WFX.lineWidth = 2;
+      for (let px = 0; px < WW; px++) {
+        let t = (px / WW) * 5 * tau;
+        let vl = Vdc * Math.exp(-t / tau);
+        let y = WH/2 - vl * (WH * 0.35 / Vdc);
+        if (px === 0) WFX.moveTo(px, y); else WFX.lineTo(px, y);
+      }
+      WFX.stroke();
+
+      WFX.font = '10px monospace'; WFX.textAlign = 'left';
+      WFX.fillStyle = '#00ff88'; WFX.fillText('I (rise) → (V/R)·(1−e^−t/τ)', 8, 18);
+      WFX.fillStyle = '#4a9eff'; WFX.fillText('VL (decay) → V·e^−t/τ', 8, 34);
+      WFX.fillStyle = '#556'; WFX.textAlign = 'right';
+      WFX.fillText('τ = L/R = '+(tau*1000).toFixed(2)+' ms', WW-8, 18);
+      return;
+    }
+
+    // 🔥 RLC DC: underdamped / overdamped transient
+    if (isDC && mode === 'rlc') {
+      let R = parseFloat(document.getElementById('r1').value);
+      let L = parseFloat(document.getElementById('ind').value) / 1e3;
+      let C = parseFloat(document.getElementById('cap').value) / 1e6;
+      let Vdc = lastV;
+      let alpha = R / (2 * L);
+      let omega0 = 1 / Math.sqrt(L * C);
+      let discrim = alpha * alpha - omega0 * omega0;
+
+      WFX.fillStyle = '#0a0a1a'; WFX.fillRect(0, 0, WW, WH);
+      WFX.strokeStyle = '#1a1a3a'; WFX.lineWidth = 1;
+      for (let gx = 0; gx < WW; gx += WW/8) { WFX.beginPath(); WFX.moveTo(gx,0); WFX.lineTo(gx,WH); WFX.stroke(); }
+
+      let tMax = Math.min(10 * L / R, 1.0);  // sensible time window
+
+      // Vc(t) — capacitor voltage
+      WFX.beginPath(); WFX.strokeStyle = '#00d4ff'; WFX.lineWidth = 2.5;
+      for (let px = 0; px < WW; px++) {
+        let t = (px / WW) * tMax;
+        let vc;
+        if (discrim > 0.001) {
+          // Overdamped
+          let s1 = -alpha + Math.sqrt(discrim), s2 = -alpha - Math.sqrt(discrim);
+          vc = Vdc * (1 + (s2 * Math.exp(s1*t) - s1 * Math.exp(s2*t)) / (s1 - s2));
+        } else if (discrim < -0.001) {
+          // Underdamped
+          let omegaD = Math.sqrt(-discrim);
+          vc = Vdc * (1 - Math.exp(-alpha*t) * (Math.cos(omegaD*t) + (alpha/omegaD)*Math.sin(omegaD*t)));
+        } else {
+          // Critically damped
+          vc = Vdc * (1 - Math.exp(-alpha*t) * (1 + alpha*t));
+        }
+        let y = WH/2 - Math.max(-1,Math.min(1, vc/Vdc - 0.5)) * WH * 0.7;
+        if (px === 0) WFX.moveTo(px, y); else WFX.lineTo(px, y);
+      }
+      WFX.stroke();
+
+      let dampLabel = discrim > 0.001 ? 'Overdamped' : discrim < -0.001 ? 'Underdamped 🌀' : 'Critically Damped';
+      WFX.font = '10px monospace'; WFX.textAlign = 'left';
+      WFX.fillStyle = '#00d4ff'; WFX.fillText('Vc(t) — Capacitor voltage transient', 8, 18);
+      WFX.fillStyle = '#e67e00'; WFX.fillText(dampLabel, 8, 34);
+      WFX.fillStyle = '#556'; WFX.textAlign = 'right';
+      WFX.fillText('α='+alpha.toFixed(1)+'  ω₀='+omega0.toFixed(1), WW-8, 18);
+      return;
+    }
     var scale = WH * 0.38; // amplitude scale
 
     // Normalise amplitudes (voltage and current share same scale via ratio)
@@ -998,38 +1162,235 @@ if (isDC && mode === 'rc') {
     drawGround(pad,H-70);
   }
 
-  function drawPhasor(R,XL,Xc,Xnet,Z,phi,I,V) {
-    var pc=document.getElementById('phasorCanvas'); if(!pc) return;
-    var px=pc.getContext('2d'), PW=280, PH=180;
-    px.clearRect(0,0,PW,PH); px.fillStyle='#f9f7ff'; px.fillRect(0,0,PW,PH);
-    var ox=PW*0.38, oy=PH*0.6, scale=Math.min(PW,PH)*0.38/Z;
-    if(!isFinite(scale)||scale<=0) scale=1;
-    px.strokeStyle='#ddd'; px.lineWidth=1;
-    px.beginPath();px.moveTo(10,oy);px.lineTo(PW-10,oy);px.stroke();
-    px.beginPath();px.moveTo(ox,10);px.lineTo(ox,PH-10);px.stroke();
-    px.fillStyle='#aaa'; px.font='9px Segoe UI'; px.textAlign='center';
-    px.fillText('R →',PW-20,oy-4); px.fillText('↑ XL',ox+18,16); px.fillText('↓ Xc',ox+18,PH-4);
-    var on=document.getElementById('switchOn').checked;
-    if(!on){px.fillStyle='#aaa';px.font='12px Segoe UI';px.textAlign='center';px.fillText('Circuit OFF',PW/2,PH/2);return;}
-    var VR=I*R,VLv=I*XL,VCv=I*Xc;
-    px.strokeStyle='#c0392b';px.lineWidth=2.5;px.beginPath();px.moveTo(ox,oy);px.lineTo(ox+VR*scale,oy);px.stroke();
-    px.fillStyle='#c0392b';px.font='bold 9px Segoe UI';px.textAlign='center';px.fillText('VR='+VR.toFixed(1)+'V',ox+VR*scale/2,oy+14);
-    pArrow(px,ox+VR*scale,oy,0,'#c0392b');
-    px.strokeStyle='#185fa5';px.lineWidth=2.5;px.beginPath();px.moveTo(ox+VR*scale,oy);px.lineTo(ox+VR*scale,oy-VLv*scale);px.stroke();
-    px.fillStyle='#185fa5';px.textAlign='left';px.fillText('VL='+VLv.toFixed(1)+'V',ox+VR*scale+4,oy-VLv*scale/2);pArrow(px,ox+VR*scale,oy-VLv*scale,-Math.PI/2,'#185fa5');
-    px.strokeStyle='#1d9e75';px.lineWidth=2.5;px.beginPath();px.moveTo(ox+VR*scale,oy);px.lineTo(ox+VR*scale,oy+VCv*scale);px.stroke();
-    px.fillStyle='#1d9e75';px.textAlign='left';px.fillText('VC='+VCv.toFixed(1)+'V',ox+VR*scale+4,oy+VCv*scale/2+4);pArrow(px,ox+VR*scale,oy+VCv*scale,Math.PI/2,'#1d9e75');
-    var ex=ox+VR*scale,ey=oy-Xnet*scale;
-    px.strokeStyle='#9b27af';px.lineWidth=3;px.setLineDash([5,3]);px.beginPath();px.moveTo(ox,oy);px.lineTo(ex,ey);px.stroke();px.setLineDash([]);
-    pArrow(px,ex,ey,Math.atan2(ey-oy,ex-ox),'#9b27af');
-    px.fillStyle='#9b27af';px.font='bold 9px Segoe UI';px.textAlign='center';px.fillText('V='+V.toFixed(1)+'V',(ox+ex)/2-8,(oy+ey)/2-6);
-    if(Math.abs(phi)>2){px.strokeStyle='#e67e00';px.lineWidth=1;px.setLineDash([3,3]);var arcR=30;px.beginPath();px.arc(ox,oy,arcR,-phi*Math.PI/180,0);px.stroke();px.setLineDash([]);px.fillStyle='#e67e00';px.font='bold 9px Segoe UI';px.textAlign='left';px.fillText('φ='+phi.toFixed(1)+'°',ox+arcR+4,oy+(phi>0?-6:10));}
-    var lx=6,ly=10;
-    [['VR','#c0392b'],['VL','#185fa5'],['VC','#1d9e75'],['V (total)','#9b27af']].forEach(function(e,i){px.fillStyle=e[1];px.fillRect(lx,ly+i*14,10,8);px.fillStyle='#333';px.font='8px Segoe UI';px.textAlign='left';px.fillText(e[0],lx+13,ly+i*14+7);});
+  // ── PHASOR DIAGRAM STATE ──────────────────────────────
+  var phasorZoomLevel = 1.0;
+  var phasorPanX = 0, phasorPanY = 0;
+  var phasorDragging = false, phasorDragSX, phasorDragSY, phasorDragPX, phasorDragPY;
+  var lastPhasorArgs = null;
+
+  function phasorZoom(factor) {
+    phasorZoomLevel = Math.max(0.3, Math.min(5, phasorZoomLevel * factor));
+    if (lastPhasorArgs) drawPhasor.apply(null, lastPhasorArgs);
+  }
+  function phasorResetZoom() {
+    phasorZoomLevel = 1.0; phasorPanX = 0; phasorPanY = 0;
+    if (lastPhasorArgs) drawPhasor.apply(null, lastPhasorArgs);
   }
 
-  function pArrow(px,x,y,angle,color) {
-    px.save();px.translate(x,y);px.rotate(angle);px.beginPath();px.moveTo(0,0);px.lineTo(-8,-4);px.lineTo(-8,4);px.closePath();px.fillStyle=color;px.fill();px.restore();
+  (function setupPhasorInteraction() {
+    var raf = null;
+    function getPC() { return document.getElementById('phasorCanvas'); }
+
+    // Scroll-to-zoom
+    document.addEventListener('wheel', function(e) {
+      var pc = getPC(); if (!pc || !pc.closest('#phasor-fullcard')) return;
+      if (e.target !== pc && !pc.contains(e.target)) return;
+      e.preventDefault();
+      var factor = e.deltaY < 0 ? 1.12 : 0.89;
+      phasorZoomLevel = Math.max(0.3, Math.min(5, phasorZoomLevel * factor));
+      if (lastPhasorArgs) drawPhasor.apply(null, lastPhasorArgs);
+    }, { passive: false });
+
+    // Drag-to-pan
+    document.addEventListener('mousedown', function(e) {
+      var pc = getPC(); if (!pc || e.target !== pc) return;
+      phasorDragging = true;
+      phasorDragSX = e.clientX; phasorDragSY = e.clientY;
+      phasorDragPX = phasorPanX; phasorDragPY = phasorPanY;
+      pc.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!phasorDragging) return;
+      var pc = getPC(); if (!pc) return;
+      var scaleX = pc.width / pc.getBoundingClientRect().width;
+      phasorPanX = phasorDragPX + (e.clientX - phasorDragSX) * scaleX;
+      phasorPanY = phasorDragPY + (e.clientY - phasorDragSY) * scaleX;
+      if (!raf && lastPhasorArgs) { raf = requestAnimationFrame(function(){ raf=null; drawPhasor.apply(null, lastPhasorArgs); }); }
+    });
+    document.addEventListener('mouseup', function() {
+      phasorDragging = false;
+      var pc = getPC(); if (pc) pc.style.cursor = 'grab';
+    });
+
+    // Touch pan/pinch
+    var lastTouchDist = null, touchPanStart = null;
+    document.addEventListener('touchstart', function(e) {
+      var pc = getPC(); if (!pc || e.target !== pc) return;
+      if (e.touches.length === 1) {
+        touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY, px: phasorPanX, py: phasorPanY };
+      } else if (e.touches.length === 2) {
+        lastTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      }
+    }, { passive: true });
+    document.addEventListener('touchmove', function(e) {
+      var pc = getPC(); if (!pc || e.target !== pc) return;
+      if (e.touches.length === 1 && touchPanStart) {
+        var scaleX = pc.width / pc.getBoundingClientRect().width;
+        phasorPanX = touchPanStart.px + (e.touches[0].clientX - touchPanStart.x) * scaleX;
+        phasorPanY = touchPanStart.py + (e.touches[0].clientY - touchPanStart.y) * scaleX;
+        if (lastPhasorArgs) drawPhasor.apply(null, lastPhasorArgs);
+      } else if (e.touches.length === 2 && lastTouchDist) {
+        var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        phasorZoomLevel = Math.max(0.3, Math.min(5, phasorZoomLevel * (d / lastTouchDist)));
+        lastTouchDist = d;
+        if (lastPhasorArgs) drawPhasor.apply(null, lastPhasorArgs);
+      }
+    }, { passive: true });
+  })();
+
+  function drawPhasor(R,XL,Xc,Xnet,Z,phi,I,V) {
+    // ⛔ Never draw phasor in DC mode
+    if (supplyMode === 'dc') return;
+
+    lastPhasorArgs = [R,XL,Xc,Xnet,Z,phi,I,V];
+    var pc = document.getElementById('phasorCanvas'); if (!pc) return;
+    var ctx2 = pc.getContext('2d');
+    var PW = pc.width, PH = pc.height;
+    ctx2.clearRect(0,0,PW,PH);
+    ctx2.fillStyle = '#f9f7ff'; ctx2.fillRect(0,0,PW,PH);
+
+    var on = document.getElementById('switchOn').checked;
+    if (!on) {
+      ctx2.fillStyle='#aaa'; ctx2.font='bold 18px Segoe UI'; ctx2.textAlign='center';
+      ctx2.fillText('Circuit OFF — Toggle switch to ON', PW/2, PH/2); return;
+    }
+
+    var VR = I*R, VLv = I*XL, VCv = I*Xc;
+    var maxV = Math.max(VR, VLv, VCv, V, 0.01);
+
+    // Base scale so vectors fill ~40% of half the canvas
+    var baseScale = (PW * 0.38) / maxV;
+    var scale = baseScale * phasorZoomLevel;
+
+    // Minimum pixel length for VL and VC arrows so they're always visible
+    var MIN_PX = 18;
+
+    var VLpx  = Math.max(VLv * scale, VLv > 0.001 ? MIN_PX : 0);
+    var VCpx  = Math.max(VCv * scale, VCv > 0.001 ? MIN_PX : 0);
+    var VRpx  = VR * scale;
+
+    // Origin: center-left with pan offset
+    var ox = PW * 0.35 + phasorPanX;
+    var oy = PH * 0.5  + phasorPanY;
+
+    // ── Grid / Axes ──
+    ctx2.save();
+    ctx2.strokeStyle = '#e0ddf5'; ctx2.lineWidth = 1;
+    for (var gx = ((ox % 30) + 30) % 30; gx < PW; gx += 30) {
+      ctx2.beginPath(); ctx2.moveTo(gx,0); ctx2.lineTo(gx,PH); ctx2.stroke();
+    }
+    for (var gy = ((oy % 30) + 30) % 30; gy < PH; gy += 30) {
+      ctx2.beginPath(); ctx2.moveTo(0,gy); ctx2.lineTo(PW,gy); ctx2.stroke();
+    }
+    ctx2.strokeStyle = '#b0a8d8'; ctx2.lineWidth = 1.5;
+    ctx2.beginPath(); ctx2.moveTo(0, oy); ctx2.lineTo(PW, oy); ctx2.stroke();
+    ctx2.beginPath(); ctx2.moveTo(ox, 0); ctx2.lineTo(ox, PH); ctx2.stroke();
+    ctx2.fillStyle = '#888'; ctx2.font = 'bold 11px Segoe UI';
+    ctx2.textAlign = 'left';
+    ctx2.fillText('R →', PW - 44, oy - 7);
+    ctx2.fillText('↑ XL', ox + 6, 18);
+    ctx2.fillText('↓ Xc', ox + 6, PH - 8);
+    ctx2.restore();
+
+    function arrow(cx2, x1,y1,x2,y2,color,lw) {
+      cx2.save(); cx2.strokeStyle=color; cx2.lineWidth=lw||3;
+      cx2.beginPath(); cx2.moveTo(x1,y1); cx2.lineTo(x2,y2); cx2.stroke();
+      var angle=Math.atan2(y2-y1,x2-x1), al=10+lw;
+      cx2.fillStyle=color;
+      cx2.beginPath(); cx2.moveTo(x2,y2);
+      cx2.lineTo(x2-al*Math.cos(angle-0.35),y2-al*Math.sin(angle-0.35));
+      cx2.lineTo(x2-al*Math.cos(angle+0.35),y2-al*Math.sin(angle+0.35));
+      cx2.closePath(); cx2.fill(); cx2.restore();
+    }
+
+    function lbl(cx2, txt, x, y, color, align, baseline) {
+      cx2.save();
+      cx2.font = 'bold 12px Segoe UI'; cx2.fillStyle = color;
+      cx2.textAlign = align||'center'; cx2.textBaseline = baseline||'alphabetic';
+      cx2.strokeStyle = 'rgba(249,247,255,0.9)'; cx2.lineWidth = 4;
+      cx2.strokeText(txt,x,y); cx2.fillText(txt,x,y);
+      cx2.restore();
+    }
+
+    var ex = ox + VRpx;   // tip of VR (base of VL and VC)
+    // V-total tip uses REAL scale for correct angle, not minimum-clamped pixels
+    var ey = oy - Xnet * scale;
+
+    // ── VR (red, horizontal) ──
+    arrow(ctx2, ox, oy, ex, oy, '#c0392b', 3);
+    lbl(ctx2, 'VR = '+VR.toFixed(2)+' V', ox + VRpx/2, oy + 22, '#c0392b', 'center');
+
+    // ── VL (blue, vertically up from tip of VR) ──
+    arrow(ctx2, ex, oy, ex, oy - VLpx, '#185fa5', 3);
+    lbl(ctx2, 'VL = '+VLv.toFixed(2)+' V', ex + 42, oy - VLpx/2, '#185fa5', 'left', 'middle');
+    // "Leads I by 90°" hint when arrow is large enough
+    if (VLpx > 40) lbl(ctx2, '(+90°)', ex + 42, oy - VLpx/2 + 16, '#185fa5', 'left', 'middle');
+
+    // ── VC (green, vertically down from tip of VR) ── ALWAYS DRAWN
+    arrow(ctx2, ex, oy, ex, oy + VCpx, '#1d9e75', 3);
+    lbl(ctx2, 'VC = '+VCv.toFixed(2)+' V', ex + 42, oy + VCpx/2, '#1d9e75', 'left', 'middle');
+    if (VCpx > 40) lbl(ctx2, '(−90°)', ex + 42, oy + VCpx/2 + 16, '#1d9e75', 'left', 'middle');
+
+    // ── V total (purple dashed, from origin to real tip) ──
+    ctx2.save(); ctx2.setLineDash([8,5]);
+    arrow(ctx2, ox, oy, ex, ey, '#9b27af', 3.5);
+    ctx2.setLineDash([]);
+    var vAngle = Math.atan2(ey - oy, ex - ox);
+    var vPerpX = -Math.sin(vAngle) * 22, vPerpY = Math.cos(vAngle) * 22;
+    lbl(ctx2, 'V = '+V.toFixed(2)+' V', (ox+ex)/2 + vPerpX, (oy+ey)/2 + vPerpY, '#9b27af', 'center');
+    ctx2.restore();
+
+    // ── Net reactance helper line (VL − VC, dashed grey) ──
+    var netPx = VLpx - VCpx;
+    if (Math.abs(netPx) > 4) {
+      ctx2.save(); ctx2.strokeStyle='#bbb'; ctx2.lineWidth=1.5; ctx2.setLineDash([4,4]);
+      ctx2.beginPath(); ctx2.moveTo(ex, oy - VCpx); ctx2.lineTo(ex, oy - VCpx - (netPx - (netPx > 0 ? 0 : 0)));
+      // Actually draw from VC tip to VL tip to show net
+      ctx2.moveTo(ex + 28, oy - VCpx);
+      ctx2.lineTo(ex + 28, oy - VLpx);
+      ctx2.stroke(); ctx2.setLineDash([]);
+      // Net label
+      var netV = Math.abs(VLv - VCv);
+      if (netV > 0.01) {
+        var netMidY = oy - (VCpx + VLpx)/2;
+        lbl(ctx2, 'X='+(netV).toFixed(2)+'V', ex + 55, netMidY, '#888', 'left', 'middle');
+      }
+      ctx2.restore();
+    }
+
+    // ── Phase angle arc ──
+    if (Math.abs(phi) > 0.5) {
+      var arcR = Math.min(55, Math.max(22, VRpx * 0.3));
+      ctx2.save(); ctx2.strokeStyle='#e67e00'; ctx2.lineWidth=2; ctx2.setLineDash([4,3]);
+      // arc from 0 (VR direction) to -phi (V-total direction), using canvas angles
+      var startAngle = 0;
+      var endAngle   = -phi * Math.PI / 180;
+      ctx2.beginPath();
+      ctx2.arc(ox, oy, arcR, endAngle, startAngle, phi < 0);
+      ctx2.stroke(); ctx2.setLineDash([]);
+      ctx2.font='bold 12px Segoe UI'; ctx2.fillStyle='#e67e00';
+      var arcLabelX = ox + arcR + 8;
+      var arcLabelY = oy + (phi > 0 ? -arcR*0.5 : arcR*0.5 + 4);
+      ctx2.strokeStyle='rgba(249,247,255,0.9)'; ctx2.lineWidth=4;
+      ctx2.strokeText('φ = '+phi.toFixed(1)+'°', arcLabelX, arcLabelY);
+      ctx2.fillText('φ = '+phi.toFixed(1)+'°', arcLabelX, arcLabelY);
+      ctx2.restore();
+    }
+
+    // ── Origin dot ──
+    ctx2.beginPath(); ctx2.arc(ox, oy, 4, 0, Math.PI*2);
+    ctx2.fillStyle = '#3d0b9e'; ctx2.fill();
+
+    // ── Status badge (inductive/capacitive/resonance) ──
+    var badgeTxt = (Math.abs(phi) < 0.5) ? '⚡ Resonance — XL = Xc'
+                 : (phi > 0) ? '⬆ Inductive — XL > Xc  (φ = +'+phi.toFixed(1)+'°)'
+                              : '⬇ Capacitive — Xc > XL  (φ = '+phi.toFixed(1)+'°)';
+    var badgeColor = (Math.abs(phi) < 0.5) ? '#007a3d' : (phi > 0 ? '#185fa5' : '#1d9e75');
+    ctx2.save();
+    ctx2.font = 'bold 11px Segoe UI'; ctx2.fillStyle = badgeColor;
+    ctx2.textAlign = 'right'; ctx2.textBaseline = 'top';
+    ctx2.fillText(badgeTxt, PW - 10, 10);
+    ctx2.restore();
   }
 
   function drawOff(m) {
