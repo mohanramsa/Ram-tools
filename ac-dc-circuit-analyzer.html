@@ -559,7 +559,7 @@
       document.getElementById('m-vr1').textContent = VR1.toFixed(2) + ' V';
       document.getElementById('m-vr2').textContent = VR2.toFixed(2) + ' V';
       document.getElementById('m-power').textContent = P.toFixed(3) + ' W';
-      document.getElementById('formula-text').textContent = 'XL = 2πfL = '+fmt(XL)+' Ω\nZ = √(R²+XL²) = '+fmt(Z)+' Ω\nφ = '+phi.toFixed(1)+'° (I leads V)';
+      document.getElementById('formula-text').textContent = 'XL = 2πfL = '+fmt(XL)+' Ω\nZ = √(R²+XL²) = '+fmt(Z)+' Ω\nφ = '+phi.toFixed(1)+'° (I lags V)';
       lastV=V; lastI=I; lastZ=Z; lastPhi=phi; lastF=f; lastVR=VR1; lastVL=VR2; lastVC=0;
       drawRL(V, R1, L, f, I, VR1, VR2, XL);
       // RL phasor: Xc=0, Xnet=XL (inductive), VL=VR2, VC=0
